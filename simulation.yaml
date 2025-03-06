@@ -1,0 +1,7 @@
+routes:
+  - from: crossing_south
+    to: crossing_west
+    cars_per_minute: 60
+  - from: crossing_west
+    to: crossing_north
+    cars_per_minute: 60
