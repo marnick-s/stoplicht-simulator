@@ -3,7 +3,7 @@ import yaml
 from lib.screen import screen, WIDTH, HEIGHT, update_screen_size
 from lib.simulation import Simulation
 
-background_image = pygame.image.load('assets/background.png')
+background_image = pygame.image.load('assets/background.webp')
 orig_width, orig_height = background_image.get_size()
 new_height = int(WIDTH * orig_height / orig_width)
 background_image = pygame.transform.scale(background_image, (WIDTH, new_height))
