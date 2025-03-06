@@ -5,3 +5,6 @@ routes:
   - from: crossing_west
     to: crossing_north
     cars_per_minute: 60
+  - from: crossing_north
+    to: crossing_south
+    cars_per_minute: 10
