@@ -1,13 +1,27 @@
 routes:
-  - from: crossing_south
-    to: crossing_west
-    cars_per_minute: 5
-  - from: crossing_west
-    to: crossing_north
-    cars_per_minute: 20
-  - from: crossing_north
-    to: crossing_south
-    cars_per_minute: 10
-  - from: crossing_east
-    to: crossing_south
-    cars_per_minute: 10
+  - vehicle_type: car
+    vehicles_per_minute: 5
+    path:
+      - [100, 500]  # Startpositie
+      - [200, 400]
+      - [300, 300]
+      - [400, 200]
+      - [500, 100]  # Eindpunt
+
+  - vehicle_type: car
+    vehicles_per_minute: 20
+    path:
+      - [50, 50]
+      - [150, 100]
+      - [250, 150]
+      - [350, 200]
+      - [450, 250]
+
+  - vehicle_type: boat
+    vehicles_per_minute: 10
+    path:
+      - [600, 700]
+      - [550, 600]
+      - [500, 500]
+      - [450, 400]
+      - [400, 300]
