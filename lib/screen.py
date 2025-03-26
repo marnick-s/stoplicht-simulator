@@ -14,3 +14,10 @@ WIDTH, HEIGHT = screen.get_size()
 def update_screen_size():
     global WIDTH, HEIGHT
     WIDTH, HEIGHT = screen.get_size()
+
+
+def scale_to_display(x, y):
+    return int(x / 1920 * WIDTH), int(y / 1080 * HEIGHT)
+
+def scale_to_system(x, y):
+    return int(x / WIDTH * 1920), int(y / HEIGHT * 1080)

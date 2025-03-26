@@ -1,7 +1,7 @@
 import pygame
-from lib.boat import Boat
-from lib.screen import WIDTH, HEIGHT
-from lib.car import Car
+from lib.directions.direction import Direction
+from lib.vehicles.boat import Boat
+from lib.vehicles.car import Car
 
 class Simulation:
     vehicle_classes = {
@@ -12,8 +12,15 @@ class Simulation:
     def __init__(self, config):
         self.vehicles = []
         self.config = config
+        self.directions = self.load_directions(config)
         self.spawn_timers = {tuple(route['path'][0]): 0 for route in config['routes']}
         self.last_time = pygame.time.get_ticks()
+
+    def load_directions(self, config):
+        directions = []
+        for direction_data in config['directions']:
+            directions.append(Direction(direction_data))
+        return directions
 
     def spawn_vehicles(self):
         current_time = pygame.time.get_ticks()
@@ -34,8 +41,21 @@ class Simulation:
     def update(self):
         self.spawn_vehicles()
         for vehicle in self.vehicles:
-            vehicle.move()
+            vehicle.move(self.vehicles, self.directions, self.occupy_sensor)
+
+    def occupy_sensor(self, direction, traffic_light, back_sensor):
+        if back_sensor:
+            direction = next(d for d in self.directions if d.id == direction.id)
+            traffic_light = next(tl for tl in direction.traffic_lights if tl.id == traffic_light.id)
+            traffic_light.back_sensor_occupied = True
+        else:
+            direction = next(d for d in self.directions if d.id == direction.id)
+            traffic_light = next(tl for tl in direction.traffic_lights if tl.id == traffic_light.id)
+            traffic_light.front_sensor_occupied = True
+            print(f"Sensor occupied: {direction.id} - {traffic_light.id}")
 
     def draw(self):
         for vehicle in self.vehicles:
             vehicle.draw()
+        for direction in self.directions:
+            direction.draw()
