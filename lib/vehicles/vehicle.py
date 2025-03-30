@@ -1,10 +1,10 @@
 import pygame
 import os
 import random
-from abc import ABC, abstractmethod
+from lib.collidable_object import CollidableObject, Hitbox
 from lib.screen import screen, scale_to_display
 
-class Vehicle(ABC):
+class Vehicle(CollidableObject):
     def __init__(self, path, speed, sprite_width, sprite_height, image_folder):
         self.path = path
         self.current_target = 0
@@ -24,8 +24,16 @@ class Vehicle(ABC):
 
     def scale_image(self, image):
         return pygame.transform.scale(image, (self.sprite_width, self.sprite_height))
+    
+    def hitbox(self):
+        return Hitbox(
+            x=self.x,
+            y=self.y,
+            width=self.sprite_width,
+            height=self.sprite_height,
+        )
 
-    def move(self, obstacles, directions, occupy_sensor):
+    def move(self, obstacles):
         if self.current_target < len(self.path) - 1:
             target_x, target_y = self.path[self.current_target + 1]
             dx, dy = target_x - self.x, target_y - self.y
@@ -40,20 +48,19 @@ class Vehicle(ABC):
                 
                 if abs(self.x - target_x) < self.speed and abs(self.y - target_y) < self.speed:
                     self.current_target += 1
-
+                
+    def is_occupying_sensor(self, directions):
         for direction in directions:
             for traffic_light in direction.traffic_lights:
                 if (self.x <= traffic_light.front_sensor_position.x <= self.x + self.sprite_width and
                     self.y <= traffic_light.front_sensor_position.y <= self.y + self.sprite_height):
-                    occupy_sensor(direction, traffic_light, False)
-
+                    return direction, traffic_light, False
+        return None, None, None
+    
     def can_move(self, new_x, new_y, obstacles):
-        for vehicle in obstacles:
-            if vehicle != self:
-                if (new_x < vehicle.x + vehicle.sprite_width and
-                    new_x + self.sprite_width > vehicle.x and
-                    new_y < vehicle.y + vehicle.sprite_height and
-                    new_y + self.sprite_height > vehicle.y):
+        for obstacle in obstacles:
+            if obstacle != self and obstacle.can_collide():
+                if self.hitbox().collides_with(obstacle.hitbox()):
                     return False
         return True
 

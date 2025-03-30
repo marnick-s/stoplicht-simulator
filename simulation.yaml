@@ -26,6 +26,11 @@ routes:
       - [500, 100000]
       # - [450, 400]
       # - [400, 300]
+  - vehicle_type: car
+    vehicles_per_minute: 20
+    path:
+      - [1920, 500]
+      - [0, 500]
 
 directions:
   - id: 0

@@ -41,18 +41,29 @@ class Simulation:
     def update(self):
         self.spawn_vehicles()
         for vehicle in self.vehicles:
-            vehicle.move(self.vehicles, self.directions, self.occupy_sensor)
+            vehicle.move(self.vehicles)
+        print (self.check_occupied_sensors())
 
-    def occupy_sensor(self, direction, traffic_light, back_sensor):
-        if back_sensor:
-            direction = next(d for d in self.directions if d.id == direction.id)
-            traffic_light = next(tl for tl in direction.traffic_lights if tl.id == traffic_light.id)
-            traffic_light.back_sensor_occupied = True
-        else:
-            direction = next(d for d in self.directions if d.id == direction.id)
-            traffic_light = next(tl for tl in direction.traffic_lights if tl.id == traffic_light.id)
-            traffic_light.front_sensor_occupied = True
-            print(f"Sensor occupied: {direction.id} - {traffic_light.id}")
+    def check_occupied_sensors(self):
+        sensorData = {}
+        for direction in self.directions:
+            for traffic_light in direction.traffic_lights:
+                sensor_id = f"{direction.id}.{traffic_light.id}"
+                sensorData[sensor_id] = {"voor": False, "achter": False}
+
+        for vehicle in self.vehicles:
+            direction, traffic_light, back_sensor = vehicle.is_occupying_sensor(self.directions)
+            if direction is not None and traffic_light is not None:
+                sensor_id = f"{direction.id}.{traffic_light.id}"
+                if sensor_id not in sensorData:
+                    sensorData[sensor_id] = {"voor": False, "achter": False}
+
+                if back_sensor:
+                    sensorData[sensor_id]["achter"] = True
+                else:
+                    sensorData[sensor_id]["voor"] = True
+
+        return sensorData
 
     def draw(self):
         for vehicle in self.vehicles:
