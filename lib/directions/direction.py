@@ -11,11 +11,7 @@ class Direction():
                 tl['front_sensor_position'],
                 tl['back_sensor_position']
             ) for tl in direction_data['traffic_lights']
-        ]
-
-    def update(self):
-        for traffic_light in self.traffic_lights:
-            traffic_light.update()
+        ]        
 
     def draw(self):
         for traffic_light in self.traffic_lights:

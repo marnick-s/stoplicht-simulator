@@ -42,7 +42,7 @@ class Vehicle(CollidableObject):
             new_x = self.x + self.speed * dx / distance
             new_y = self.y + self.speed * dy / distance
             
-            if self.can_move(new_x, new_y, obstacles):
+            if self.can_move(obstacles):
                 self.x = new_x
                 self.y = new_y
                 
@@ -57,13 +57,18 @@ class Vehicle(CollidableObject):
                     return direction, traffic_light, False
         return None, None, None
     
-    def can_move(self, new_x, new_y, obstacles):
+    def can_move(self, obstacles):
         for obstacle in obstacles:
             if obstacle != self and obstacle.can_collide():
                 if self.hitbox().collides_with(obstacle.hitbox()):
                     return False
         return True
+    
+    def has_finished(self):
+        return self.current_target >= len(self.path) - 1
 
     def draw(self):
+        # pygame.draw.rect(screen, (255, 0, 0), (self.x, self.y, self.sprite_width, self.sprite_height), 2)
+
         scaled_x, scaled_y = scale_to_display(self.x, self.y)
         screen.blit(self.image, (scaled_x, scaled_y))

@@ -1,5 +1,6 @@
 import pygame
 from lib.directions.direction import Direction
+from lib.enums.topics import Topics
 from lib.vehicles.boat import Boat
 from lib.vehicles.car import Car
 
@@ -9,9 +10,10 @@ class Simulation:
         "boat": Boat
     }
 
-    def __init__(self, config):
+    def __init__(self, config, messenger):
         self.vehicles = []
         self.config = config
+        self.messenger = messenger
         self.directions = self.load_directions(config)
         self.spawn_timers = {tuple(route['path'][0]): 0 for route in config['routes']}
         self.last_time = pygame.time.get_ticks()
@@ -22,7 +24,7 @@ class Simulation:
             directions.append(Direction(direction_data))
         return directions
 
-    def spawn_vehicles(self):
+    def create_new_vehicles(self):
         current_time = pygame.time.get_ticks()
 
         for route in self.config['routes']:
@@ -39,10 +41,24 @@ class Simulation:
         self.last_time = current_time
 
     def update(self):
-        self.spawn_vehicles()
+        self.create_new_vehicles()
+        self.update_traffic_lights()
+        self.vehicles = [v for v in self.vehicles if not v.has_finished()] # Remove finished vehicles
         for vehicle in self.vehicles:
-            vehicle.move(self.vehicles)
-        print (self.check_occupied_sensors())
+            obstacles = self.vehicles + [light for d in self.directions for light in d.traffic_lights]
+            vehicle.move(obstacles)
+        self.check_occupied_sensors()
+
+    def update_traffic_lights(self):
+        received_data = self.messenger.received_data
+        if not received_data:
+            return 
+        for direction in self.directions:
+            for traffic_light in direction.traffic_lights:
+                sensor_id = f"{direction.id}.{traffic_light.id}"
+                if sensor_id in received_data:
+                    new_color = received_data[sensor_id]
+                    traffic_light.update(new_color)
 
     def check_occupied_sensors(self):
         sensorData = {}
@@ -63,7 +79,7 @@ class Simulation:
                 else:
                     sensorData[sensor_id]["voor"] = True
 
-        return sensorData
+        self.messenger.send(Topics.SENSORS_UPDATE, sensorData)
 
     def draw(self):
         for vehicle in self.vehicles:

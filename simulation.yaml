@@ -16,14 +16,14 @@ routes:
     vehicles_per_minute: 200
     path:
       - [550, 0]
-      - [550, 100000]
+      - [550, 1080]
 
   - vehicle_type: car
     vehicles_per_minute: 20
     path:
       - [0, 500]
       - [500, 500]
-      - [500, 100000]
+      - [500, 1080]
       # - [450, 400]
       # - [400, 300]
   - vehicle_type: car
@@ -33,10 +33,10 @@ routes:
       - [0, 500]
 
 directions:
-  - id: 0
+  - id: 22
     approach_direction: [1, 0]
     traffic_lights:
-      - id: 100
-        traffic_light_position: [100, 100]
-        front_sensor_position: [200, 500]
+      - id: 1
+        traffic_light_position: [200, 500]
+        front_sensor_position: [180, 500]
         back_sensor_position: [100, 100]
