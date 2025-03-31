@@ -1,5 +1,5 @@
 # Installation instructions (Windows)
-Run the following command to create a Python virtual environment:
+Run the following command inside the project folder to create a Python virtual environment:
 
 ``python -m venv .venv``
 
