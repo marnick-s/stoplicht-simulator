@@ -1,5 +1,6 @@
 # Installation instructions (Windows)
 Run the following command to create a Python virtual environment:
+
 ``python -m venv .venv``
 
 Run the following command to activate the virtual environment:
