@@ -86,11 +86,8 @@ class Vehicle(CollidableObject):
 
     def can_move(self, obstacles):
         for obstacle in obstacles:
-            if obstacle != self and obstacle.can_collide():
-                for hitbox in self.hitboxes():
-                    for obstacle_hitbox in obstacle.hitboxes():
-                        if hitbox.collides_with(obstacle_hitbox):
-                            return False
+            if self.collides_with(obstacle):
+                return False
         return True
     
 

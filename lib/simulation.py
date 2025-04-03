@@ -1,24 +1,14 @@
-import pygame
 from lib.directions.direction import Direction
 from lib.enums.topics import Topics
-from lib.vehicles.boat import Boat
-from lib.vehicles.car import Car
-from lib.vehicles.path import Path
+from lib.vehicles.vehicle_spawner import VehicleSpawner
 
 class Simulation:
-    vehicle_classes = {
-        "car": Car,
-        "boat": Boat
-    }
-
-
     def __init__(self, config, messenger):
         self.vehicles = []
         self.config = config
         self.messenger = messenger
         self.directions = self.load_directions(config)
-        self.spawn_timers = {tuple(route['path'][0]): 0 for route in config['routes']}
-        self.last_time = pygame.time.get_ticks()
+        self.vehicle_spawner = VehicleSpawner(config)
 
 
     def load_directions(self, config):
@@ -28,26 +18,8 @@ class Simulation:
         return directions
 
 
-    def create_new_vehicles(self):
-        current_time = pygame.time.get_ticks()
-
-        for route in self.config['routes']:
-            spawn_interval = 60 / route['vehicles_per_minute'] * 1000 if route['vehicles_per_minute'] > 0 else float('inf')
-            elapsed_time = current_time - self.last_time
-            self.spawn_timers[tuple(route['path'][0])] += elapsed_time
-
-            vehicle_class = self.vehicle_classes.get(route['vehicle_type'])
-
-            if self.spawn_timers[tuple(route['path'][0])] >= spawn_interval:
-                self.spawn_timers[tuple(route['path'][0])] = 0
-                path = Path(route["path"], self.config["route_components"])
-                self.vehicles.append(vehicle_class(path.get_pretty_path()))
-
-        self.last_time = current_time
-
-
     def update(self):
-        self.create_new_vehicles()
+        self.vehicle_spawner.create_new_vehicles(self.vehicles)
         self.update_traffic_lights()
         self.vehicles = [v for v in self.vehicles if not v.has_finished()] # Remove finished vehicles
         obstacles = self.vehicles + [light for d in self.directions for light in d.traffic_lights]

@@ -3,12 +3,12 @@
 
 routes:
   - vehicle_type: boat
-    vehicles_per_minute: 10
+    vehicles_per_minute: 30
     path:
       - [550, 0]
       - [550, 1080]
   - vehicle_type: car
-    vehicles_per_minute: 20
+    vehicles_per_minute: 200
     path:
       - [0, 500]
       - [500, 500]
