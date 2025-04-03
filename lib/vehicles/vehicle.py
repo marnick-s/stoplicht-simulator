@@ -1,7 +1,9 @@
+import math
 import pygame
 import os
 import random
 from lib.collidable_object import CollidableObject, Hitbox
+from lib.directions.traffic_light import TrafficLight
 from lib.screen import screen, scale_to_display
 
 class Vehicle(CollidableObject):
@@ -10,9 +12,13 @@ class Vehicle(CollidableObject):
         self.current_target = 0
         self.x, self.y = self.path[self.current_target]
         self.speed = speed
-        self.sprite_width = sprite_width
-        self.sprite_height = sprite_height
-        self.image = self.scale_image(self.load_random_image("assets/vehicles/" + image_folder))
+        self.sprite_width, self.sprite_height = sprite_width, sprite_height
+        self.original_image = self.scale_image(self.load_random_image("assets/vehicles/" + image_folder))
+        self.angle = 0
+        self.image = self.original_image.copy()
+        self.rotated_width = self.sprite_width
+        self.rotated_height = self.sprite_height
+
 
     def load_random_image(self, folder):
         image_files = [f for f in os.listdir(folder) if f.endswith('.webp')]
@@ -22,16 +28,34 @@ class Vehicle(CollidableObject):
         image_path = os.path.join(folder, image_file)
         return pygame.image.load(image_path)
 
+
     def scale_image(self, image):
         return pygame.transform.scale(image, (self.sprite_width, self.sprite_height))
     
-    def hitbox(self):
-        return Hitbox(
-            x=self.x,
-            y=self.y,
-            width=self.sprite_width,
-            height=self.sprite_height,
+
+    def hitboxes(self):
+        vehicle_width = self.sprite_width // 3
+
+        front_offset_x = math.cos(math.radians(self.angle)) * self.sprite_height // 2
+        front_offset_y = -math.sin(math.radians(self.angle)) * self.sprite_height // 2
+        front_hitbox = Hitbox(
+            x=self.x + front_offset_x - vehicle_width // 2,
+            y=self.y + front_offset_y - vehicle_width // 2,
+            width=vehicle_width,
+            height=vehicle_width,
         )
+
+        rear_offset_x = -math.cos(math.radians(self.angle)) * self.sprite_height // 2
+        rear_offset_y = math.sin(math.radians(self.angle)) * self.sprite_height // 2
+        rear_hitbox = Hitbox(
+            x=self.x + rear_offset_x - vehicle_width // 2,
+            y=self.y + rear_offset_y - vehicle_width // 2,
+            width=vehicle_width,
+            height=vehicle_width,
+        )
+        
+        return [front_hitbox, rear_hitbox]
+
 
     def move(self, obstacles):
         if self.current_target < len(self.path) - 1:
@@ -45,30 +69,61 @@ class Vehicle(CollidableObject):
             if self.can_move(obstacles):
                 self.x = new_x
                 self.y = new_y
-                
+                self.rotate_to_path()
                 if abs(self.x - target_x) < self.speed and abs(self.y - target_y) < self.speed:
                     self.current_target += 1
                 
+
     def is_occupying_sensor(self, directions):
         for direction in directions:
             for traffic_light in direction.traffic_lights:
-                if (self.x <= traffic_light.front_sensor_position.x <= self.x + self.sprite_width and
-                    self.y <= traffic_light.front_sensor_position.y <= self.y + self.sprite_height):
-                    return direction, traffic_light, False
+                for hitbox in self.hitboxes():
+                    if (hitbox.x <= traffic_light.front_sensor_position.x <= hitbox.x + hitbox.width and
+                        hitbox.y <= traffic_light.front_sensor_position.y <= hitbox.y + hitbox.height):
+                        return direction, traffic_light, False
         return None, None, None
     
+
     def can_move(self, obstacles):
         for obstacle in obstacles:
             if obstacle != self and obstacle.can_collide():
-                if self.hitbox().collides_with(obstacle.hitbox()):
-                    return False
+                for hitbox in self.hitboxes():
+                    for obstacle_hitbox in obstacle.hitboxes():
+                        if hitbox.collides_with(obstacle_hitbox):
+                            return False
         return True
     
+
+    def rotate_to_path(self):
+        if self.current_target < len(self.path) - 1:
+            # Get current and next path segment
+            start_x, start_y = self.path[self.current_target]
+            end_x, end_y = self.path[self.current_target + 1]
+            
+            # Calculate rotation angle using path direction
+            dx = end_x - start_x
+            dy = end_y - start_y
+            self.angle = math.degrees(math.atan2(-dy, dx))  # Negative dy for pygame's coordinate system
+            
+            # Rotate image while maintaining original quality
+            self.image = pygame.transform.rotate(self.original_image, self.angle)
+            
+            # Store rotated dimensions for hitbox calculation
+            self.rotated_width = self.image.get_width()
+            self.rotated_height = self.image.get_height()
+
+
     def has_finished(self):
         return self.current_target >= len(self.path) - 1
 
-    def draw(self):
-        # pygame.draw.rect(screen, (255, 0, 0), (self.x, self.y, self.sprite_width, self.sprite_height), 2)
 
-        scaled_x, scaled_y = scale_to_display(self.x, self.y)
-        screen.blit(self.image, (scaled_x, scaled_y))
+    def draw(self):
+        draw_x = self.x - self.rotated_width // 2
+        draw_y = self.y - self.rotated_height // 2
+        scaled_image = pygame.transform.scale(self.image, scale_to_display(self.rotated_width, self.rotated_height))
+        screen.blit(scaled_image, scale_to_display(draw_x, draw_y))
+        
+        for hitbox in self.hitboxes():
+            hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
+            hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
+            pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)

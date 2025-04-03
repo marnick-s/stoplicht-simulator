@@ -3,12 +3,14 @@ from lib.directions.direction import Direction
 from lib.enums.topics import Topics
 from lib.vehicles.boat import Boat
 from lib.vehicles.car import Car
+from lib.vehicles.path import Path
 
 class Simulation:
     vehicle_classes = {
         "car": Car,
         "boat": Boat
     }
+
 
     def __init__(self, config, messenger):
         self.vehicles = []
@@ -18,11 +20,13 @@ class Simulation:
         self.spawn_timers = {tuple(route['path'][0]): 0 for route in config['routes']}
         self.last_time = pygame.time.get_ticks()
 
+
     def load_directions(self, config):
         directions = []
         for direction_data in config['directions']:
             directions.append(Direction(direction_data))
         return directions
+
 
     def create_new_vehicles(self):
         current_time = pygame.time.get_ticks()
@@ -36,18 +40,21 @@ class Simulation:
 
             if self.spawn_timers[tuple(route['path'][0])] >= spawn_interval:
                 self.spawn_timers[tuple(route['path'][0])] = 0
-                self.vehicles.append(vehicle_class(route['path']))
+                path = Path(route["path"], self.config["route_components"])
+                self.vehicles.append(vehicle_class(path.get_pretty_path()))
 
         self.last_time = current_time
+
 
     def update(self):
         self.create_new_vehicles()
         self.update_traffic_lights()
         self.vehicles = [v for v in self.vehicles if not v.has_finished()] # Remove finished vehicles
+        obstacles = self.vehicles + [light for d in self.directions for light in d.traffic_lights]
         for vehicle in self.vehicles:
-            obstacles = self.vehicles + [light for d in self.directions for light in d.traffic_lights]
             vehicle.move(obstacles)
         self.check_occupied_sensors()
+
 
     def update_traffic_lights(self):
         received_data = self.messenger.received_data
@@ -59,6 +66,7 @@ class Simulation:
                 if sensor_id in received_data:
                     new_color = received_data[sensor_id]
                     traffic_light.update(new_color)
+
 
     def check_occupied_sensors(self):
         sensorData = {}
@@ -79,7 +87,8 @@ class Simulation:
                 else:
                     sensorData[sensor_id]["voor"] = True
 
-        self.messenger.send(Topics.SENSORS_UPDATE, sensorData)
+        self.messenger.send(Topics.SENSORS_UPDATE.value, sensorData)
+
 
     def draw(self):
         for vehicle in self.vehicles:

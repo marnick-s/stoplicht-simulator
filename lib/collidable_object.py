@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class CollidableObject(ABC):
     @abstractmethod
-    def hitbox(self):
+    def hitboxes(self):
         """Object needs to have a hitbox."""
         pass
 

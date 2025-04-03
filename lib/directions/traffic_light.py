@@ -15,13 +15,13 @@ class TrafficLight(CollidableObject):
         self.back_sensor_position = Coordinate(*back_sensor_position)
         self.traffic_light_status = TrafficLightColors.RED
 
-    def hitbox(self):
-        return Hitbox(
+    def hitboxes(self):
+        return [Hitbox(
             x=self.traffic_light_position.x,
             y=self.traffic_light_position.y,
             width=10,
             height=10,
-        )
+        )]
 
     def can_collide(self):
         if self.traffic_light_status == TrafficLightColors.GREEN:
@@ -34,7 +34,7 @@ class TrafficLight(CollidableObject):
     def draw(self):
         front_sensor_x, front_sensor_y = scale_to_display(self.front_sensor_position.x, self.front_sensor_position.y)
         green_color = (0, 0, 0)
-        rectangle_size = (10, 10)
+        rectangle_size = scale_to_display(10, 10)
         screen.fill(green_color, (front_sensor_x, front_sensor_y, *rectangle_size))
         
         tf_color = (255, 0, 0)
@@ -43,6 +43,6 @@ class TrafficLight(CollidableObject):
         elif (self.traffic_light_status == TrafficLightColors.ORANGE):
             tf_color = (255, 255, 0)
 
-        x, y = scale_to_display(self.hitbox().x, self.hitbox().y)
-        rectangle_size2 = (self.hitbox().height, self.hitbox().width)
+        x, y = scale_to_display(self.hitboxes()[0].x, self.hitboxes()[0].y)
+        rectangle_size2 = scale_to_display(self.hitboxes()[0].height, self.hitboxes()[0].width)
         screen.fill(tf_color, (x, y, *rectangle_size2))

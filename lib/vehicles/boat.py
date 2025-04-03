@@ -3,8 +3,8 @@ from lib.screen import screen, WIDTH, HEIGHT
 from lib.vehicles.vehicle import Vehicle
 
 class Boat(Vehicle):
-    sprite_width = 44
-    sprite_height = 24
+    sprite_width = 60
+    sprite_height = 35
     image_folder = "boats"
     speed = 2
 

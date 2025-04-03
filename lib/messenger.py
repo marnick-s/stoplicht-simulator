@@ -3,9 +3,9 @@ import zmq
 import threading
 
 class Messenger:
-    pub_address="tcp://0.0.0.0:5555"
-    sub_address="tcp://10.6.0.4:5556"
-    receive_topic="auto"
+    pub_address="tcp://0.0.0.0:5555" # Own IP
+    sub_address="tcp://10.6.0.4:5556" # IP of controller
+    receive_topic="stoplichten"
 
     def __init__(self):
         """

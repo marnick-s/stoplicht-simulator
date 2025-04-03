@@ -5,13 +5,13 @@ from lib.messenger import Messenger
 from lib.screen import screen, WIDTH, HEIGHT, update_screen_size
 from lib.simulation import Simulation
 
-background_image = pygame.image.load('assets/background.webp')
+background_image = pygame.image.load('assets/background.webp').convert_alpha()
 background_orig_width, background_orig_height = background_image.get_size()
 scale_factor = WIDTH / background_orig_width
 new_height = int(background_orig_height * scale_factor)
 background_image = pygame.transform.scale(background_image, (WIDTH, new_height)) 
 
-overlay_image = pygame.image.load('assets/overlay.webp')
+overlay_image = pygame.image.load('assets/overlay.webp').convert_alpha()
 overlay_image = pygame.transform.scale(overlay_image, (WIDTH, new_height))
 
 def load_config(filename="simulation.yaml"):
@@ -48,7 +48,7 @@ while running:
     messenger.send("tijd", {"simulatie_tijd_ms": elapsed_time})
 
     pygame.display.flip()
-    clock.tick(100)
+    clock.tick(60)
 
 messenger.stop()
 pygame.quit()
