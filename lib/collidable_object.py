@@ -9,9 +9,10 @@ class CollidableObject(ABC):
     def can_collide(self):
         return True
     
-    def collides_with(self, obstacle):
+    def collides_with(self, obstacle, only_front=False):
         if obstacle != self and obstacle.can_collide():
-            for hitbox in self.hitboxes():
+            hitboxes_to_check = [self.hitboxes()[len(self.hitboxes()) - 1]] if only_front else self.hitboxes()
+            for hitbox in hitboxes_to_check:
                 for obstacle_hitbox in obstacle.hitboxes():
                     if hitbox.collides_with(obstacle_hitbox):
                         return True

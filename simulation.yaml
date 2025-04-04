@@ -1,9 +1,9 @@
 # Top left corner: 0, 0
-# Bottom right corner: 1920, 1080
+# Bottom right corner: 1920, 1080/1200
 
 routes:
   - vehicle_type: boat
-    vehicles_per_minute: 30
+    vehicles_per_minute: 50
     path:
       - [550, 0]
       - [550, 1080]
@@ -14,24 +14,31 @@ routes:
       - [500, 500]
       - [500, 1080]
   - vehicle_type: car
-    vehicles_per_minute: 20
+    vehicles_per_minute: 60
     path:
-      - [1920, 1220]
+      - [1600, 900]
       - [1121, 578]
-      - multi_lane:
-          - path:
-              - [1066, 537]
-              - [626, 288]
-          - path:
-              - [1063, 588]
-              - [620, 330]
+      - [800, 50]
+      # - variations:
+      #     - usage_percentage: 60
+      #       path:
+      #           - [800, 50]
+      #     - usage_percentage: 40
+      #       path:
+      #           - multi_lane:
+      #               - path:
+      #                   - [1066, 537]
+      #                   - [626, 288]
+      #               - path:
+      #                   - [1063, 588]
+      #                   - [620, 330]
       - base
       
 
 route_components:
   - name: base
     path:
-      - [0, 0]
+      - [0, 50]
   - name: test
     path:
       - [500, 500]
@@ -48,16 +55,16 @@ route_components:
 
 directions:
   - id: 22
-    approach_direction: [1, 0]
+    approach_direction: west
     traffic_lights:
       - id: 1
         traffic_light_position: [200, 500]
         front_sensor_position: [180, 500]
         back_sensor_position: [100, 100]
-  - id: 23
-    approach_direction: [1, 0]
-    traffic_lights:
-      - id: 1
-        traffic_light_position: [550, 500]
-        front_sensor_position: [550, 460]
-        back_sensor_position: [100, 100]
+  # - id: 23
+  #   approach_direction: [1, 0]
+  #   traffic_lights:
+  #     - id: 1
+  #       traffic_light_position: [550, 500]
+  #       front_sensor_position: [550, 460]
+  #       back_sensor_position: [100, 100]

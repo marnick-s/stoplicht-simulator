@@ -34,27 +34,27 @@ class Vehicle(CollidableObject):
     
 
     def hitboxes(self):
-        vehicle_width = self.sprite_width // 3
+        num_segments = 4  # Meer = preciezere botsingen
+        segment_length = (self.sprite_height + (self.sprite_height * 0.4)) // num_segments
+        vehicle_width = self.sprite_width // 3  # breder dan voorheen
 
-        front_offset_x = math.cos(math.radians(self.angle)) * self.sprite_height // 2
-        front_offset_y = -math.sin(math.radians(self.angle)) * self.sprite_height // 2
-        front_hitbox = Hitbox(
-            x=self.x + front_offset_x - vehicle_width // 2,
-            y=self.y + front_offset_y - vehicle_width // 2,
-            width=vehicle_width,
-            height=vehicle_width,
-        )
+        hitboxes = []
 
-        rear_offset_x = -math.cos(math.radians(self.angle)) * self.sprite_height // 2
-        rear_offset_y = math.sin(math.radians(self.angle)) * self.sprite_height // 2
-        rear_hitbox = Hitbox(
-            x=self.x + rear_offset_x - vehicle_width // 2,
-            y=self.y + rear_offset_y - vehicle_width // 2,
-            width=vehicle_width,
-            height=vehicle_width,
-        )
-        
-        return [front_hitbox, rear_hitbox]
+        for i in range(num_segments):
+            offset_distance = (i - num_segments / 2 + 0.5) * segment_length
+
+            offset_x = math.cos(math.radians(self.angle)) * offset_distance
+            offset_y = -math.sin(math.radians(self.angle)) * offset_distance
+
+            hitbox = Hitbox(
+                x=self.x + offset_x - vehicle_width // 2,
+                y=self.y + offset_y - vehicle_width // 2,
+                width=vehicle_width,
+                height=vehicle_width
+            )
+            hitboxes.append(hitbox)
+
+        return hitboxes
 
 
     def move(self, obstacles):
@@ -66,7 +66,7 @@ class Vehicle(CollidableObject):
             new_x = self.x + self.speed * dx / distance
             new_y = self.y + self.speed * dy / distance
             
-            if self.can_move(obstacles):
+            if self.can_move(obstacles, new_x, new_y):
                 self.x = new_x
                 self.y = new_y
                 self.rotate_to_path()
@@ -84,11 +84,17 @@ class Vehicle(CollidableObject):
         return None, None, None
     
 
-    def can_move(self, obstacles):
+    def can_move(self, obstacles, new_x, new_y):
+        temp_x, temp_y = self.x, self.y
+        self.x, self.y = new_x, new_y  # temporary position
+        can_move = True
         for obstacle in obstacles:
-            if self.collides_with(obstacle):
-                return False
-        return True
+            if self.collides_with(obstacle, only_front=True):
+                can_move = False
+                break
+        self.x, self.y = temp_x, temp_y  # revert to original position
+        return can_move
+
     
 
     def rotate_to_path(self):
