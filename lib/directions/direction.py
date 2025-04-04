@@ -9,7 +9,8 @@ class Direction():
                 tl['id'],
                 tl['traffic_light_position'],
                 tl['front_sensor_position'],
-                tl['back_sensor_position']
+                tl['back_sensor_position'],
+                self.approach_direction
             ) for tl in direction_data['traffic_lights']
         ]        
 

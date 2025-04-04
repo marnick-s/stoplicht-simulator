@@ -6,12 +6,13 @@ class CollidableObject(ABC):
         """Object needs to have one or multiple hitboxes."""
         exit
 
-    def can_collide(self):
+    def can_collide(self, vehicle_direction=None):
+        """Check if the object can collide with a vehicle. By default, all objects can collide."""
         return True
     
-    def collides_with(self, obstacle, only_front=False):
-        if obstacle != self and obstacle.can_collide():
-            hitboxes_to_check = [self.hitboxes()[len(self.hitboxes()) - 1]] if only_front else self.hitboxes()
+    def collides_with(self, obstacle, vehicle_direction=None, only_front=False):
+        if obstacle != self and obstacle.can_collide(vehicle_direction):
+            hitboxes_to_check = [self.hitboxes()[-1]] if only_front else self.hitboxes()
             for hitbox in hitboxes_to_check:
                 for obstacle_hitbox in obstacle.hitboxes():
                     if hitbox.collides_with(obstacle_hitbox):

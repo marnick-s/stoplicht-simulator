@@ -89,13 +89,22 @@ class Vehicle(CollidableObject):
         self.x, self.y = new_x, new_y  # temporary position
         can_move = True
         for obstacle in obstacles:
-            if self.collides_with(obstacle, only_front=True):
+            if self.collides_with(obstacle, self.get_vehicle_direction(), only_front=True):
                 can_move = False
                 break
         self.x, self.y = temp_x, temp_y  # revert to original position
         return can_move
-
     
+    def get_vehicle_direction(self):
+        if -45 <= self.angle <= 45:
+            return 'west'
+        elif 45 < self.angle <= 135:
+            return 'south'
+        elif -135 <= self.angle < -45:
+            return 'north'
+        else:
+            return 'east'
+
 
     def rotate_to_path(self):
         if self.current_target < len(self.path) - 1:

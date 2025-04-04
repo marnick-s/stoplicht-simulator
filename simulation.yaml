@@ -2,23 +2,23 @@
 # Bottom right corner: 1920, 1080/1200
 
 routes:
-  - vehicle_type: boat
-    vehicles_per_minute: 50
-    path:
-      - [550, 0]
-      - [550, 1080]
+  # - vehicle_type: boat
+  #   vehicles_per_minute: 50
+  #   path:
+  #     - [550, 0]
+  #     - [550, 1080]
   - vehicle_type: car
     vehicles_per_minute: 200
     path:
       - [0, 500]
       - [500, 500]
       - [500, 1080]
-  - vehicle_type: car
-    vehicles_per_minute: 60
-    path:
-      - [1600, 900]
-      - [1121, 578]
-      - [800, 50]
+  # - vehicle_type: car
+  #   vehicles_per_minute: 60
+  #   path:
+  #     - [1600, 900]
+  #     - [1121, 578]
+  #     - [800, 50]
       # - variations:
       #     - usage_percentage: 60
       #       path:
