@@ -2,17 +2,43 @@
 # Bottom right corner: 1920, 1080/1200
 
 routes:
+  - vehicle_type: car
+    vehicles_per_minute: 200
+    path:
+      - [332, 548]
+      - [370, 513]
+      - [414, 460]
+      - [461, 391]
+      - [486, 345]
+      - [515, 287]
+      - [582, 323]
+      - [673, 372]
+      - [751, 415]
+      - [822, 454]
+      - [933, 514]
+      - [1070, 586]
+      - [1203, 663]
+      - [1288, 725]
+      - [1430, 838]
+      - [1529, 921]
+      - [1614, 997]
+      - [1697, 1070]
+      - [1733, 1123]
+      - [1738, 1155]
+      # - [1751, 1183]
+      # - [1774, 1199]
+      # - [1921, 1230]
   # - vehicle_type: boat
   #   vehicles_per_minute: 50
   #   path:
   #     - [550, 0]
   #     - [550, 1080]
-  - vehicle_type: car
-    vehicles_per_minute: 200
-    path:
-      - [0, 500]
-      - [500, 500]
-      - [500, 1080]
+  # - vehicle_type: car
+  #   vehicles_per_minute: 200
+  #   path:
+  #     - [0, 500]
+  #     - [500, 500]
+  #     - [500, 1080]
   # - vehicle_type: car
   #   vehicles_per_minute: 60
   #   path:
@@ -32,7 +58,7 @@ routes:
       #               - path:
       #                   - [1063, 588]
       #                   - [620, 330]
-      - base
+      # - base
       
 
 route_components:
@@ -61,10 +87,17 @@ directions:
         traffic_light_position: [200, 500]
         front_sensor_position: [180, 500]
         back_sensor_position: [100, 100]
-  # - id: 23
-  #   approach_direction: [1, 0]
-  #   traffic_lights:
-  #     - id: 1
-  #       traffic_light_position: [550, 500]
-  #       front_sensor_position: [550, 460]
-  #       back_sensor_position: [100, 100]
+  - id: 23
+    approach_direction: [1, 0]
+    traffic_lights:
+      - id: 1
+        traffic_light_position: [550, 500]
+        front_sensor_position: [1919, 1079]
+        back_sensor_position: [100, 100]
+  - id: 23
+    approach_direction: [1, 0]
+    traffic_lights:
+      - id: 1
+        traffic_light_position: [550, 500]
+        front_sensor_position: [0, 0]
+        back_sensor_position: [100, 100]

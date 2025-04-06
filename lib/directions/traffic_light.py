@@ -17,7 +17,7 @@ class TrafficLight(CollidableObject):
         self.traffic_light_status = TrafficLightColors.RED
         self.approach_direction = approach_direction
 
-        sprite_size = (20, 48)
+        sprite_size = scale_to_display(8, 20)
 
         green_light_img = pygame.image.load('assets/lights/groen.webp').convert_alpha()
         self.green_light_img = pygame.transform.scale(green_light_img, sprite_size)
@@ -46,8 +46,8 @@ class TrafficLight(CollidableObject):
 
     def draw(self):
         front_sensor_x, front_sensor_y = scale_to_display(self.front_sensor_position.x, self.front_sensor_position.y)
-        green_color = (0, 0, 0)
-        rectangle_size = scale_to_display(10, 10)
+        green_color = (0, 0, 255)
+        rectangle_size = scale_to_display(1, 1)
         screen.fill(green_color, (front_sensor_x, front_sensor_y, *rectangle_size))
         
         tf_color = (255, 0, 0)
