@@ -36,7 +36,7 @@ class Vehicle(CollidableObject):
     def hitboxes(self):
         num_segments = 4  # Meer = preciezere botsingen
         segment_length = (self.sprite_height + (self.sprite_height * 0.4)) // num_segments
-        vehicle_width = self.sprite_width // 3  # breder dan voorheen
+        vehicle_width = self.sprite_width // 3.4  # breder dan voorheen
 
         hitboxes = []
 
@@ -74,14 +74,15 @@ class Vehicle(CollidableObject):
                     self.current_target += 1
                 
 
-    def is_occupying_sensor(self, directions):
-        for direction in directions:
-            for traffic_light in direction.traffic_lights:
-                for hitbox in self.hitboxes():
-                    if (hitbox.x <= traffic_light.front_sensor_position.x <= hitbox.x + hitbox.width and
-                        hitbox.y <= traffic_light.front_sensor_position.y <= hitbox.y + hitbox.height):
-                        return direction, traffic_light, False
-        return None, None, None
+    def is_occupying_sensor(self, traffic_light):
+        for hitbox in self.hitboxes():
+            if (hitbox.x <= traffic_light.front_sensor_position.x <= hitbox.x + hitbox.width and
+                hitbox.y <= traffic_light.front_sensor_position.y <= hitbox.y + hitbox.height):
+                return 1
+            if (hitbox.x <= traffic_light.back_sensor_position.x <= hitbox.x + hitbox.width and
+                hitbox.y <= traffic_light.back_sensor_position.y <= hitbox.y + hitbox.height):
+                return 2
+        return 0
     
 
     def can_move(self, obstacles, new_x, new_y):
@@ -135,7 +136,7 @@ class Vehicle(CollidableObject):
         scaled_image = pygame.transform.scale(self.image, scale_to_display(self.rotated_width, self.rotated_height))
         screen.blit(scaled_image, scale_to_display(draw_x, draw_y))
         
-        for hitbox in self.hitboxes():
-            hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
-            hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
-            pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)
+        # for hitbox in self.hitboxes():
+        #     hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
+        #     hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
+        #     pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)

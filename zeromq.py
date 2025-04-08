@@ -9,16 +9,17 @@ def start_zeromq_publisher(bind_address="tcp://127.0.0.1:5556"):
     print(f"Publisher luistert op {bind_address}")
 
     while True:
-        message = "auto: Een auto is gedetecteerd!"
-        print(f"Versturen: {message}")
-        socket.send_string(message)
+        topic = "stoplichten"  # Topic voor de auto
+        json_message = 'BERICHT'
+        full_message = f"{topic} {json_message}"
+        socket.send_string(full_message)
         time.sleep(1)  # Simuleer periodieke berichten
 
-def start_zeromq_subscriber(server_address="tcp://127.0.0.1:5556"):
+def start_zeromq_subscriber(server_address="tcp://10.121.17.233:5557"):
     context = zmq.Context()
     socket = context.socket(zmq.SUB)  # Subscriber pattern
     socket.connect(server_address)
-    socket.setsockopt_string(zmq.SUBSCRIBE, "auto")  # Abonneer op topic "auto"
+    socket.setsockopt_string(zmq.SUBSCRIBE, "stoplichten")  # Abonneer op topic "auto"
     
     print(f"Verbonden met publisher op {server_address}, wacht op berichten...")
     

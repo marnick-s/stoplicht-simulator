@@ -43,7 +43,7 @@ while running:
     screen.blit(background_image, (0, 0))
     simulation.update()
     simulation.draw()
-    # screen.blit(overlay_image, (0, 0))
+    screen.blit(overlay_image, (0, 0))
 
     messenger.send("tijd", {"simulatie_tijd_ms": elapsed_time})
 

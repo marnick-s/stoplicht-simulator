@@ -4,11 +4,13 @@ import pygame
 from lib.vehicles.boat import Boat
 from lib.vehicles.car import Car
 from lib.vehicles.path import Path
+from lib.vehicles.pedestrian import Pedestrian
 
 class VehicleSpawner:
     vehicle_classes = {
         "car": Car,
-        "boat": Boat
+        "boat": Boat,
+        "pedestrian": Pedestrian,
     }
         
 

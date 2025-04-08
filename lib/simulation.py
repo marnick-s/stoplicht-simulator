@@ -48,16 +48,15 @@ class Simulation:
                 sensorData[sensor_id] = {"voor": False, "achter": False}
 
         for vehicle in self.vehicles:
-            direction, traffic_light, back_sensor = vehicle.is_occupying_sensor(self.directions)
-            if direction is not None and traffic_light is not None:
-                sensor_id = f"{direction.id}.{traffic_light.id}"
-                if sensor_id not in sensorData:
-                    sensorData[sensor_id] = {"voor": False, "achter": False}
-
-                if back_sensor:
-                    sensorData[sensor_id]["achter"] = True
-                else:
-                    sensorData[sensor_id]["voor"] = True
+            for direction in self.directions:
+                for traffic_light in direction.traffic_lights:
+                    status = vehicle.is_occupying_sensor(traffic_light)
+                    if status != 0:
+                        sensor_id = f"{direction.id}.{traffic_light.id}"
+                        if status == 2:
+                            sensorData[sensor_id]["achter"] = True
+                        else:
+                            sensorData[sensor_id]["voor"] = True
 
         self.messenger.send(Topics.SENSORS_UPDATE.value, sensorData)
 

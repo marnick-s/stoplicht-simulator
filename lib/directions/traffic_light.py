@@ -46,20 +46,22 @@ class TrafficLight(CollidableObject):
 
     def draw(self):
         front_sensor_x, front_sensor_y = scale_to_display(self.front_sensor_position.x, self.front_sensor_position.y)
+        back_sensor_x, back_sensor_y = scale_to_display(self.back_sensor_position.x, self.back_sensor_position.y)
         green_color = (0, 0, 255)
-        rectangle_size = scale_to_display(1, 1)
+        rectangle_size = scale_to_display(5, 5)
         screen.fill(green_color, (front_sensor_x, front_sensor_y, *rectangle_size))
+        screen.fill(green_color, (back_sensor_x, back_sensor_y, *rectangle_size))
         
         tf_color = (255, 0, 0)
-        tf_sprite = self.green_light_img
+        tf_sprite = self.red_light_img
         if (self.traffic_light_status == TrafficLightColors.GREEN):
             tf_color = (0, 255, 0)
-            tf_sprite = self.red_light_img
+            tf_sprite = self.green_light_img
         elif (self.traffic_light_status == TrafficLightColors.ORANGE):
             tf_color = (255, 255, 0)
             tf_sprite = self.orange_light_img
 
         x, y = scale_to_display(self.hitboxes()[0].x, self.hitboxes()[0].y)
-        screen.blit(tf_sprite, (x + 30, y - 18))
+        screen.blit(tf_sprite, (x, y))
         # rectangle_size2 = scale_to_display(self.hitboxes()[0].height, self.hitboxes()[0].width)
         # screen.fill(tf_color, (x, y, *rectangle_size2))

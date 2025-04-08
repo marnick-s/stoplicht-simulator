@@ -89,7 +89,7 @@ while running:
                 mx, my = pygame.mouse.get_pos()
                 game_coords = get_game_coords(mx, my)
                 coords.append(game_coords)
-                pyperclip.copy(str(game_coords))
+                pyperclip.copy(f"[{game_coords[0]}, {game_coords[1]}]")
                 print(f"🖱️ Klik: scherm=({mx}, {my}) -> game-coördinaten = {game_coords}")
             elif event.button == 4:  # Zoom in
                 mx, my = pygame.mouse.get_pos()

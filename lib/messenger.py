@@ -3,8 +3,8 @@ import zmq
 import threading
 
 class Messenger:
-    pub_address="tcp://0.0.0.0:5555" # Own IP
-    sub_address="tcp://10.6.0.4:5556" # IP of controller
+    pub_address="tcp://0.0.0.0:5556" # Own IP ( 10.121.17.84 )
+    sub_address="tcp://10.121.17.233:5557" # IP of controller
     receive_topic="stoplichten"
 
     def __init__(self):
@@ -26,9 +26,10 @@ class Messenger:
     def send(self, topic, message):
         """Verstuurt een bericht met een opgegeven topic."""
         json_message = json.dumps(message)  
-        full_message = f"{topic} {json_message}"
-        # print(f"Versturen: {full_message}")
-        self.pub_socket.send_string(full_message)
+        # full_message = f"{topic} {json_message}"
+        # print(f"Versturen: {json_message}")
+        # self.pub_socket.send_string(full_message)
+        self.pub_socket.send_multipart([topic.encode('utf-8'), json_message.encode('utf-8')])
 
     def receive(self):
         """Start met luisteren naar berichten."""
@@ -45,11 +46,16 @@ class Messenger:
                 while self.running:
                     events = dict(poller.poll(timeout=500))
                     if self.sub_socket in events:
-                        topic = self.sub_socket.recv_string()
-                        message = self.sub_socket.recv_string()
-                        if topic == self.receive_topic:
-                            self.received_data = json.loads(message)
-                            print(f"Ontvangen: {message}")
+                        # Ontvang alle frames van het multipart-bericht
+                        frames = self.sub_socket.recv_multipart()
+                        if len(frames) >= 2:  # Controleer of er minstens twee frames zijn
+                            topic = frames[0].decode('utf-8')  # Eerste frame is het topic
+                            message = frames[1].decode('utf-8')  # Tweede frame is de JSON-geformatteerde boodschap           
+                            if topic == self.receive_topic:
+                                self.received_data = json.loads(message)
+                                print(f"Ontvangen: {message}")
+                        else:
+                            print(f"Onverwacht aantal frames ontvangen: {len(frames)}")
             except Exception as e:
                 print(f"Fout in listener: {e}")
             finally:
