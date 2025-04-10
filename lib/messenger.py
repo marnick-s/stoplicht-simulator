@@ -53,7 +53,7 @@ class Messenger:
                             message = frames[1].decode('utf-8')  # Tweede frame is de JSON-geformatteerde boodschap           
                             if topic == self.receive_topic:
                                 self.received_data = json.loads(message)
-                                print(f"Ontvangen: {message}")
+                                # print(f"Ontvangen: {message}")
                         else:
                             print(f"Onverwacht aantal frames ontvangen: {len(frames)}")
             except Exception as e:

@@ -33,13 +33,29 @@ class Path:
 
     @classmethod
     def select_lane(cls, lanes):
-        """Selecteert de rijstrook met de minste voertuigen, met voorkeur voor rechts."""
-        lane_vehicle_counts = {i: cls.lane_vehicle_counts.get(tuple(lane["path"][0]), 0) for i, lane in enumerate(lanes)}
-        sorted_lanes = sorted(lane_vehicle_counts.items(), key=lambda item: (item[1], item[0]))
-        best_lane_index = sorted_lanes[0][0]
-        first_coord = tuple(lanes[best_lane_index]["path"][0])
-        cls.lane_vehicle_counts[first_coord] = cls.lane_vehicle_counts.get(first_coord, 0) + 1
-        return lanes[best_lane_index]
+        """
+        Selecteert een multi lane rijstrook
+        """
+        counts = {}
+        for i, lane in enumerate(lanes):
+            counts[i] = cls.lane_vehicle_counts.get(i, 0)
+        
+        chosen_lane_index = None
+        # Probeer eerst een linkerbaan (i>=1) te selecteren die de invariant bewaart
+        for i in range(1, len(lanes)):
+            if counts[i] + 1 <= counts[i - 1]:
+                chosen_lane_index = i
+                break
+
+        # Als geen linkerbaan geschikt is, kies dan de rechterbaan (index 0)
+        if chosen_lane_index is None:
+            chosen_lane_index = 0
+
+        # Verhoog de teller voor de gekozen lane (gebruik de lane-index als sleutel)
+        cls.lane_vehicle_counts[chosen_lane_index] = cls.lane_vehicle_counts.get(chosen_lane_index, 0) + 1
+
+        return lanes[chosen_lane_index]
+
 
     @staticmethod
     def select_variation(variations):
