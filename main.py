@@ -48,7 +48,7 @@ while running:
     messenger.send("tijd", {"simulatie_tijd_ms": elapsed_time})
 
     pygame.display.flip()
-    clock.tick(60)
+    clock.tick(30)
 
 messenger.stop()
 pygame.quit()

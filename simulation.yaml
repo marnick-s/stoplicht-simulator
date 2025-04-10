@@ -63,28 +63,86 @@ routes:
       - [1805, 1194]
       - [1851, 1207]
 
-  # Oost naar west
+  # Vanuit oost
   - vehicle_type: car
-    vehicles_per_minute: 15
+    vehicles_per_minute: 50
     path:
-        - [1927, 1194]
-        - [1905, 1170]
-        - [1865, 1129]
-        - [1832, 1100]
-        - [1807, 1081]
-        - [1771, 1068]
-        - [1733, 1054]
-        - [1706, 1040]
-        - [1636, 976]
-        - [1546, 887]
-        - [1475, 824]
-        - [1356, 726]
-        - [1245, 643]
-        - [1094, 539]
-        - [942, 446]
-        - [619, 265]
-        - [123, 0]
-        - [85, -16]
+      - [1934, 1193]
+      - [1835, 1103]
+      - [1816, 1087]
+      - [1794, 1075]
+      - [1770, 1067]
+      - [1747, 1061]
+      - [1716, 1045]
+      - [1629, 971]
+      - [1550, 893]
+      - [1471, 820]
+      - [1397, 760]
+      - [1303, 686]
+      - [1213, 620]
+      - variations:
+          - usage_percentage: 10
+            path:
+                - [1133, 564]
+                - [1081, 530]
+                - [1028, 498]
+                - [992, 477]
+                - [959, 456]
+                - [929, 437]
+                - [913, 413]
+                - [850, 376]
+                - [773, 331]
+                - [688, 286]
+                - [627, 255]
+                - [590, 235]
+                - [573, 218]
+                - [563, 197]
+                - [560, 185]
+                - to_north
+          - usage_percentage: 70
+            path:
+                - multi_lane:
+                    - path:
+                        - [1133, 564]
+                        - [1082, 529]
+                        - [1029, 497]
+                        - [968, 460]
+                        - [881, 409]
+                        - [730, 326]
+                        - [616, 262]
+                        - [424, 160]
+                        - [135, 6]
+                        - [94, -24]
+                    - path:
+                        - [1133, 564]
+                        - [1084, 546]
+                        - [1032, 517]
+                        - [966, 475]
+                        - [909, 440]
+                        - [780, 366]
+                        - [614, 276]
+                        - [366, 144]
+                        - [105, 8]
+                        - [60, -14]
+          - usage_percentage: 20
+            path:
+                - [1133, 564]
+                - [1070, 538]
+                - [1026, 511]
+                - [976, 481]
+                - [939, 458]
+                - [909, 456]
+                - [879, 438]
+                - [832, 411]
+                - [774, 379]
+                - [740, 360]
+                - [606, 288]
+                - [564, 263]
+                - [523, 246]
+                - [487, 251]
+                - [477, 260]
+                - [464, 286]
+                - to_south
 
 
 
@@ -225,6 +283,27 @@ route_components:
         - [1791, 1191]
         - [1816, 1194]
         - [1860, 1212]
+  - name: to_south
+    path:
+        - [1113, 566]
+        - [1084, 549]
+        - [472, 273]
+        - [463, 292]
+        - [439, 338]
+        - [409, 387]
+        - [380, 431]
+        - [353, 463]
+        - [324, 494]
+        - [271, 537]
+  - name: to_north
+    path:
+        - [1113, 566]
+        - [1084, 549]
+        - [559, 181]
+        - [577, 150]
+        - [601, 115]
+        - [612, 95]
+        - [665, -8]
 
   # - name: test
   #   path:
@@ -241,6 +320,32 @@ route_components:
       
 
 directions:
+  - id: 1
+    traffic_lights:
+      - id: 1
+        approach_direction: east
+        traffic_light_position: [632, 257]
+        front_sensor_position: [638, 261]
+        back_sensor_position: [734, 312]
+  - id: 2
+    traffic_lights:
+      - id: 1
+        approach_direction: east
+        traffic_light_position: [626, 269]
+        front_sensor_position: [634, 271]
+        back_sensor_position: [729, 323]
+      - id: 2
+        approach_direction: east
+        traffic_light_position: [621, 280]
+        front_sensor_position: [625, 282]
+        back_sensor_position: [724, 334]
+  - id: 3
+    traffic_lights:
+      - id: 1
+        approach_direction: east
+        traffic_light_position: [615, 292]
+        front_sensor_position: [622, 296]
+        back_sensor_position: [717, 347]
   - id: 5
     traffic_lights:
       - id: 1
@@ -262,13 +367,6 @@ directions:
         traffic_light_position: [402, 220]
         front_sensor_position: [391, 213]
         back_sensor_position: [308, 170]
-  - id: 2
-    traffic_lights:
-      - id: 1
-        approach_direction: east
-        traffic_light_position: [620, 265]
-        front_sensor_position: [630, 270]
-        back_sensor_position: [732, 324]
   - id: 4
     traffic_lights:
       - id: 1
