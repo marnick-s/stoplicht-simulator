@@ -426,6 +426,13 @@ directions:
         traffic_light_position: [615, 292]
         front_sensor_position: [622, 296]
         back_sensor_position: [717, 347]
+  - id: 4
+    traffic_lights:
+      - id: 1
+        approach_direction: south
+        traffic_light_position: [492, 349]
+        front_sensor_position: [482, 367]
+        back_sensor_position: [440, 439]
   - id: 5
     traffic_lights:
       - id: 1
@@ -440,20 +447,32 @@ directions:
         traffic_light_position: [468, 336]
         front_sensor_position: [462, 351]
         back_sensor_position: [421, 418]
+  - id: 7
+    traffic_lights:
+      - id: 1
+        approach_direction: west
+        traffic_light_position: [391, 228]
+        front_sensor_position: [387, 225]
+        back_sensor_position: [305, 182]
   - id: 8
     traffic_lights:
       - id: 1
         approach_direction: west
-        traffic_light_position: [402, 220]
+        traffic_light_position: [397, 216]
         front_sensor_position: [391, 213]
-        back_sensor_position: [308, 170]
-  - id: 4
+        back_sensor_position: [311, 171]
+      - id: 2
+        approach_direction: west
+        traffic_light_position: [405, 205]
+        front_sensor_position: [399, 202]
+        back_sensor_position: [317, 160]
+  - id: 9
     traffic_lights:
       - id: 1
-        approach_direction: south
-        traffic_light_position: [492, 349]
-        front_sensor_position: [482, 367]
-        back_sensor_position: [440, 439]
+        approach_direction: west
+        traffic_light_position: [409, 193]
+        front_sensor_position: [403, 190]
+        back_sensor_position: [322, 148]
   - id: 12
     traffic_lights:
       - id: 1
@@ -475,8 +494,8 @@ directions:
         back_sensor_position: [0, 0]
       - id: 2
         approach_direction: north
-        traffic_light_position: [447, 161]
-        front_sensor_position: [449, 157]
+        traffic_light_position: [447, 159]
+        front_sensor_position: [448, 156]
         back_sensor_position: [0, 0]
 
   - id: 35
