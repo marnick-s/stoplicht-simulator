@@ -21,7 +21,7 @@ class Simulation:
     def update(self):
         self.vehicle_spawner.create_new_vehicles(self.vehicles)
         self.update_traffic_lights()
-        self.vehicles = [v for v in self.vehicles if not v.has_finished()] # Remove finished vehicles
+        self.vehicles[:] = [v for v in self.vehicles if not v.has_finished()] # Remove finished vehicles
         obstacles = self.vehicles + [light for d in self.directions for light in d.traffic_lights]
         for vehicle in self.vehicles:
             vehicle.move(obstacles)

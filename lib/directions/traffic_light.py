@@ -32,8 +32,8 @@ class TrafficLight(CollidableObject):
         return [Hitbox(
             x=self.traffic_light_position.x,
             y=self.traffic_light_position.y,
-            width=10,
-            height=10,
+            width=5,
+            height=5,
         )]
 
     def can_collide(self, vehicle_direction):
