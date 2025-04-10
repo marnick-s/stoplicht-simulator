@@ -21,7 +21,7 @@ class TrafficLight(CollidableObject):
         self.front_sensor = Sensor(front_sensor_position)
         self.back_sensor = Sensor(back_sensor_position)
 
-        sprite_size = scale_to_display(8, 20)
+        sprite_size = scale_to_display(6, 14)
 
         green_light_img = pygame.image.load('assets/lights/groen.webp').convert_alpha()
         self.green_light_img = pygame.transform.scale(green_light_img, sprite_size)
