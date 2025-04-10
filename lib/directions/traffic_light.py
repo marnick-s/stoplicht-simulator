@@ -29,11 +29,13 @@ class TrafficLight(CollidableObject):
         self.red_light_img = pygame.transform.scale(red_light_img, sprite_size)
 
     def hitboxes(self):
+        width = 5
+        height = 5
         return [Hitbox(
-            x=self.traffic_light_position.x,
-            y=self.traffic_light_position.y,
-            width=5,
-            height=5,
+            x=self.traffic_light_position.x - width / 2,
+            y=self.traffic_light_position.y - height / 2,
+            width=width,
+            height=height,
         )]
 
     def can_collide(self, vehicle_direction):
@@ -45,6 +47,7 @@ class TrafficLight(CollidableObject):
         self.traffic_light_status = TrafficLightColors(color)
 
     def draw(self):
+        # Teken de sensoren
         front_sensor_x, front_sensor_y = scale_to_display(self.front_sensor_position.x, self.front_sensor_position.y)
         back_sensor_x, back_sensor_y = scale_to_display(self.back_sensor_position.x, self.back_sensor_position.y)
         green_color = (0, 0, 255)
@@ -52,16 +55,19 @@ class TrafficLight(CollidableObject):
         screen.fill(green_color, (front_sensor_x, front_sensor_y, *rectangle_size))
         screen.fill(green_color, (back_sensor_x, back_sensor_y, *rectangle_size))
         
-        tf_color = (255, 0, 0)
+        # Kies sprite op basis van status
         tf_sprite = self.red_light_img
-        if (self.traffic_light_status == TrafficLightColors.GREEN):
-            tf_color = (0, 255, 0)
+        if self.traffic_light_status == TrafficLightColors.GREEN:
             tf_sprite = self.green_light_img
-        elif (self.traffic_light_status == TrafficLightColors.ORANGE):
-            tf_color = (255, 255, 0)
+        elif self.traffic_light_status == TrafficLightColors.ORANGE:
             tf_sprite = self.orange_light_img
 
-        x, y = scale_to_display(self.hitboxes()[0].x, self.hitboxes()[0].y)
-        screen.blit(tf_sprite, (x, y))
+        # Bereken sprite positie zodat hij gecentreerd staat op het middelpunt
+        sprite_width, sprite_height = self.green_light_img.get_size()
+        center_x, center_y = scale_to_display(self.traffic_light_position.x, self.traffic_light_position.y)
+        draw_x = center_x - sprite_width // 2
+        draw_y = center_y - sprite_height // 2
+        screen.blit(tf_sprite, (draw_x, draw_y))
+
         # rectangle_size2 = scale_to_display(self.hitboxes()[0].height, self.hitboxes()[0].width)
         # screen.fill(tf_color, (x, y, *rectangle_size2))
