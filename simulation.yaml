@@ -493,7 +493,7 @@ directions:
         back_sensor_position: [0, 0]
       - id: 2
         approach_direction: north
-        traffic_light_position: [447, 159]
+        traffic_light_position: [450, 155]
         front_sensor_position: [448, 156]
         back_sensor_position: [0, 0]
 
@@ -507,7 +507,7 @@ directions:
       - id: 2
         approach_direction: north
         traffic_light_position: [428, 194]
-        front_sensor_position: [430, 191]
+        front_sensor_position: [451, 152]
         back_sensor_position: [0, 0]
 
   - id: 34
