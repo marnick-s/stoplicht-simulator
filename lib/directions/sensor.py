@@ -1,4 +1,3 @@
-import pygame
 from lib.collidable_object import CollidableObject, Hitbox
 from lib.screen import screen, scale_to_display
 from lib.coordinate import Coordinate

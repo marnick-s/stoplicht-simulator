@@ -1,8 +1,8 @@
 from lib.vehicles.vehicle import Vehicle
 
 class Pedestrian(Vehicle):
-    sprite_width = 8
-    sprite_height = 8
+    sprite_width = 6
+    sprite_height = 6
     image_folder = "pedestrians"
     speed = 1
 
