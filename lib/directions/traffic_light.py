@@ -1,5 +1,6 @@
 import pygame
 from lib.collidable_object import CollidableObject, Hitbox
+from lib.directions.sensor import Sensor
 from lib.enums.traffic_light_colors import TrafficLightColors
 from lib.screen import screen, scale_to_display
 from lib.coordinate import Coordinate
@@ -16,6 +17,9 @@ class TrafficLight(CollidableObject):
         self.back_sensor_position = Coordinate(*back_sensor_position)
         self.traffic_light_status = TrafficLightColors.RED
         self.approach_direction = approach_direction
+        
+        self.front_sensor = Sensor(front_sensor_position)
+        self.back_sensor = Sensor(back_sensor_position)
 
         sprite_size = scale_to_display(8, 20)
 
@@ -47,13 +51,8 @@ class TrafficLight(CollidableObject):
         self.traffic_light_status = TrafficLightColors(color)
 
     def draw(self):
-        # Teken de sensoren
-        front_sensor_x, front_sensor_y = scale_to_display(self.front_sensor_position.x, self.front_sensor_position.y)
-        back_sensor_x, back_sensor_y = scale_to_display(self.back_sensor_position.x, self.back_sensor_position.y)
-        green_color = (0, 0, 255)
-        rectangle_size = scale_to_display(5, 5)
-        screen.fill(green_color, (front_sensor_x, front_sensor_y, *rectangle_size))
-        screen.fill(green_color, (back_sensor_x, back_sensor_y, *rectangle_size))
+        self.front_sensor.draw()
+        self.back_sensor.draw()
         
         # Kies sprite op basis van status
         tf_sprite = self.red_light_img

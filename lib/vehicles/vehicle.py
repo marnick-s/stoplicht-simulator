@@ -76,14 +76,15 @@ class Vehicle(CollidableObject):
 
     def is_occupying_sensor(self, traffic_light):
         for hitbox in self.hitboxes():
-            if (hitbox.x <= traffic_light.front_sensor_position.x <= hitbox.x + hitbox.width and
-                hitbox.y <= traffic_light.front_sensor_position.y <= hitbox.y + hitbox.height):
-                return 1
-            if (hitbox.x <= traffic_light.back_sensor_position.x <= hitbox.x + hitbox.width and
-                hitbox.y <= traffic_light.back_sensor_position.y <= hitbox.y + hitbox.height):
-                return 2
+            for sensor_hitbox in traffic_light.front_sensor.hitboxes():
+                if hitbox.collides_with(sensor_hitbox):
+                    return 1  # front sensor
+            for sensor_hitbox in traffic_light.back_sensor.hitboxes():
+                if hitbox.collides_with(sensor_hitbox):
+                    return 2  # back sensor
+
         return 0
-    
+
 
     def can_move(self, obstacles, new_x, new_y):
         temp_x, temp_y = self.x, self.y
