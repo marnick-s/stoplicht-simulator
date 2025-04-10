@@ -24,7 +24,7 @@ routes:
 
   # Zuid naar west
   - vehicle_type: car
-    vehicles_per_minute: 10
+    vehicles_per_minute: 7
     path:
       - [299, 568]
       - [330, 540]
@@ -43,7 +43,7 @@ routes:
 
   # West naar oost
   - vehicle_type: car
-    vehicles_per_minute: 40
+    vehicles_per_minute: 20
     path:
       - [-47, -13]
       - [20, 18]
@@ -65,7 +65,7 @@ routes:
 
   # Oost naar west
   - vehicle_type: car
-    vehicles_per_minute: 50
+    vehicles_per_minute: 15
     path:
         - [1927, 1194]
         - [1905, 1170]
