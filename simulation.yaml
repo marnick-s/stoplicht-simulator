@@ -507,7 +507,7 @@ directions:
       - id: 2
         approach_direction: north
         traffic_light_position: [428, 194]
-        front_sensor_position: [451, 152]
+        front_sensor_position: [452, 151]
         back_sensor_position: [0, 0]
 
   - id: 34
