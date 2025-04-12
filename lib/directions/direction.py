@@ -13,6 +13,6 @@ class Direction():
             ) for tl in direction_data['traffic_lights']
         ]        
 
-    def draw(self):
+    def draw(self, connected):
         for traffic_light in self.traffic_lights:
-            traffic_light.draw()
+            traffic_light.draw(connected)

@@ -50,16 +50,18 @@ class TrafficLight(CollidableObject):
     def update(self, color):
         self.traffic_light_status = TrafficLightColors(color)
 
-    def draw(self):
+    def draw(self, connected):
         self.front_sensor.draw()
         self.back_sensor.draw()
-        
-        # Kies sprite op basis van status
-        tf_sprite = self.red_light_img
-        if self.traffic_light_status == TrafficLightColors.GREEN:
-            tf_sprite = self.green_light_img
-        elif self.traffic_light_status == TrafficLightColors.ORANGE:
+
+        if not connected:
             tf_sprite = self.orange_light_img
+        else:
+            tf_sprite = self.red_light_img
+            if self.traffic_light_status == TrafficLightColors.GREEN:
+                tf_sprite = self.green_light_img
+            elif self.traffic_light_status == TrafficLightColors.ORANGE:
+                tf_sprite = self.orange_light_img
 
         # Bereken sprite positie zodat hij gecentreerd staat op het middelpunt
         sprite_width, sprite_height = self.green_light_img.get_size()

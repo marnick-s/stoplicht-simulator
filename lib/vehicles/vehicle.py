@@ -18,6 +18,9 @@ class Vehicle(CollidableObject):
         self.image = self.original_image.copy()
         self.rotated_width = self.sprite_width
         self.rotated_height = self.sprite_height
+        self._cached_hitboxes = None # Performance
+        self._last_position = (self.x, self.y) # Performance
+        self._last_angle = self.angle # Performance
 
 
     def load_random_image(self, folder):
@@ -34,15 +37,17 @@ class Vehicle(CollidableObject):
     
 
     def hitboxes(self):
-        num_segments = 4  # Meer = preciezere botsingen
+        # Cache hitboxes als positie en hoek niet veranderd zijn
+        if self._cached_hitboxes is not None and (self.x, self.y) == self._last_position and self.angle == self._last_angle:
+            return self._cached_hitboxes
+
+        # Bereken hitboxes
+        num_segments = 4
         segment_length = (self.sprite_height + (self.sprite_height * 0.4)) // num_segments
-        vehicle_width = self.sprite_width // 3.4  # breder dan voorheen
-
+        vehicle_width = self.sprite_width // 3.4
         hitboxes = []
-
         for i in range(num_segments):
             offset_distance = (i - num_segments / 2 + 0.5) * segment_length
-
             offset_x = math.cos(math.radians(self.angle)) * offset_distance
             offset_y = -math.sin(math.radians(self.angle)) * offset_distance
 
@@ -54,8 +59,11 @@ class Vehicle(CollidableObject):
             )
             hitboxes.append(hitbox)
 
+        self._cached_hitboxes = hitboxes
+        self._last_position = (self.x, self.y)
+        self._last_angle = self.angle
         return hitboxes
-
+    
 
     def move(self, obstacles):
         if self.current_target < len(self.path) - 1:
@@ -91,7 +99,7 @@ class Vehicle(CollidableObject):
         self.x, self.y = new_x, new_y  # temporary position
         can_move = True
         for obstacle in obstacles:
-            if self.collides_with(obstacle, self.get_vehicle_direction(), only_front=True):
+            if self.collides_with(obstacle, self.get_vehicle_direction(), collision_angle=self.angle):
                 can_move = False
                 break
         self.x, self.y = temp_x, temp_y  # revert to original position
@@ -137,7 +145,7 @@ class Vehicle(CollidableObject):
         scaled_image = pygame.transform.scale(self.image, scale_to_display(self.rotated_width, self.rotated_height))
         screen.blit(scaled_image, scale_to_display(draw_x, draw_y))
         
-        # for hitbox in self.hitboxes():
-        #     hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
-        #     hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
-        #     pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)
+        for hitbox in self.hitboxes():
+            hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
+            hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
+            pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)

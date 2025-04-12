@@ -3,9 +3,9 @@ import zmq
 import threading
 
 class Messenger:
-    pub_address="tcp://0.0.0.0:5556" # Own IP ( 10.121.17.84 )
-    sub_address="tcp://10.121.17.233:5557" # IP of controller
-    receive_topic="stoplichten"
+    pub_address = "tcp://0.0.0.0:5556"  # Eigen IP (bijv. 10.121.17.84)
+    sub_address = "tcp://10.121.17.233:5557"  # IP van controller
+    receive_topic = "stoplichten"
 
     def __init__(self):
         """
@@ -21,14 +21,12 @@ class Messenger:
 
         self.running = False
         self.listener_thread = None
-        self.received_data = None
+        self.traffic_light_data = None
+        self.connected = False
 
     def send(self, topic, message):
         """Verstuurt een bericht met een opgegeven topic."""
-        json_message = json.dumps(message)  
-        # full_message = f"{topic} {json_message}"
-        # print(f"Versturen: {json_message}")
-        # self.pub_socket.send_string(full_message)
+        json_message = json.dumps(message)
         self.pub_socket.send_multipart([topic.encode('utf-8'), json_message.encode('utf-8')])
 
     def receive(self):
@@ -38,22 +36,26 @@ class Messenger:
             return
 
         self.running = True
+
         def listen():
             poller = zmq.Poller()
             poller.register(self.sub_socket, zmq.POLLIN)
 
             try:
                 while self.running:
-                    events = dict(poller.poll(timeout=500))
+                    # Poll met een lagere timeout (50 ms) voor snellere updates
+                    events = dict(poller.poll(timeout=50))
                     if self.sub_socket in events:
-                        # Ontvang alle frames van het multipart-bericht
-                        frames = self.sub_socket.recv_multipart()
-                        if len(frames) >= 2:  # Controleer of er minstens twee frames zijn
-                            topic = frames[0].decode('utf-8')  # Eerste frame is het topic
-                            message = frames[1].decode('utf-8')  # Tweede frame is de JSON-geformatteerde boodschap           
+                        try:
+                            # Gebruik non-blocking recv om niet onnodig lang te wachten
+                            frames = self.sub_socket.recv_multipart(flags=zmq.NOBLOCK)
+                        except zmq.Again:
+                            continue  # Geen bericht beschikbaar, ga door met polleren
+                        if len(frames) >= 2:
+                            topic = frames[0].decode('utf-8')
+                            message = frames[1].decode('utf-8')
                             if topic == self.receive_topic:
-                                self.received_data = json.loads(message)
-                                # print(f"Ontvangen: {message}")
+                                self.traffic_light_data = json.loads(message)
                         else:
                             print(f"Onverwacht aantal frames ontvangen: {len(frames)}")
             except Exception as e:
