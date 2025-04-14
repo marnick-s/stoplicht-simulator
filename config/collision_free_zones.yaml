@@ -1,5 +1,5 @@
 collision_free_zones:
-  - top_left: [260, 141]
-    top_right: [306, 156]
-    bottom_left: [246, 162]
-    bottom_right: [274, 178]
+  - top_left: [209, 239]
+    top_right: [238, 250]
+    bottom_left: [203, 251]
+    bottom_right: [231, 263]

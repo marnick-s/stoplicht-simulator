@@ -89,9 +89,10 @@ class Vehicle(CollidableObject):
             for sensor_hitbox in traffic_light.front_sensor.hitboxes():
                 if hitbox.collides_with(sensor_hitbox):
                     return 1  # front sensor
-            for sensor_hitbox in traffic_light.back_sensor.hitboxes():
-                if hitbox.collides_with(sensor_hitbox):
-                    return 2  # back sensor
+            if traffic_light.back_sensor is not None:
+                for sensor_hitbox in traffic_light.back_sensor.hitboxes():
+                    if hitbox.collides_with(sensor_hitbox):
+                        return 2  # back sensor
 
         return 0
 

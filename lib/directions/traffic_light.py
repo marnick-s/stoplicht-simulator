@@ -10,25 +10,26 @@ class TrafficLight(CollidableObject):
     def id(self):
         return self._id
 
-    def __init__(self, id, traffic_light_position, front_sensor_position, back_sensor_position, approach_direction):
+    def __init__(self, id, traffic_light_position, front_sensor_position, type, back_sensor_position=None, approach_direction=None):
         self._id = id
         self.traffic_light_position = Coordinate(*traffic_light_position)
         self.front_sensor_position = Coordinate(*front_sensor_position)
-        self.back_sensor_position = Coordinate(*back_sensor_position)
         self.traffic_light_status = TrafficLightColors.RED
         self.approach_direction = approach_direction
-        
+        self.type = type
+    
         self.front_sensor = Sensor(front_sensor_position, approach_direction)
-        self.back_sensor = Sensor(back_sensor_position, approach_direction)
-
+        
+        self.back_sensor = None
+        if back_sensor_position is not None:
+            self.back_sensor_position = Coordinate(*back_sensor_position)
+            self.back_sensor = Sensor(back_sensor_position, approach_direction)
+        
         sprite_size = scale_to_display(6, 14)
-
         green_light_img = pygame.image.load('assets/lights/groen.webp').convert_alpha()
         self.green_light_img = pygame.transform.scale(green_light_img, sprite_size)
-
         orange_light_img = pygame.image.load('assets/lights/oranje.webp').convert_alpha()
         self.orange_light_img = pygame.transform.scale(orange_light_img, sprite_size)
-
         red_light_img = pygame.image.load('assets/lights/rood.webp').convert_alpha()
         self.red_light_img = pygame.transform.scale(red_light_img, sprite_size)
 
@@ -52,8 +53,9 @@ class TrafficLight(CollidableObject):
 
     def draw(self, connected):
         self.front_sensor.draw()
-        self.back_sensor.draw()
-
+        if self.back_sensor is not None:
+            self.back_sensor.draw()
+            
         if not connected:
             tf_sprite = self.orange_light_img
         else:
@@ -70,5 +72,5 @@ class TrafficLight(CollidableObject):
         draw_y = center_y - sprite_height // 2
         screen.blit(tf_sprite, (draw_x, draw_y))
 
-        # rectangle_size2 = scale_to_display(self.hitboxes()[0].height, self.hitboxes()[0].width)
-        # screen.fill(tf_color, (x, y, *rectangle_size2))
+        # rectangle_size = scale_to_display(self.hitboxes()[0].height, self.hitboxes()[0].width)
+        # screen.fill(tf_color, (x, y, *rectangle_size))

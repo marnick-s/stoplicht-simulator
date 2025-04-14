@@ -19,8 +19,10 @@ class Simulation:
 
     def load_directions(self, config):
         directions = []
-        for direction_data in config['directions']:
-            directions.append(Direction(direction_data))
+        for direction_type, direction_list in config['directions'].items():
+            for direction_data in direction_list:
+                direction_data['type'] = direction_type
+                directions.append(Direction(direction_data))
         return directions
 
 

@@ -1,6 +1,6 @@
 routes:
   # Vanuit zuid
-  - name: from_south
+  - name: from_south_car
     vehicle_type: car
     vehicles_per_minute: 10
     path:
@@ -62,7 +62,7 @@ routes:
               - to_east
 
   # Vanuit noord
-  - name: from_north
+  - name: from_north_car
     vehicle_type: car
     vehicles_per_minute: 50
     path:
@@ -111,7 +111,7 @@ routes:
               - to_east
 
   # Vanuit oost
-  - name: from_east
+  - name: from_east_car
     vehicle_type: car
     vehicles_per_minute: 10
     path:
@@ -203,7 +203,7 @@ routes:
 
 
   # Vanuit west
-  - name: from_west
+  - name: from_west_car
     vehicle_type: car
     vehicles_per_minute: 50
     path:
@@ -281,6 +281,56 @@ routes:
 
 
   # PEDESTRIAN
+  - name: from_south_pedestrian
+    vehicle_type: pedestrian
+    vehicles_per_minute: 10
+    path:
+      - variations:
+          - usage_percentage: 30
+            path:
+              - [-11, 160]
+              - [18, 175]
+              - [47, 189]
+              - [138, 236]
+              - [195, 263]
+              - to_north_crossing_pedestrian
+              - to_north_outer_pedestrian
+          # - usage_percentage: 30
+          #   path:
+          #     - [139, 540]
+          #     - [161, 520]
+          #     - [181, 498]
+          #     - [201, 476]
+          #     - [222, 450]
+          #     - [233, 435]
+          #     - [243, 419]
+          #     - [252, 405]
+          #     - [267, 379]
+          #     - [278, 358]
+          #     - [287, 341]
+          #     - [297, 318]
+          #     - [308, 295]
+          #     - [318, 272]
+          #     - [329, 248]
+          #     - [338, 223]
+          #     - [346, 204]
+          #     - [353, 191]
+          #     - to_north
+          # - usage_percentage: 30
+          #   path:
+          #     - [152, 548]
+          #     - [176, 524]
+          #     - [198, 500]
+          #     - [222, 470]
+          #     - [244, 440]
+          #     - [263, 412]
+          #     - [280, 380]
+          #     - [300, 339]
+          #     - [319, 307]
+          #     - [330, 296]
+          #     - [345, 290]
+          #     - [359, 291]
+          #     - to_east
 
   # # Noord naar zuid
   # - vehicle_type: pedestrian
