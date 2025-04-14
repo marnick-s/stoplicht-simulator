@@ -3,10 +3,16 @@ from lib.screen import screen, scale_to_display
 from lib.coordinate import Coordinate
 
 class Sensor(CollidableObject):
-    def __init__(self, position):
+    def __init__(self, position, approach_direction=None):
         self.position = Coordinate(*position)
         self.color = (0, 0, 255)
         self.size = 5
+        self.approach_direction = approach_direction
+
+    def can_collide(self, vehicle_direction):
+        if vehicle_direction != self.approach_direction:
+            return False
+        return True
 
     def hitboxes(self):
         half_size = self.size / 2

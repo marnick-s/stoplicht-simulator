@@ -1,6 +1,7 @@
 from lib.basic_traffic_manager import BasicTrafficManager
 from lib.directions.direction import Direction
 from lib.enums.topics import Topics
+from lib.vehicles.vehicle import Vehicle
 from lib.vehicles.vehicle_spawner import VehicleSpawner
 
 class Simulation:
@@ -13,6 +14,8 @@ class Simulation:
         self.vehicle_spawner = VehicleSpawner(config)
         self.previous_lane_sensor_data = {}
         self.previous_special_sensor_data = {}
+        self.collision_free_zones = config.get("collision_free_zones", [])
+        Vehicle.collision_free_zones = self.collision_free_zones # Set collision free zones for all vehicles
 
 
     def load_directions(self, config):

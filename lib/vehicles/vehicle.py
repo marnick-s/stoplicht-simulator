@@ -7,6 +7,8 @@ from lib.directions.traffic_light import TrafficLight
 from lib.screen import screen, scale_to_display
 
 class Vehicle(CollidableObject):
+    collision_free_zones = []
+
     def __init__(self, path, speed, sprite_width, sprite_height, image_folder):
         self.path = path
         self.current_target = 0
@@ -96,15 +98,37 @@ class Vehicle(CollidableObject):
 
     def can_move(self, obstacles, new_x, new_y):
         temp_x, temp_y = self.x, self.y
-        self.x, self.y = new_x, new_y  # temporary position
+        self.x, self.y = new_x, new_y  # tijdelijke positie
         can_move = True
         for obstacle in obstacles:
+            if isinstance(obstacle, Vehicle):
+                if self.in_same_collision_free_zone(obstacle):
+                    continue
             if self.collides_with(obstacle, self.get_vehicle_direction(), collision_angle=self.angle):
                 can_move = False
                 break
-        self.x, self.y = temp_x, temp_y  # revert to original position
+        self.x, self.y = temp_x, temp_y  # herstel originele positie
         return can_move
-    
+
+
+    @staticmethod
+    def point_in_zone(x, y, zone):
+        x_min = min(zone['top_left'][0], zone['bottom_left'][0])
+        x_max = max(zone['top_right'][0], zone['bottom_right'][0])
+        y_min = min(zone['top_left'][1], zone['top_right'][1])
+        y_max = max(zone['bottom_left'][1], zone['bottom_right'][1])
+        return x_min <= x <= x_max and y_min <= y <= y_max
+
+
+    def in_same_collision_free_zone(self, other):
+        if not hasattr(Vehicle, 'collision_free_zones') or not Vehicle.collision_free_zones:
+            return False
+        for zone in Vehicle.collision_free_zones:
+            if Vehicle.point_in_zone(self.x, self.y, zone) and Vehicle.point_in_zone(other.x, other.y, zone):
+                return True
+        return False
+        
+
     def get_vehicle_direction(self):
         if -45 <= self.angle <= 45:
             return 'west'
@@ -145,7 +169,7 @@ class Vehicle(CollidableObject):
         scaled_image = pygame.transform.scale(self.image, scale_to_display(self.rotated_width, self.rotated_height))
         screen.blit(scaled_image, scale_to_display(draw_x, draw_y))
         
-        # for hitbox in self.hitboxes():
-        #     hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
-        #     hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
-        #     pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)
+        for hitbox in self.hitboxes():
+            hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
+            hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
+            pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)
