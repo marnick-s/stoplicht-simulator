@@ -1,7 +1,8 @@
 routes:
   # Vanuit zuid
-  - vehicle_type: car
-    vehicles_per_minute: 50
+  - name: from_south
+    vehicle_type: car
+    vehicles_per_minute: 10
     path:
       - variations:
           - usage_percentage: 30
@@ -61,7 +62,8 @@ routes:
               - to_east
 
   # Vanuit noord
-  - vehicle_type: car
+  - name: from_north
+    vehicle_type: car
     vehicles_per_minute: 50
     path:
       - variations:
@@ -109,8 +111,9 @@ routes:
               - to_east
 
   # Vanuit oost
-  - vehicle_type: car
-    vehicles_per_minute: 50
+  - name: from_east
+    vehicle_type: car
+    vehicles_per_minute: 10
     path:
       - [1899, 1219]
       - [1884, 1205]
@@ -207,7 +210,8 @@ routes:
 
 
   # Vanuit west
-  - vehicle_type: car
+  - name: from_west
+    vehicle_type: car
     vehicles_per_minute: 50
     path:
       - variations:

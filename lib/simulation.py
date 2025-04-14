@@ -17,7 +17,6 @@ class Simulation:
         self.collision_free_zones = config.get("collision_free_zones", [])
         Vehicle.collision_free_zones = self.collision_free_zones # Set collision free zones for all vehicles
 
-
     def load_directions(self, config):
         directions = []
         for direction_data in config['directions']:

@@ -25,13 +25,13 @@ class VehicleSpawner:
                 delay = random.expovariate(route['vehicles_per_minute'] / 60) * 1000
             else:
                 delay = float('inf')
-            self.next_spawn_times[tuple(route['path'][0])] = current_time + delay
+            self.next_spawn_times[tuple(route['name'])] = current_time + delay
 
     def create_new_vehicles(self, vehicles):
         current_time = pygame.time.get_ticks()
         
         for route in self.config['routes']:
-            key = tuple(route['path'][0])
+            key = tuple(route['name'])
             
             if current_time >= self.next_spawn_times[key]:
                 vehicle_class = self.vehicle_classes.get(route['vehicle_type'])

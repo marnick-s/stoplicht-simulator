@@ -81,4 +81,4 @@ if __name__ == '__main__':
     ps.print_stats()
     
     # Resultaten printen in de console
-    print(s.getvalue())
+    # print(s.getvalue())
