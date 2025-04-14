@@ -1,8 +1,8 @@
 from lib.vehicles.vehicle import Vehicle
 
 class Car(Vehicle):
-    sprite_width = 28
-    sprite_height = 14
+    sprite_width = 22
+    sprite_height = 10
     image_folder = "cars"
     speed = 3
 
