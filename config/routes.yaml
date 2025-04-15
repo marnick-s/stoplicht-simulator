@@ -283,7 +283,7 @@ routes:
   # PEDESTRIAN
   - name: from_south_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute: 10
+    vehicles_per_minute: 40
     path:
       - variations:
           - usage_percentage: 30

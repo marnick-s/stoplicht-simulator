@@ -5,6 +5,7 @@ import random
 from lib.collidable_object import CollidableObject, Hitbox
 from lib.directions.traffic_light import TrafficLight
 from lib.screen import screen, scale_to_display
+from lib.vehicles.supports_collision_free_zones import SupportsCollisionFreeZones
 
 class Vehicle(CollidableObject):
     collision_free_zones = []
@@ -23,7 +24,6 @@ class Vehicle(CollidableObject):
         self._cached_hitboxes = None # Performance
         self._last_position = (self.x, self.y) # Performance
         self._last_angle = self.angle # Performance
-
 
     def load_random_image(self, folder):
         image_files = [f for f in os.listdir(folder) if f.endswith('.webp')]
@@ -68,6 +68,9 @@ class Vehicle(CollidableObject):
     
 
     def move(self, obstacles):
+        if isinstance(self, SupportsCollisionFreeZones) and self.exiting and not self.is_in_zone():
+            self.exiting = False
+    
         if self.current_target < len(self.path) - 1:
             target_x, target_y = self.path[self.current_target + 1]
             dx, dy = target_x - self.x, target_y - self.y
@@ -98,38 +101,31 @@ class Vehicle(CollidableObject):
 
 
     def can_move(self, obstacles, new_x, new_y):
+        can_move = True
+        
+        if isinstance(self, SupportsCollisionFreeZones) and self.is_in_zone():
+            if (self.exiting):
+                return True
+            current_zone = self.get_current_zone()
+            if not self.point_in_zone(new_x, new_y, current_zone):
+                if not self.exit_zone(obstacles, new_x, new_y):
+                    can_move = False
+
         temp_x, temp_y = self.x, self.y
         self.x, self.y = new_x, new_y  # tijdelijke positie
-        can_move = True
+
         for obstacle in obstacles:
-            if isinstance(obstacle, Vehicle):
-                if self.in_same_collision_free_zone(obstacle):
+            if isinstance(self, SupportsCollisionFreeZones) and isinstance(obstacle, SupportsCollisionFreeZones):
+                if self.in_same_cf_zone(obstacle):
+                    continue
+                if self.exiting and self.get_current_zone() == obstacle.get_current_zone():
                     continue
             if self.collides_with(obstacle, self.get_vehicle_direction(), collision_angle=self.angle):
                 can_move = False
                 break
+            
         self.x, self.y = temp_x, temp_y  # herstel originele positie
         return can_move
-
-
-    def point_in_zone(x, y, zone_dict):
-        points = zone_dict.get("zone", [])
-        if not points or len(points) != 4:
-            return False
-        xs = [pt[0] for pt in points]
-        ys = [pt[1] for pt in points]
-        x_min, x_max = min(xs), max(xs)
-        y_min, y_max = min(ys), max(ys)
-        return x_min <= x <= x_max and y_min <= y <= y_max
-
-
-    def in_same_collision_free_zone(self, other):
-        if not hasattr(Vehicle, 'collision_free_zones') or not Vehicle.collision_free_zones:
-            return False
-        for zone in Vehicle.collision_free_zones:
-            if Vehicle.point_in_zone(self.x, self.y, zone) and Vehicle.point_in_zone(other.x, other.y, zone):
-                return True
-        return False
         
 
     def get_vehicle_direction(self):
@@ -172,7 +168,7 @@ class Vehicle(CollidableObject):
         scaled_image = pygame.transform.scale(self.image, scale_to_display(self.rotated_width, self.rotated_height))
         screen.blit(scaled_image, scale_to_display(draw_x, draw_y))
         
-        for hitbox in self.hitboxes():
-            hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
-            hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
-            pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)
+        # for hitbox in self.hitboxes():
+        #     hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
+        #     hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
+        #     pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)
