@@ -178,3 +178,31 @@ directions:
           approach_direction: east
           traffic_light_position: [381, 166]
           front_sensor_position: [383, 167]
+
+
+    - id: 41
+      traffic_lights:
+        - id: 1
+          approach_direction: east
+          traffic_light_position: [1515, 976]
+          front_sensor_position: [1515, 976]
+    - id: 42
+      traffic_lights:
+        - id: 1
+          approach_direction: west
+          traffic_light_position: [1333, 876]
+          front_sensor_position: [1333, 876]
+
+
+    - id: 71
+      traffic_lights:
+        - id: 1
+          approach_direction: east
+          traffic_light_position: [1482, 834]
+          front_sensor_position: [1505, 816]
+    - id: 72
+      traffic_lights:
+        - id: 1
+          approach_direction: west
+          traffic_light_position: [1301, 994]
+          front_sensor_position: [1281, 1011]
