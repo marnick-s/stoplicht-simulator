@@ -2,7 +2,8 @@ import pygame
 from lib.screen import screen, scale_to_display
 
 class Bridge():
-    def __init__(self):
+    def __init__(self, messenger):
+        self.messenger = messenger
         self.position = (1388, 869)
         self.base_width, self.base_height = (107, 30)
         self.width, self.height = self.base_width, self.base_height
@@ -11,17 +12,41 @@ class Bridge():
         self.open = False
         self.seconds = 8
 
+
     def update(self):
+        self.update_bridge_height()
+
+
+    def update_bridge_height(self):
+        state = None
+        change_per_frame = self.base_height / (self.seconds * 30)
+
+        # Brug is aan het openen
         if (self.open and self.height != 0):
-            self.height -= self.base_height / (self.seconds * 30)
+            self.height -= change_per_frame
+            if self.height == 0:
+                state = "open"
+            if (self.height == self.base_height - change_per_frame):
+                state = "onbekend"
+
+        # Brug is aan het sluiten
         if (not self.open and self.height != self.base_height):
-            self.height += self.base_height / (self.seconds * 30)
+            self.height += change_per_frame
+            if self.height == self.base_height:
+                state = "dicht"
+            if (self.height == 0 + change_per_frame):
+                state = "onbekend"
+
+        if (state):
+            self.messenger.send_message("sensoren_bruggen", {"81.1": {"state": state}})
+
 
     def update_state(self, color):
         if color == "groen":
             self.open = True
         elif color == "rood":
             self.open = False
+
 
     def draw(self):
         offset_factor = (self.base_height - self.height) / 10

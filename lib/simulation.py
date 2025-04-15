@@ -17,7 +17,7 @@ class Simulation:
         self.previous_special_sensor_data = {}
         self.collision_free_zones = config.get("collision_free_zones", [])
         Vehicle.collision_free_zones = self.collision_free_zones # Set collision free zones for all vehicles
-        self.bridge = Bridge()
+        self.bridge = Bridge(messenger)
 
 
     def load_directions(self, config):
