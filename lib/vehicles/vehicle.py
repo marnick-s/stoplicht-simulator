@@ -32,7 +32,7 @@ class Vehicle(CollidableObject):
             raise ValueError(f"Geen WebP-afbeeldingen gevonden in de map: {folder}")
         image_file = random.choice(image_files)
         image_path = os.path.join(folder, image_file)
-        return pygame.image.load(image_path)
+        return pygame.image.load(image_path).convert_alpha()
 
 
     def scale_image(self, image):

@@ -38,7 +38,7 @@ class Bridge():
                 state = "onbekend"
 
         if (state):
-            self.messenger.send_message("sensoren_bruggen", {"81.1": {"state": state}})
+            self.messenger.send("sensoren_bruggen", {"81.1": {"state": state}})
 
 
     def update_state(self, color):
