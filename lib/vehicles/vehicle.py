@@ -25,6 +25,7 @@ class Vehicle(CollidableObject):
         self._last_position = (self.x, self.y) # Performance
         self._last_angle = self.angle # Performance
 
+
     def load_random_image(self, folder):
         image_files = [f for f in os.listdir(folder) if f.endswith('.webp')]
         if not image_files:

@@ -1,4 +1,5 @@
 from lib.basic_traffic_manager import BasicTrafficManager
+from lib.bridge import Bridge
 from lib.directions.direction import Direction
 from lib.enums.topics import Topics
 from lib.vehicles.vehicle import Vehicle
@@ -16,6 +17,7 @@ class Simulation:
         self.previous_special_sensor_data = {}
         self.collision_free_zones = config.get("collision_free_zones", [])
         Vehicle.collision_free_zones = self.collision_free_zones # Set collision free zones for all vehicles
+        self.bridge = Bridge()
 
     def load_directions(self, config):
         directions = []
@@ -27,6 +29,7 @@ class Simulation:
 
 
     def update(self):
+        self.bridge.update()
         self.vehicle_spawner.create_new_vehicles(self.vehicles)
         self.update_traffic_lights()
         self.vehicles[:] = [v for v in self.vehicles if not v.has_finished()] # Remove finished vehicles
@@ -76,6 +79,7 @@ class Simulation:
 
 
     def draw(self):
+        self.bridge.draw()
         for vehicle in self.vehicles:
             vehicle.draw()
         for direction in self.directions:
