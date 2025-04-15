@@ -19,6 +19,7 @@ class Simulation:
         Vehicle.collision_free_zones = self.collision_free_zones # Set collision free zones for all vehicles
         self.bridge = Bridge()
 
+
     def load_directions(self, config):
         directions = []
         for direction_type, direction_list in config['directions'].items():
@@ -29,9 +30,9 @@ class Simulation:
 
 
     def update(self):
-        self.bridge.update()
         self.vehicle_spawner.create_new_vehicles(self.vehicles)
         self.update_traffic_lights()
+        self.bridge.update()
         self.vehicles[:] = [v for v in self.vehicles if not v.has_finished()] # Remove finished vehicles
         obstacles = self.vehicles + [light for d in self.directions for light in d.traffic_lights]
         for vehicle in self.vehicles:
@@ -46,7 +47,8 @@ class Simulation:
             traffic_light_data = self.basic_traffic_manager.traffic_light_data
 
         if not traffic_light_data:
-            return 
+            return
+        self.bridge.update_state(traffic_light_data["81.1"])
         for direction in self.directions:
             for traffic_light in direction.traffic_lights:
                 sensor_id = f"{direction.id}.{traffic_light.id}"
