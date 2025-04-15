@@ -1,6 +1,6 @@
 import pygame
 from pygame._sdl2 import Window
-import pyautogui
+# import pyautogui
 
 def init_screen():
     pygame.init()

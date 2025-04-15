@@ -64,7 +64,7 @@ routes:
   # Vanuit noord
   - name: from_north_car
     vehicle_type: car
-    vehicles_per_minute: 50
+    vehicles_per_minute: 20
     path:
       - variations:
           - usage_percentage: 30
@@ -205,7 +205,7 @@ routes:
   # Vanuit west
   - name: from_west_car
     vehicle_type: car
-    vehicles_per_minute: 50
+    vehicles_per_minute: 20
     path:
       - variations:
           - usage_percentage: 20

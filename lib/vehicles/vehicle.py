@@ -112,12 +112,14 @@ class Vehicle(CollidableObject):
         return can_move
 
 
-    @staticmethod
-    def point_in_zone(x, y, zone):
-        x_min = min(zone['top_left'][0], zone['bottom_left'][0])
-        x_max = max(zone['top_right'][0], zone['bottom_right'][0])
-        y_min = min(zone['top_left'][1], zone['top_right'][1])
-        y_max = max(zone['bottom_left'][1], zone['bottom_right'][1])
+    def point_in_zone(x, y, zone_dict):
+        points = zone_dict.get("zone", [])
+        if not points or len(points) != 4:
+            return False
+        xs = [pt[0] for pt in points]
+        ys = [pt[1] for pt in points]
+        x_min, x_max = min(xs), max(xs)
+        y_min, y_max = min(ys), max(ys)
         return x_min <= x <= x_max and y_min <= y <= y_max
 
 
