@@ -55,7 +55,7 @@ class SupportsCollisionFreeZones(ABC):
         self.x, self.y = temp_x, temp_y
 
         if can_exit_zone:
-            print(f"Voertuig {self} verlaat de zone.")
+            # print(f"Voertuig {self} verlaat de zone.")
             self.exiting = True
             return True
         return False
