@@ -2,4 +2,4 @@ from enum import Enum
 
 class Topics(Enum):
     LANE_SENSORS_UPDATE = "sensoren_rijbaan"
-    SPECIAL_SENSORS_UPDATE = "groen"
+    SPECIAL_SENSORS_UPDATE = "sensoren_speciaal"
