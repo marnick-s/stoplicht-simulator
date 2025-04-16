@@ -10,8 +10,8 @@ class CollidableObject(ABC):
         """Check if the object can collide with a vehicle. By default, all objects can collide."""
         return True
     
-    def collides_with(self, obstacle, vehicle_direction=None, collision_angle=None):
-        if obstacle != self and obstacle.can_collide(vehicle_direction):
+    def collides_with(self, obstacle, vehicle_direction=None, collision_angle=None, vehicle_type=None):
+        if obstacle != self and obstacle.can_collide(vehicle_direction=vehicle_direction, vehicle_type=vehicle_type):
             # Alleen voorkant checken als collision_angle gegeven is
             hitboxes_to_check = [self.hitboxes()[-1]] if collision_angle is not None else self.hitboxes()
             # hitboxes_to_check = self.hitboxes()

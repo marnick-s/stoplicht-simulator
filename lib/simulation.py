@@ -50,8 +50,7 @@ class Simulation:
         obstacles = self.vehicles + [light for d in self.directions for light in d.traffic_lights]
         for vehicle in self.vehicles:
             vehicle.move(obstacles)
-        self.check_occupied_lane_sensors()
-        self.check_occupied_special_sensors()
+        self.check_occupied_sensors()
 
 
     def update_traffic_lights(self):
@@ -72,29 +71,37 @@ class Simulation:
                     traffic_light.update(new_color)
     
 
-    def check_occupied_special_sensors(self):
-        pass
+    def check_occupied_sensors(self):
+        laneSensorData = {}
+        specialSensorData = {}
 
-
-    def check_occupied_lane_sensors(self):
-        sensorData = {}
+        for name, sensor in self.special_sensors.items():
+            specialSensorData[name] = False
         for direction in self.directions:
             for traffic_light in direction.traffic_lights:
                 sensor_id = f"{direction.id}.{traffic_light.id}"
-                sensorData[sensor_id] = {"voor": False, "achter": False}
+                laneSensorData[sensor_id] = {"voor": False, "achter": False}
 
         for vehicle in self.vehicles:
+            for name, sensor in self.special_sensors.items():
+                if vehicle.collides_with(sensor, vehicle_type=vehicle.vehicle_type_string):
+                    specialSensorData[name] = True
+
             for direction in self.directions:
                 for traffic_light in direction.traffic_lights:
                     sensor_id = f"{direction.id}.{traffic_light.id}"
                     if vehicle.collides_with(traffic_light.front_sensor):
-                        sensorData[sensor_id]["achter"] = True
+                        laneSensorData[sensor_id]["achter"] = True
                     if traffic_light.back_sensor and vehicle.collides_with(traffic_light.back_sensor):
-                        sensorData[sensor_id]["voor"] = True
+                        laneSensorData[sensor_id]["voor"] = True
 
-        if (sensorData != self.previous_lane_sensor_data):
-            self.previous_lane_sensor_data = sensorData
-            self.messenger.send(Topics.LANE_SENSORS_UPDATE.value, sensorData)
+        if (laneSensorData != self.previous_lane_sensor_data):
+            self.previous_lane_sensor_data = laneSensorData
+            self.messenger.send(Topics.LANE_SENSORS_UPDATE.value, laneSensorData)
+
+        if (specialSensorData != self.previous_special_sensor_data):
+            self.previous_special_sensor_data = specialSensorData
+            self.messenger.send(Topics.SPECIAL_SENSORS_UPDATE.value, specialSensorData)
 
 
     def draw(self):

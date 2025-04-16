@@ -1,13 +1,13 @@
 special_sensors:
   - name: brug_wegdek
-    position: [1333, 876]
-    dimensions: [20, 20]
-    vehicle_types: [car, pedestrian]
+    position: [1395, 909]
+    dimensions: [130, 50]
+    vehicle_types: [car, pedestrian, bike]
   - name: brug_water
-    position: [1333, 876]
-    dimensions: [0.5, 0.5]
+    position: [1389, 909]
+    dimensions: [110, 50]
     vehicle_types: [boat]
   - name: brug_file
-    position: [1333, 876]
-    dimensions: [0.5, 0.5]
-    vehicle_types: [car, pedestrian]
+    position: [679, 445]
+    dimensions: [24, 24]
+    vehicle_types: [car]
