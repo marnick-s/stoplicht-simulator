@@ -86,13 +86,11 @@ class Simulation:
         for vehicle in self.vehicles:
             for direction in self.directions:
                 for traffic_light in direction.traffic_lights:
-                    status = vehicle.is_occupying_sensor(traffic_light)
-                    if status != 0:
-                        sensor_id = f"{direction.id}.{traffic_light.id}"
-                        if status == 2:
-                            sensorData[sensor_id]["achter"] = True
-                        else:
-                            sensorData[sensor_id]["voor"] = True
+                    sensor_id = f"{direction.id}.{traffic_light.id}"
+                    if vehicle.collides_with(traffic_light.front_sensor):
+                        sensorData[sensor_id]["achter"] = True
+                    if traffic_light.back_sensor and vehicle.collides_with(traffic_light.back_sensor):
+                        sensorData[sensor_id]["voor"] = True
 
         if (sensorData != self.previous_lane_sensor_data):
             self.previous_lane_sensor_data = sensorData

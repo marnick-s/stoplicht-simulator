@@ -10,8 +10,10 @@ class Sensor(CollidableObject):
         self.approach_direction = approach_direction
         self.vehicle_types = vehicle_types
 
-    def can_collide(self, vehicle_direction):
-        if vehicle_direction != self.approach_direction:
+    def can_collide(self, vehicle_direction=None, vehicle_type=None):
+        if vehicle_direction and vehicle_direction != self.approach_direction:
+            return False
+        if vehicle_type and vehicle_type not in self.vehicle_types:
             return False
         return True
 
