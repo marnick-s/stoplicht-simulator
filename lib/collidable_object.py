@@ -6,7 +6,7 @@ class CollidableObject(ABC):
         """Object needs to have one or multiple hitboxes."""
         exit
 
-    def can_collide(self, vehicle_direction=None):
+    def can_collide(self, vehicle_direction=None, vehicle_type=None):
         """Check if the object can collide with a vehicle. By default, all objects can collide."""
         return True
     

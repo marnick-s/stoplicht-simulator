@@ -43,7 +43,7 @@ class TrafficLight(CollidableObject):
             height=height,
         )]
 
-    def can_collide(self, vehicle_direction):
+    def can_collide(self, vehicle_direction, vehicle_type=None):
         if vehicle_direction != self.approach_direction:
             return False
         return self.traffic_light_status != TrafficLightColors.GREEN
