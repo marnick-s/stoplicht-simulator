@@ -185,13 +185,13 @@ directions:
         - id: 1
           approach_direction: east
           traffic_light_position: [1515, 976]
-          front_sensor_position: [1515, 976]
+          front_sensor_position: [1527, 979]
     - id: 42
       traffic_lights:
         - id: 1
           approach_direction: west
           traffic_light_position: [1333, 876]
-          front_sensor_position: [1333, 876]
+          front_sensor_position: [1325, 869]
 
 
     - id: 71

@@ -18,12 +18,12 @@ class TrafficLight(CollidableObject):
         self.approach_direction = approach_direction
         self.type = type
     
-        self.front_sensor = Sensor(front_sensor_position, approach_direction)
+        self.front_sensor = Sensor(front_sensor_position, approach_direction=approach_direction)
         
         self.back_sensor = None
         if back_sensor_position is not None:
             self.back_sensor_position = Coordinate(*back_sensor_position)
-            self.back_sensor = Sensor(back_sensor_position, approach_direction)
+            self.back_sensor = Sensor(back_sensor_position, approach_direction=approach_direction)
         
         sprite_size = scale_to_display(6, 14)
         green_light_img = pygame.image.load('assets/lights/groen.webp').convert_alpha()

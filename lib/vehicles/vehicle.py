@@ -10,13 +10,14 @@ from lib.vehicles.supports_collision_free_zones import SupportsCollisionFreeZone
 class Vehicle(CollidableObject):
     collision_free_zones = []
 
-    def __init__(self, path, speed, sprite_width, sprite_height, image_folder):
+    def __init__(self, path, speed, sprite_width, sprite_height, vehicle_type_string):
         self.path = path
         self.current_target = 0
         self.x, self.y = self.path[self.current_target]
         self.speed = speed
+        self.vehicle_type_string = vehicle_type_string
         self.sprite_width, self.sprite_height = sprite_width, sprite_height
-        self.original_image = self.scale_image(self.load_random_image("assets/vehicles/" + image_folder))
+        self.original_image = self.scale_image(self.load_random_image("assets/vehicles/" + self.vehicle_type_string))
         self.angle = 0
         self.image = self.original_image.copy()
         self.rotated_width = self.sprite_width
@@ -89,14 +90,11 @@ class Vehicle(CollidableObject):
                 
 
     def is_occupying_sensor(self, traffic_light):
-        for hitbox in self.hitboxes():
-            for sensor_hitbox in traffic_light.front_sensor.hitboxes():
-                if hitbox.collides_with(sensor_hitbox):
-                    return 1  # front sensor
-            if traffic_light.back_sensor is not None:
-                for sensor_hitbox in traffic_light.back_sensor.hitboxes():
-                    if hitbox.collides_with(sensor_hitbox):
-                        return 2  # back sensor
+        if self.collides_with(traffic_light.front_sensor):
+            return 1  # front sensor
+        if traffic_light.back_sensor is not None:
+            if self.collides_with(traffic_light.back_sensor):
+                return 2  # back sensor
 
         return 0
 

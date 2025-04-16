@@ -1,6 +1,7 @@
 from lib.basic_traffic_manager import BasicTrafficManager
 from lib.bridge import Bridge
 from lib.directions.direction import Direction
+from lib.directions.sensor import Sensor
 from lib.enums.topics import Topics
 from lib.vehicles.vehicle import Vehicle
 from lib.vehicles.vehicle_spawner import VehicleSpawner
@@ -27,6 +28,18 @@ class Simulation:
                 direction_data['type'] = direction_type
                 directions.append(Direction(direction_data))
         return directions
+    
+    
+    def load_special_sensors(self, config):
+        self.special_sensors = {
+            sensor["name"]: Sensor(
+                position=sensor.get("position"),
+                dimensions=sensor.get("dimensions"),
+                vehicle_types=sensor.get("vehicle_types", []),
+                approach_direction=sensor.get("approach_direction")
+            )
+            for sensor in config.get("special_sensors", [])
+        }
 
 
     def update(self):
