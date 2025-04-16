@@ -3,7 +3,6 @@ import pygame
 import os
 import random
 from lib.collidable_object import CollidableObject, Hitbox
-from lib.directions.traffic_light import TrafficLight
 from lib.screen import screen, scale_to_display
 from lib.vehicles.supports_collision_free_zones import SupportsCollisionFreeZones
 
