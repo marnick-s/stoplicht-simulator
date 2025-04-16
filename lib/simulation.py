@@ -19,6 +19,7 @@ class Simulation:
         self.collision_free_zones = config.get("collision_free_zones", [])
         Vehicle.collision_free_zones = self.collision_free_zones # Set collision free zones for all vehicles
         self.bridge = Bridge(messenger)
+        self.load_special_sensors()
 
 
     def load_directions(self, config):
@@ -30,15 +31,14 @@ class Simulation:
         return directions
     
     
-    def load_special_sensors(self, config):
+    def load_special_sensors(self):
         self.special_sensors = {
             sensor["name"]: Sensor(
                 position=sensor.get("position"),
                 dimensions=sensor.get("dimensions"),
                 vehicle_types=sensor.get("vehicle_types", []),
-                approach_direction=sensor.get("approach_direction")
             )
-            for sensor in config.get("special_sensors", [])
+            for sensor in self.config.get("special_sensors", [])
         }
 
 
@@ -51,6 +51,7 @@ class Simulation:
         for vehicle in self.vehicles:
             vehicle.move(obstacles)
         self.check_occupied_lane_sensors()
+        self.check_occupied_special_sensors()
 
 
     def update_traffic_lights(self):
@@ -69,6 +70,10 @@ class Simulation:
                 if sensor_id in traffic_light_data:
                     new_color = traffic_light_data[sensor_id]
                     traffic_light.update(new_color)
+    
+
+    def check_occupied_special_sensors(self):
+        pass
 
 
     def check_occupied_lane_sensors(self):
@@ -100,3 +105,5 @@ class Simulation:
             vehicle.draw()
         for direction in self.directions:
             direction.draw(self.messenger.connected)
+        for name, sensor in self.special_sensors.items():
+            sensor.draw()

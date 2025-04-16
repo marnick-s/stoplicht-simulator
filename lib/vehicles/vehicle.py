@@ -89,14 +89,25 @@ class Vehicle(CollidableObject):
                     self.current_target += 1
                 
 
-    def is_occupying_sensor(self, traffic_light):
-        if self.collides_with(traffic_light.front_sensor):
-            return 1  # front sensor
-        if traffic_light.back_sensor is not None:
-            if self.collides_with(traffic_light.back_sensor):
-                return 2  # back sensor
+    # def is_occupying_sensor(self, traffic_light):
+    #     if self.collides_with(traffic_light.front_sensor):
+    #         return 1  # front sensor
+    #     if traffic_light.back_sensor is not None:
+    #         if self.collides_with(traffic_light.back_sensor):
+    #             return 2  # back sensor
 
-        return 0
+    #     return 0
+    
+    def is_occupying_sensor(self, traffic_light):
+        for hitbox in self.hitboxes():
+            for sensor_hitbox in traffic_light.front_sensor.hitboxes():
+                if hitbox.collides_with(sensor_hitbox):
+                    return 1  # front sensor
+            if traffic_light.back_sensor is not None:
+                for sensor_hitbox in traffic_light.back_sensor.hitboxes():
+                    if hitbox.collides_with(sensor_hitbox):
+                        return 2  # back sensor
+        return 0  # geen sensor bezet
 
 
     def can_move(self, obstacles, new_x, new_y):

@@ -3,10 +3,9 @@ from lib.screen import screen, scale_to_display
 from lib.coordinate import Coordinate
 
 class Sensor(CollidableObject):
-    def __init__(self, position, width=5, height=5, approach_direction=None, vehicle_types=[]):
+    def __init__(self, position, dimensions=(5, 5), approach_direction=None, vehicle_types=[]):
         self.position = Coordinate(*position)
-        self.width = width
-        self.height = height
+        self.width, self.height = dimensions
         self.color = (0, 0, 255)
         self.approach_direction = approach_direction
         self.vehicle_types = vehicle_types
@@ -22,8 +21,8 @@ class Sensor(CollidableObject):
         return [Hitbox(
             x=self.position.x - half_width,
             y=self.position.y - half_height,
-            width=self.size,
-            height=self.size
+            width=self.width,
+            height=self.height
         )]
 
     def draw(self):

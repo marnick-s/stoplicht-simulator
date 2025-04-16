@@ -26,6 +26,8 @@ class Messenger:
 
     def send(self, topic, message):
         """Verstuurt een bericht met een opgegeven topic."""
+        if (topic == "sensoren_bruggen"):
+            print(message)
         json_message = json.dumps(message)
         self.pub_socket.send_multipart([topic.encode('utf-8'), json_message.encode('utf-8')])
 
@@ -55,7 +57,7 @@ class Messenger:
                             topic = frames[0].decode('utf-8')
                             message = frames[1].decode('utf-8')
                             if topic == self.receive_topic:
-                                print(f"Ontvangen bericht op topic '{topic}': {message}")
+                                # print(f"Ontvangen bericht op topic '{topic}': {message}")
                                 self.traffic_light_data = json.loads(message)
                         else:
                             print(f"Onverwacht aantal frames ontvangen: {len(frames)}")
