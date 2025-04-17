@@ -18,7 +18,7 @@ def update_screen_size():
 
 
 def scale_to_display(x, y):
-    return int(x / 1920 * WIDTH), int(y / 1200 * (WIDTH * 0.625))
+    return float(x / 1920 * WIDTH), int(y / 1200 * (WIDTH * 0.625))
 
-def scale_to_system(x, y):
+def scale_to_world(x, y):
     return int(x / WIDTH * 1920), int(y / (WIDTH * 0.625) * 1200)
