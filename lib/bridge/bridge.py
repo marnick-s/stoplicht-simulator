@@ -16,10 +16,10 @@ class Bridge():
         self.traffic_light_color = TrafficLightColors.RED.value
         self.bridge_open_seconds = 8
         self.barriers = [
-            Barrier([1362, 854], 310),
-            Barrier([1348, 894], 130),
-            Barrier([1437, 931], 310),
-            Barrier([1417, 968], 130)
+            Barrier([1366, 851], 310),
+            Barrier([1344, 898], 130),
+            Barrier([1445, 924], 310),
+            Barrier([1416, 970], 130)
         ]
 
 

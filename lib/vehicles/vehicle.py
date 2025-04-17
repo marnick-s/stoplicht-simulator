@@ -36,7 +36,7 @@ class Vehicle(CollidableObject):
 
 
     def scale_image(self, image):
-        return pygame.transform.scale(image, (self.sprite_width, self.sprite_height))
+        return pygame.transform.scale(image, scale_to_display(self.sprite_width, self.sprite_height))
     
 
     def hitboxes(self):
@@ -151,10 +151,10 @@ class Vehicle(CollidableObject):
 
 
     def draw(self):
-        draw_x = self.x - self.rotated_width // 2
-        draw_y = self.y - self.rotated_height // 2
-        scaled_image = pygame.transform.scale(self.image, scale_to_display(self.rotated_width, self.rotated_height))
-        screen.blit(scaled_image, scale_to_display(draw_x, draw_y))
+        screen_x, screen_y = scale_to_display(self.x, self.y)
+        draw_x = int(screen_x - self.rotated_width // 2)
+        draw_y = int(screen_y - self.rotated_height // 2)
+        screen.blit(self.image, (draw_x, draw_y))
         
         # for hitbox in self.hitboxes():
         #     hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)

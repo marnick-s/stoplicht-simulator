@@ -4,12 +4,11 @@ from lib.screen import screen, scale_to_display
 class Barrier():
     def __init__(self, position, angle):
         self.position = position
-        self.width, self.base_height = (2, 60)
+        self.width, self.base_height = (2, 50)
         self.height = 0
 
         raw = pygame.image.load('assets/barrier.webp').convert_alpha()
         sw, sh = scale_to_display(self.width, self.base_height)
-        print("Schaal naar:", sw, sh)
         self.screen_base_w, self.screen_base_h = sw, sh
         self.base_image = pygame.transform.smoothscale(raw, (sw, sh))
 
@@ -19,9 +18,6 @@ class Barrier():
         self.angle = angle
         self.is_open = False
         self.barrier_open_seconds = 5
-
-        print("Afbeeldinggrootte:", self.base_image.get_size())
-
 
 
     def update(self):
@@ -51,7 +47,6 @@ class Barrier():
     def draw(self):
         frac = max(0.0, min(1.0, self.height / self.base_height))
         crop_h = int(self.screen_base_h * frac)
-        print(f"frac: {frac}, crop_h: {crop_h}, base_h: {self.screen_base_h}")
 
         cropped = self.base_image.subsurface(
             pygame.Rect(0, 0, self.screen_base_w, crop_h)
@@ -62,10 +57,8 @@ class Barrier():
             flags=pygame.SRCALPHA
         )
 
-        cx, cy = self.screen_base_w//2, self.screen_base_h//2
         pivot_surf.blit(cropped, (0, 0))
 
         rotated = pygame.transform.rotate(pivot_surf, self.angle)
         rect    = rotated.get_rect(center=self.pivot_px)
-        print(f"Draaipunt: {self.pivot_px}, Topleft na rotatie: {rect.topleft}") # <-- Toevoegen
         screen.blit(rotated, rect.topleft)
