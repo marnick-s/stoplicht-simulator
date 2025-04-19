@@ -2,7 +2,8 @@ routes:
   # Vanuit zuid
   - name: from_south_car
     vehicle_type: car
-    vehicles_per_minute: 10
+    vehicles_per_minute_rustig: 3
+    vehicles_per_minute_spits: 10
     path:
       - variations:
           - usage_percentage: 30
@@ -64,7 +65,8 @@ routes:
   # Vanuit noord
   - name: from_north_car
     vehicle_type: car
-    vehicles_per_minute: 20
+    vehicles_per_minute_rustig: 6
+    vehicles_per_minute_spits: 20
     path:
       - variations:
           - usage_percentage: 30
@@ -113,7 +115,8 @@ routes:
   # Vanuit oost
   - name: from_east_car
     vehicle_type: car
-    vehicles_per_minute: 10
+    vehicles_per_minute_rustig: 3
+    vehicles_per_minute_spits: 10
     path:
       - [1899, 1219]
       - [1884, 1205]
@@ -205,7 +208,8 @@ routes:
   # Vanuit west
   - name: from_west_car
     vehicle_type: car
-    vehicles_per_minute: 20
+    vehicles_per_minute_rustig: 6
+    vehicles_per_minute_spits: 20
     path:
       - variations:
           - usage_percentage: 20
@@ -283,7 +287,8 @@ routes:
   # PEDESTRIAN
   - name: from_south_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute: 5
+    vehicles_per_minute_rustig: 6
+    vehicles_per_minute_spits: 10
     path:
       - variations:
           - usage_percentage: 30
@@ -379,7 +384,8 @@ routes:
   # BOAT
   - name: from_north_boat
     vehicle_type: boat
-    vehicles_per_minute: 20
+    vehicles_per_minute_rustig: 10
+    vehicles_per_minute_spits: 0
     path:
       - [1971, 532]
       - [1780, 644]
@@ -395,7 +401,8 @@ routes:
 
   - name: from_south_boat
     vehicle_type: boat
-    vehicles_per_minute: 20
+    vehicles_per_minute_rustig: 10
+    vehicles_per_minute_spits: 0
     path:
       - [1204, 1068]
       - [1265, 1021]
