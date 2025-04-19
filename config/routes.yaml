@@ -3,7 +3,7 @@ routes:
   - name: from_south_car
     vehicle_type: car
     vehicles_per_minute_rustig: 3
-    vehicles_per_minute_spits: 10
+    vehicles_per_minute_spits: 35
     path:
       - variations:
           - usage_percentage: 30
@@ -66,7 +66,7 @@ routes:
   - name: from_north_car
     vehicle_type: car
     vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 20
+    vehicles_per_minute_spits: 30
     path:
       - variations:
           - usage_percentage: 30
@@ -116,7 +116,7 @@ routes:
   - name: from_east_car
     vehicle_type: car
     vehicles_per_minute_rustig: 3
-    vehicles_per_minute_spits: 10
+    vehicles_per_minute_spits: 40
     path:
       - [1899, 1219]
       - [1884, 1205]
@@ -209,7 +209,7 @@ routes:
   - name: from_west_car
     vehicle_type: car
     vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 20
+    vehicles_per_minute_spits: 40
     path:
       - variations:
           - usage_percentage: 20

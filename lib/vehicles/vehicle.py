@@ -108,7 +108,7 @@ class Vehicle(CollidableObject):
                     continue
                 if self.exiting and self.get_current_zone() == obstacle.get_current_zone():
                     continue
-            if self.collides_with(obstacle, self.get_vehicle_direction(), collision_angle=self.angle):
+            if self.collides_with(obstacle, vehicle_direction=self.get_vehicle_direction(), collision_angle=self.angle):
                 can_move = False
                 break
             

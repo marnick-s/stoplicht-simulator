@@ -2,3 +2,4 @@ pygame==2.6.1
 PyYAML==6.0.2
 pyzmq==26.3.0
 pyautogui
+numba
