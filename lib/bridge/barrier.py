@@ -16,7 +16,7 @@ class Barrier():
         self.pivot_px = pygame.math.Vector2(pivot_x, pivot_y)
 
         self.angle = angle
-        self.is_open = False
+        self.is_open = True
         self.barrier_open_seconds = 5
 
 

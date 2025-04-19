@@ -7,13 +7,13 @@ from lib.vehicles.vehicle import Vehicle
 from lib.vehicles.vehicle_spawner import VehicleSpawner
 
 class Simulation:
-    def __init__(self, config, messenger):
+    def __init__(self, config, messenger, traffic_level="rustig"):
         self.vehicles = []
         self.config = config
         self.messenger = messenger
         self.basic_traffic_manager = BasicTrafficManager()
         self.directions = self.load_directions(config)
-        self.vehicle_spawner = VehicleSpawner(config)
+        self.vehicle_spawner = VehicleSpawner(config, traffic_level)
         self.previous_lane_sensor_data = {}
         self.previous_special_sensor_data = {}
         self.collision_free_zones = config.get("collision_free_zones", [])
