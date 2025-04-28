@@ -123,6 +123,7 @@ class Simulation:
         laneSensorData = {}
         specialSensorData = {}
 
+        # Initialize sensor data
         for name, sensor in self.special_sensors.items():
             specialSensorData[name] = False
         for direction in self.directions:
@@ -130,18 +131,48 @@ class Simulation:
                 sensor_id = f"{direction.id}.{traffic_light.id}"
                 laneSensorData[sensor_id] = {"voor": False, "achter": False}
 
-        for vehicle in self.vehicles:
-            for name, sensor in self.special_sensors.items():
-                if vehicle.collides_with(sensor, vehicle_type=vehicle.vehicle_type_string):
-                    specialSensorData[name] = True
+        # Create a temporary spatial hash grid for sensors
+        sensor_grid = SpatialHashGrid(cell_size=100)
+        
+        # Add all sensors to the grid
+        for name, sensor in self.special_sensors.items():
+            sensor_grid.insert(sensor)
+        
+        for direction in self.directions:
+            for traffic_light in direction.traffic_lights:
+                if traffic_light.front_sensor:
+                    sensor_grid.insert(traffic_light.front_sensor)
+                if traffic_light.back_sensor:
+                    sensor_grid.insert(traffic_light.back_sensor)
 
-            for direction in self.directions:
-                for traffic_light in direction.traffic_lights:
-                    sensor_id = f"{direction.id}.{traffic_light.id}"
-                    if vehicle.collides_with(traffic_light.front_sensor):
-                        laneSensorData[sensor_id]["achter"] = True
-                    if traffic_light.back_sensor and vehicle.collides_with(traffic_light.back_sensor):
-                        laneSensorData[sensor_id]["voor"] = True
+        # Check each vehicle against nearby sensors only
+        for vehicle in self.vehicles:
+            vehicle_hitboxes = vehicle.hitboxes()
+            buffer = 5  # Smaller buffer for sensors is sufficient
+            min_x = min(hb.x for hb in vehicle_hitboxes) - buffer
+            max_x = max(hb.x + hb.width for hb in vehicle_hitboxes) + buffer
+            min_y = min(hb.y for hb in vehicle_hitboxes) - buffer
+            max_y = max(hb.y + hb.height for hb in vehicle_hitboxes) + buffer
+            query_box = Hitbox(min_x, min_y, max_x - min_x, max_y - min_y)
+            
+            # Query only for nearby sensors
+            nearby_sensors = sensor_grid.query(query_box)
+            
+            # Check collisions with special sensors
+            for sensor_obj in nearby_sensors:
+                # Check special sensors
+                for name, sensor in self.special_sensors.items():
+                    if sensor_obj is sensor and vehicle.collides_with(sensor, vehicle_type=vehicle.vehicle_type_string):
+                        specialSensorData[name] = True
+                
+                # Check traffic light sensors
+                for direction in self.directions:
+                    for traffic_light in direction.traffic_lights:
+                        sensor_id = f"{direction.id}.{traffic_light.id}"
+                        if sensor_obj is traffic_light.front_sensor and vehicle.collides_with(traffic_light.front_sensor):
+                            laneSensorData[sensor_id]["achter"] = True
+                        if traffic_light.back_sensor and sensor_obj is traffic_light.back_sensor and vehicle.collides_with(traffic_light.back_sensor):
+                            laneSensorData[sensor_id]["voor"] = True
 
         if (laneSensorData != self.previous_lane_sensor_data):
             self.previous_lane_sensor_data = laneSensorData
@@ -150,7 +181,6 @@ class Simulation:
         if (specialSensorData != self.previous_special_sensor_data):
             self.previous_special_sensor_data = specialSensorData
             self.messenger.send(Topics.SPECIAL_SENSORS_UPDATE.value, specialSensorData)
-
 
     def draw(self):
         self.bridge.draw()
