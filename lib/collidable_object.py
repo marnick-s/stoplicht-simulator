@@ -30,15 +30,14 @@ class Hitbox:
         return (x1 < x2 + w2 and x1 + w1 > x2 and
                 y1 < y2 + h2 and y1 + h1 > y2)
 
-    @staticmethod
-    def combine(a: "Hitbox", b: "Hitbox") -> "Hitbox":
+    def combine(self, b: "Hitbox") -> "Hitbox":
         """
         Return the minimal AABB enclosing both a en b.
         """
-        min_x = min(a.x, b.x)
-        min_y = min(a.y, b.y)
-        max_x = max(a.x + a.width, b.x + b.width)
-        max_y = max(a.y + a.height, b.y + b.height)
+        min_x = min(self.x, b.x)
+        min_y = min(self.y, b.y)
+        max_x = max(self.x + self.width, b.x + b.width)
+        max_y = max(self.y + self.height, b.y + b.height)
         return Hitbox(min_x, min_y, max_x - min_x, max_y - min_y)
 
 
@@ -109,10 +108,10 @@ class CollidableObject(ABC):
         # start met de eerste
         a = boxes1[0]
         for hb in boxes1[1:]:
-            a = Hitbox.combine(a, hb)
+            a = a.combine(hb)
 
         b = boxes2[0]
         for hb in boxes2[1:]:
-            b = Hitbox.combine(b, hb)
+            b = b.combine(hb)
 
         return a.collides_with(b)

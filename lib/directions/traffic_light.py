@@ -33,15 +33,20 @@ class TrafficLight(CollidableObject):
         red_light_img = pygame.image.load('assets/lights/rood.webp').convert_alpha()
         self.red_light_img = pygame.transform.scale(red_light_img, sprite_size)
 
+        self._cached_hitboxes = None
+
     def hitboxes(self):
-        width = 5
-        height = 5
-        return [Hitbox(
-            x=self.traffic_light_position.x - width / 2,
-            y=self.traffic_light_position.y - height / 2,
-            width=width,
-            height=height,
-        )]
+        if self._cached_hitboxes is None or self._has_changed:
+            width = 5
+            height = 5
+            self._cached_hitboxes = [Hitbox(
+                x=self.traffic_light_position.x - width / 2,
+                y=self.traffic_light_position.y - height / 2,
+                width=width,
+                height=height,
+            )]
+            self._has_changed = False
+        return self._cached_hitboxes
 
     def can_collide(self, vehicle_direction, vehicle_type=None):
         if vehicle_direction != self.approach_direction:
@@ -50,6 +55,7 @@ class TrafficLight(CollidableObject):
 
     def update(self, color):
         self.traffic_light_status = TrafficLightColors(color)
+        self._has_changed = True
 
     def draw(self, connected):
         self.front_sensor.draw()

@@ -20,20 +20,25 @@ class Barrier():
         self.barrier_open_seconds = 5
 
 
-    def update(self):
-        self.update_barrier_height()
+    def update(self, delta_time):
+        self.update_barrier_height(delta_time)
 
 
-    def update_barrier_height(self):
-        change_per_frame = self.base_height / (self.barrier_open_seconds * 30)
+    def update_barrier_height(self, delta_time: float):
+        """
+        Update de hoogte van de slagboom over delta_time seconden.
+        
+        :param delta_time: tijd sinds de vorige update, in seconden
+        """
+        # snelheid (hoogte-per-seconde) om in barrier_open_seconds volledig te openen/sluiten
+        speed = self.base_height / self.barrier_open_seconds
 
-        # Slagboom is aan het openen
-        if (self.is_open and self.height > 0):
-            self.height -= change_per_frame
-
-        # Slagboom is aan het sluiten
-        if ((not self.is_open) and self.height < self.base_height):
-            self.height += change_per_frame
+        if self.is_open:
+            # Slagboom openen: hoogte omlaag richting 0
+            self.height = max(0.0, self.height - speed * delta_time)
+        else:
+            # Slagboom sluiten: hoogte omhoog richting base_height
+            self.height = min(self.base_height, self.height + speed * delta_time)
 
 
     def open(self):

@@ -4,13 +4,14 @@ import pyautogui
 
 def init_screen():
     pygame.init()
-    screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     Window.from_display_module().maximize()
     pygame.display.set_caption("Stoplichtsimulator")
     return screen
 
 screen = init_screen()
 WIDTH, HEIGHT = screen.get_size()
+WORLD_WIDTH, WORLD_HEIGHT = 1920, 1200
 
 def update_screen_size():
     global WIDTH, HEIGHT

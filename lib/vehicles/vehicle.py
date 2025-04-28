@@ -2,18 +2,21 @@ import math
 import pygame
 import os
 import random
+import time
 from lib.collidable_object import CollidableObject, Hitbox
 from lib.screen import screen, scale_to_display
 from lib.vehicles.supports_collision_free_zones import SupportsCollisionFreeZones
 
 class Vehicle(CollidableObject):
     collision_free_zones = []
+    # For time-based movement
+    last_update_time = time.time()
 
     def __init__(self, path, speed, sprite_width, sprite_height, vehicle_type_string):
         self.path = path
         self.current_target = 0
         self.x, self.y = self.path[self.current_target]
-        self.speed = speed
+        self.speed = speed  # Now in units per second
         self.vehicle_type_string = vehicle_type_string
         self.sprite_width, self.sprite_height = sprite_width, sprite_height
         self.original_image = self.scale_image(self.load_random_image("assets/vehicles/" + self.vehicle_type_string))
@@ -24,7 +27,7 @@ class Vehicle(CollidableObject):
         self._cached_hitboxes = None # Performance
         self._last_position = (self.x, self.y) # Performance
         self._last_angle = self.angle # Performance
-
+        self.last_move_time = time.time()  # For time-based movement
 
     def load_random_image(self, folder):
         image_files = [f for f in os.listdir(folder) if f.endswith('.webp')]
@@ -34,11 +37,9 @@ class Vehicle(CollidableObject):
         image_path = os.path.join(folder, image_file)
         return pygame.image.load(image_path).convert_alpha()
 
-
     def scale_image(self, image):
         return pygame.transform.scale(image, scale_to_display(self.sprite_width, self.sprite_height))
     
-
     def hitboxes(self):
         # Cache hitboxes als positie en hoek niet veranderd zijn
         if self._cached_hitboxes is not None and (self.x, self.y) == self._last_position and self.angle == self._last_angle:
@@ -67,26 +68,80 @@ class Vehicle(CollidableObject):
         self._last_angle = self.angle
         return hitboxes
     
-
-    def move(self, obstacles):
-        if isinstance(self, SupportsCollisionFreeZones) and self.exiting and not self.is_in_zone():
-            self.exiting = False
+    def calculate_next_position(self, obstacles):
+        # Return current position if we have no more targets
+        if self.current_target >= len(self.path) - 1:
+            return {
+                'x': self.x,
+                'y': self.y,
+                'speed': self.speed,
+                'angle': self.angle,
+                'current_target': self.current_target,
+                'moved': False  # Flag to indicate if the vehicle actually moved
+            }
+        
+        # Calculate elapsed time since last update for time-based movement
+        current_time = time.time()
+        elapsed_time = current_time - self.last_move_time
+        
+        # Get target position
+        target_x, target_y = self.path[self.current_target + 1]
+        dx, dy = target_x - self.x, target_y - self.y
+        distance = max(1, (dx**2 + dy**2) ** 0.5)
+        
+        # Calculate time-based movement distance
+        move_distance = self.speed * elapsed_time
+        if move_distance > distance:
+            move_distance = distance
+        
+        # Calculate new position
+        new_x = self.x + move_distance * dx / distance
+        new_y = self.y + move_distance * dy / distance
+        
+        # Calculate new angle
+        new_angle = math.degrees(math.atan2(-dy, dx))
+        
+        # Check if can reach next target
+        reached_target = False
+        new_target = self.current_target
+        if abs(new_x - target_x) < move_distance * 0.5 and abs(new_y - target_y) < move_distance * 0.5:
+            new_target += 1
+            reached_target = True
+        
+        # Check if the move is valid
+        can_move = self.can_move(obstacles, new_x, new_y)
+        
+        return {
+            'x': new_x if can_move else self.x,
+            'y': new_y if can_move else self.y,
+            'angle': new_angle,
+            'current_target': new_target if can_move and reached_target else self.current_target,
+            'moved': can_move,
+            'elapsed_time': elapsed_time
+        }
     
-        if self.current_target < len(self.path) - 1:
-            target_x, target_y = self.path[self.current_target + 1]
-            dx, dy = target_x - self.x, target_y - self.y
-            distance = max(1, (dx**2 + dy**2) ** 0.5)
+    def apply_movement(self, movement_data):
+        # Apply calculated position
+        if movement_data['moved']:
+            self.x = movement_data['x']
+            self.y = movement_data['y']
+            self.angle = movement_data['angle']
+            self.current_target = movement_data['current_target']
             
-            new_x = self.x + self.speed * dx / distance
-            new_y = self.y + self.speed * dy / distance
+            # Rotate image
+            self.image = pygame.transform.rotate(self.original_image, self.angle)
+            self.rotated_width = self.image.get_width()
+            self.rotated_height = self.image.get_height()
             
-            if self.can_move(obstacles, new_x, new_y):
-                self.x = new_x
-                self.y = new_y
-                self.rotate_to_path()
-                if abs(self.x - target_x) < self.speed and abs(self.y - target_y) < self.speed:
-                    self.current_target += 1
-
+            # Reset cache for hitboxes
+            self._cached_hitboxes = None
+        
+        # Update time for next movement calculation
+        self.last_move_time = time.time()
+    
+    def move(self, obstacles):
+        movement_data = self.calculate_next_position(obstacles)
+        self.apply_movement(movement_data)
 
     def can_move(self, obstacles, new_x, new_y):
         can_move = True
@@ -115,7 +170,6 @@ class Vehicle(CollidableObject):
         self.x, self.y = temp_x, temp_y  # herstel originele positie
         return can_move
         
-
     def get_vehicle_direction(self):
         if -45 <= self.angle <= 45:
             return 'west'
@@ -125,7 +179,6 @@ class Vehicle(CollidableObject):
             return 'north'
         else:
             return 'east'
-
 
     def rotate_to_path(self):
         if self.current_target < len(self.path) - 1:
@@ -145,10 +198,8 @@ class Vehicle(CollidableObject):
             self.rotated_width = self.image.get_width()
             self.rotated_height = self.image.get_height()
 
-
     def has_finished(self):
         return self.current_target >= len(self.path) - 1
-
 
     def draw(self):
         screen_x, screen_y = scale_to_display(self.x, self.y)
@@ -156,6 +207,7 @@ class Vehicle(CollidableObject):
         draw_y = int(screen_y - self.rotated_height // 2)
         screen.blit(self.image, (draw_x, draw_y))
         
+        # Uncomment to debug hitboxes
         # for hitbox in self.hitboxes():
         #     hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
         #     hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)

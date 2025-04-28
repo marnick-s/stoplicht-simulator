@@ -3,8 +3,8 @@ import zmq
 import threading
 
 class Messenger:
-    pub_address = "tcp://0.0.0.0:5556"  # Eigen IP (bijv. 10.121.17.84)
-    sub_address = "tcp://10.121.17.84:5555"  # IP van controller
+    pub_address = "tcp://127.0.0.1:5556"  # Eigen IP (bijv. 10.121.17.84)
+    sub_address = "tcp://127.0.0.1:5555"  # IP van controller
     receive_topic = "stoplichten"
 
     def __init__(self):

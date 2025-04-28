@@ -4,6 +4,7 @@ import cProfile
 import pstats
 import io
 import os
+from lib.fps_counter import FpsCounter
 from lib.messenger import Messenger
 from lib.screen import screen, WIDTH, update_screen_size
 from lib.simulation import Simulation
@@ -18,6 +19,8 @@ background_image = pygame.transform.scale(background_image, (WIDTH, new_height))
 
 overlay_image = pygame.image.load('assets/overlay.webp').convert_alpha()
 overlay_image = pygame.transform.scale(overlay_image, (WIDTH, new_height))
+
+fps_counter = FpsCounter()
 
 def load_config(config_dir="config"):
     config = {}
@@ -53,14 +56,16 @@ def run_simulation(drukte="rustig"):
                 update_screen_size()
 
         screen.blit(background_image, (0, 0))
+        fps_counter.update()
         simulation.update()
         simulation.draw()
         screen.blit(overlay_image, (0, 0))
+        fps_counter.draw()
 
         messenger.send("tijd", {"simulatie_tijd_ms": elapsed_time})
 
         pygame.display.flip()
-        clock.tick(30)
+        clock.tick(60)
 
     messenger.stop()
     pygame.quit()
@@ -96,4 +101,4 @@ if __name__ == '__main__':
     sortby = 'cumulative'
     ps = pstats.Stats(profiler, stream=s).sort_stats(sortby)
     ps.print_stats()
-    # print(s.getvalue())
+    print(s.getvalue())

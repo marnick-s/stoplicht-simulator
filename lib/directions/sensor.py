@@ -9,6 +9,7 @@ class Sensor(CollidableObject):
         self.color = (0, 0, 255)
         self.approach_direction = approach_direction
         self.vehicle_types = vehicle_types
+        self._cached_hitboxes = None
 
     def can_collide(self, vehicle_direction=None, vehicle_type=None):
         if vehicle_direction and vehicle_direction != self.approach_direction:
@@ -18,14 +19,16 @@ class Sensor(CollidableObject):
         return True
 
     def hitboxes(self):
-        half_width = self.width / 2
-        half_height = self.height / 2
-        return [Hitbox(
-            x=self.position.x - half_width,
-            y=self.position.y - half_height,
-            width=self.width,
-            height=self.height
-        )]
+        if self._cached_hitboxes is None:
+            half_width = self.width / 2
+            half_height = self.height / 2
+            self._cached_hitboxes = [Hitbox(
+                x=self.position.x - half_width,
+                y=self.position.y - half_height,
+                width=self.width,
+                height=self.height
+            )]
+        return self._cached_hitboxes
 
     def draw(self):
         if (self.width == 5):
