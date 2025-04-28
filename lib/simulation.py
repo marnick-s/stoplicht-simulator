@@ -27,7 +27,7 @@ class Simulation:
         
         # Choose spatial partitioning method
         self.use_spatial_hash = True  # Set to False to use quadtree instead
-        self.spatial_hash = SpatialHashGrid(cell_size=100)  # Adjust cell size based on your world
+        self.spatial_hash = SpatialHashGrid()  # Adjust cell size based on your world
         
         # Time-based movement tracking
         self.last_update_time = time.time()

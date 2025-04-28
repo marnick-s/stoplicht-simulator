@@ -7,7 +7,7 @@ class SpatialHashGrid:
     Objects are placed into cells based on their position to reduce the number of collision checks.
     """
     
-    def __init__(self, cell_size=100):
+    def __init__(self, cell_size=40):
         self.cell_size = cell_size
         self.grid = {}  # Dictionary mapping cell coordinates to lists of objects
         
