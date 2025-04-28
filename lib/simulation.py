@@ -132,7 +132,7 @@ class Simulation:
                 laneSensorData[sensor_id] = {"voor": False, "achter": False}
 
         # Create a temporary spatial hash grid for sensors
-        sensor_grid = SpatialHashGrid(cell_size=100)
+        sensor_grid = SpatialHashGrid()
         
         # Add all sensors to the grid
         for name, sensor in self.special_sensors.items():
