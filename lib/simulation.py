@@ -1,4 +1,3 @@
-from lib.basic_traffic_manager import BasicTrafficManager
 from lib.bridge.bridge import Bridge
 from lib.collidable_object import Hitbox
 from lib.directions.direction import Direction
@@ -15,7 +14,6 @@ class Simulation:
         self.vehicles = []
         self.config = config
         self.messenger = messenger
-        self.basic_traffic_manager = BasicTrafficManager()
         self.directions = self.load_directions(config)
         self.vehicle_spawner = VehicleSpawner(config, traffic_level)
         self.previous_lane_sensor_data = {}
