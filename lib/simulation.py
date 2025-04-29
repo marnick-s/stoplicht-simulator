@@ -25,8 +25,6 @@ class Simulation:
         self.bridge = Bridge(messenger)
         self.load_special_sensors()
         
-        # Choose spatial partitioning method
-        self.use_spatial_hash = True  # Set to False to use quadtree instead
         self.spatial_hash = SpatialHashGrid()  # Adjust cell size based on your world
         
         # Time-based movement tracking
@@ -102,10 +100,7 @@ class Simulation:
 
 
     def update_traffic_lights(self):
-        if self.messenger.connected:
-            traffic_light_data = self.messenger.traffic_light_data
-        else:
-            traffic_light_data = self.basic_traffic_manager.traffic_light_data
+        traffic_light_data = self.messenger.traffic_light_data
 
         if not traffic_light_data:
             return
@@ -192,7 +187,4 @@ class Simulation:
             sensor.draw()
         
         # Debug visualization for spatial partitioning
-        if self.use_spatial_hash:
-            self.spatial_hash.draw()
-        else:
-            self.root.draw()
+        self.spatial_hash.draw()

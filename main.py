@@ -101,4 +101,4 @@ if __name__ == '__main__':
     sortby = 'cumulative'
     ps = pstats.Stats(profiler, stream=s).sort_stats(sortby)
     ps.print_stats()
-    print(s.getvalue())
+    # print(s.getvalue())

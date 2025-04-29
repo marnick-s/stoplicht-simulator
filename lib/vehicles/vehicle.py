@@ -121,6 +121,9 @@ class Vehicle(CollidableObject):
         }
     
     def apply_movement(self, movement_data):
+        if isinstance(self, SupportsCollisionFreeZones) and self.exiting and not self.is_in_zone():
+            self.exiting = False
+    
         # Apply calculated position
         if movement_data['moved']:
             self.x = movement_data['x']

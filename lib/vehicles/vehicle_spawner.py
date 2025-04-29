@@ -1,6 +1,7 @@
 import random
 import pygame
 
+from lib.vehicles.bike import Bike
 from lib.vehicles.boat import Boat
 from lib.vehicles.car import Car
 from lib.vehicles.path import Path
@@ -11,6 +12,7 @@ class VehicleSpawner:
         "car": Car,
         "boat": Boat,
         "pedestrian": Pedestrian,
+        "bike": Bike,
     }
 
     def __init__(self, config, traffic_level="rustig"):

@@ -103,13 +103,15 @@ routes:
               - [371, 101]
               - [350, 141]
               - [330, 186]
-              - [325, 201]
-              - [319, 217]
-              - [317, 235]
-              - [318, 252]
-              - [323, 265]
-              - [328, 276]
-              - [340, 282]
+              - [326, 202]
+              - [325, 211]
+              - [325, 219]
+              - [328, 230]
+              - [330, 242]
+              - [334, 255]
+              - [339, 271]
+              - [344, 282]
+              - [352, 288]
               - to_east
 
   # Vanuit oost
@@ -285,100 +287,42 @@ routes:
 
 
   # PEDESTRIAN
-  - name: from_south_pedestrian
+  - name: from_west_as_pedestrian
     vehicle_type: pedestrian
     vehicles_per_minute_rustig: 6
     vehicles_per_minute_spits: 10
     path:
+      - from_west_as_outer_pedestrian
       - variations:
+          - usage_percentage: 25
+            path:
+              - to_north_westside_crossing_pedestrian
+              - to_north_as_outer_pedestrian
+          - usage_percentage: 25
+            path:
+              - to_east_southside_crossing_pedestrian
+              - to_east_es_outer_pedestrian
           - usage_percentage: 30
             path:
-              - [-11, 160]
-              - [18, 175]
-              - [47, 189]
-              - [138, 236]
-              - [195, 263]
-              - to_north_crossing_pedestrian
-              - to_north_outer_pedestrian
-          # - usage_percentage: 30
-          #   path:
-          #     - [139, 540]
-          #     - [161, 520]
-          #     - [181, 498]
-          #     - [201, 476]
-          #     - [222, 450]
-          #     - [233, 435]
-          #     - [243, 419]
-          #     - [252, 405]
-          #     - [267, 379]
-          #     - [278, 358]
-          #     - [287, 341]
-          #     - [297, 318]
-          #     - [308, 295]
-          #     - [318, 272]
-          #     - [329, 248]
-          #     - [338, 223]
-          #     - [346, 204]
-          #     - [353, 191]
-          #     - to_north
-          # - usage_percentage: 30
-          #   path:
-          #     - [152, 548]
-          #     - [176, 524]
-          #     - [198, 500]
-          #     - [222, 470]
-          #     - [244, 440]
-          #     - [263, 412]
-          #     - [280, 380]
-          #     - [300, 339]
-          #     - [319, 307]
-          #     - [330, 296]
-          #     - [345, 290]
-          #     - [359, 291]
-          #     - to_east
-
-  # # Noord naar zuid
-  # - vehicle_type: pedestrian
-  #   vehicles_per_minute: 10
-  #   path:
-  #     - [581, -10]
-  #     - [531, 85]
-  #     - [505, 109]
-  #     - [469, 120]
-  #     - [449, 157] #
-  #     - [428, 194] #
-  #     - [398, 245]
-  #     - [387, 265]
-  #     - [401, 274]
-  #     - [348, 392]
-  #     - [315, 440]
-  #     - [234, 512]
-
-  # # West naar oost
-  # - vehicle_type: pedestrian
-  #   vehicles_per_minute: 10
-  #   path:
-  #     - [-25, 38]
-  #     - [219, 173]
-  #     - [385, 265]
-  #     - [402, 278]
-  #     - [399, 290]
-  #     - [437, 311] #
-  #     - [466, 325] #
-  #     - [541, 366]
-  #     - [562, 361]
-  #     - [597, 364]
-  #     - [629, 379]
-  #     - [1089, 629]
-  #     - [1242, 735]
-  #     - [1352, 821]
-  #     - [1471, 916]
-  #     - [1562, 987]
-  #     - [1655, 1066]
-  #     - [1688, 1101]
-  #     - [1691, 1118]
-  #     - [1688, 1210]
-
+              - to_south_es_outer_pedestrian
+  - name: from_west_es_pedestrian
+    vehicle_type: pedestrian
+    vehicles_per_minute_rustig: 6
+    vehicles_per_minute_spits: 10
+    path:
+      - from_west_es_outer_pedestrian
+      - variations:
+          - usage_percentage: 25
+            path:
+              - to_south_westside_crossing_pedestrian
+              - to_south_es_outer_pedestrian
+          - usage_percentage: 25
+            path:
+              - to_east_northside_crossing_pedestrian
+              - to_east_as_outer_pedestrian
+          - usage_percentage: 30
+            path:
+              - to_north_as_outer_pedestrian
 
 
   # BOAT
