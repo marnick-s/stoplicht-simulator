@@ -559,24 +559,18 @@ route_components:
 
   - name: to_north_eastside_crossing_pedestrian
     path:
-        - [370, 330]
-        - [377, 315]
-        - [385, 296]
-        - [395, 275]
-        - [413, 237]
-        - [421, 223]
+        - [368, 330]
+        - [374, 314]
+        - [390, 283]
+        - [416, 228]
 
   - name: to_south_eastside_crossing_pedestrian
     path:
-        - [415, 219]
-        - [409, 230]
-        - [407, 235]
-        - [403, 244]
-        - [398, 255]
-        - [392, 266]
-        - [386, 279]
-        - [378, 296]
-        - [360, 330]
+        - [414, 221]
+        - [412, 228]
+        - [388, 279]
+        - [369, 314]
+        - [359, 329]
 
   - name: to_east_northside_crossing_pedestrian
     path:
