@@ -6,5 +6,5 @@ class Boat(Vehicle):
     vehicle_type_string = "boat"
     speed = 10
 
-    def __init__(self, path):
-        super().__init__(path, self.speed, self.sprite_width, self.sprite_height, self.vehicle_type_string)
+    def __init__(self, id, path):
+        super().__init__(id, path, self.speed, self.sprite_width, self.sprite_height, self.vehicle_type_string)

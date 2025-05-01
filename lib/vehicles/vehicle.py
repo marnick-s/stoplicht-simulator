@@ -12,8 +12,9 @@ class Vehicle(CollidableObject):
     # For time-based movement
     last_update_time = time.time()
 
-    def __init__(self, path, speed, sprite_width, sprite_height, vehicle_type_string):
+    def __init__(self, id, path, speed, sprite_width, sprite_height, vehicle_type_string):
         self.path = path
+        self.id = id
         self.current_target = 0
         self.x, self.y = self.path[self.current_target]
         self.speed = speed  # Now in units per second

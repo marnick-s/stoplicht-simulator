@@ -7,6 +7,6 @@ class Bike(Vehicle, SupportsCollisionFreeZones):
     vehicle_type_string = "bike"
     speed = 20
 
-    def __init__(self, path):
-        Vehicle.__init__(self, path, self.speed, self.sprite_width, self.sprite_height, self.vehicle_type_string)
+    def __init__(self, id, path):
+        Vehicle.__init__(self, id, path, self.speed, self.sprite_width, self.sprite_height, self.vehicle_type_string)
         SupportsCollisionFreeZones.__init__(self, self.x, self.y)

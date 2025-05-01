@@ -3,7 +3,6 @@ from lib.collidable_object import Hitbox
 from lib.directions.direction import Direction
 from lib.directions.sensor import Sensor
 from lib.enums.topics import Topics
-from lib.screen import WORLD_HEIGHT, WORLD_WIDTH
 from lib.spatial.spatial_hash_grid import SpatialHashGrid
 from lib.vehicles.vehicle import Vehicle
 from lib.vehicles.vehicle_spawner import VehicleSpawner
@@ -15,7 +14,7 @@ class Simulation:
         self.config = config
         self.messenger = messenger
         self.directions = self.load_directions(config)
-        self.vehicle_spawner = VehicleSpawner(config, traffic_level)
+        self.vehicle_spawner = VehicleSpawner(config, traffic_level, messenger)
         self.previous_lane_sensor_data = {}
         self.previous_special_sensor_data = {}
         self.collision_free_zones = config.get("collision_free_zones", [])
@@ -90,10 +89,14 @@ class Simulation:
             vehicle.apply_movement(movement_data)
 
         # Other updates
-        self.vehicle_spawner.create_new_vehicles(self.vehicles)
+        self.vehicle_spawner.update(self.vehicles, delta_time)
         self.update_traffic_lights()
         self.bridge.update(delta_time)
+        
+        # Simply remove finished vehicles from the list
+        # Queue management is now handled by time-based countdown
         self.vehicles[:] = [v for v in self.vehicles if not v.has_finished()]
+        
         self.check_occupied_sensors()
 
 

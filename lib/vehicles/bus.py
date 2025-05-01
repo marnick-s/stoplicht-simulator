@@ -1,9 +1,9 @@
 from lib.vehicles.vehicle import Vehicle
 
-class Car(Vehicle):
+class Bus(Vehicle):
     sprite_width = 22
     sprite_height = 10
-    vehicle_type_string = "car"
+    vehicle_type_string = "bus"
     speed = 60
 
     def __init__(self, id, path):
