@@ -3,6 +3,7 @@ import pygame
 import os
 import random
 import time
+import re
 from lib.collidable_object import CollidableObject, Hitbox
 from lib.screen import screen, scale_to_display
 from lib.vehicles.supports_collision_free_zones import SupportsCollisionFreeZones
@@ -12,15 +13,17 @@ class Vehicle(CollidableObject):
     # For time-based movement
     last_update_time = time.time()
 
-    def __init__(self, id, path, speed, sprite_width, sprite_height, vehicle_type_string):
+    def __init__(self, id, path, speed, vehicle_type_string):
         self.path = path
         self.id = id
         self.current_target = 0
         self.x, self.y = self.path[self.current_target]
         self.speed = speed  # Now in units per second
         self.vehicle_type_string = vehicle_type_string
-        self.sprite_width, self.sprite_height = sprite_width, sprite_height
-        self.original_image = self.scale_image(self.load_random_image("assets/vehicles/" + self.vehicle_type_string))
+        
+        # Load image first to get dimensions from filename
+        self.original_image, self.sprite_width, self.sprite_height = self.load_random_image_with_dimensions("assets/vehicles/" + self.vehicle_type_string)
+        
         self.angle = 0
         self.image = self.original_image.copy()
         self.rotated_width = self.sprite_width
@@ -30,16 +33,31 @@ class Vehicle(CollidableObject):
         self._last_angle = self.angle # Performance
         self.last_move_time = time.time()  # For time-based movement
 
-    def load_random_image(self, folder):
+    def load_random_image_with_dimensions(self, folder):
         image_files = [f for f in os.listdir(folder) if f.endswith('.webp')]
         if not image_files:
             raise ValueError(f"Geen WebP-afbeeldingen gevonden in de map: {folder}")
+        
         image_file = random.choice(image_files)
+        
+        # Extract dimensions from filename (e.g., "20x20.webp" or "20x20-1.webp")
+        dimensions_match = re.search(r'(\d+)x(\d+)(?:-\d+)?\.webp$', image_file)
+        if dimensions_match:
+            sprite_width = int(dimensions_match.group(1))
+            sprite_height = int(dimensions_match.group(2))
+        else:
+            # Default dimensions if pattern doesn't match
+            sprite_width = 40
+            sprite_height = 40
+        
         image_path = os.path.join(folder, image_file)
-        return pygame.image.load(image_path).convert_alpha()
+        image = pygame.image.load(image_path).convert_alpha()
+        scaled_image = self.scale_image(image, sprite_width, sprite_height)
+        
+        return scaled_image, sprite_width, sprite_height
 
-    def scale_image(self, image):
-        return pygame.transform.scale(image, scale_to_display(self.sprite_width, self.sprite_height))
+    def scale_image(self, image, width, height):
+        return pygame.transform.scale(image, scale_to_display(width, height))
     
     def hitboxes(self):
         # Cache hitboxes als positie en hoek niet veranderd zijn
@@ -215,4 +233,4 @@ class Vehicle(CollidableObject):
         # for hitbox in self.hitboxes():
         #     hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
         #     hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
-        #     pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)
+        #     pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2), image_file)
