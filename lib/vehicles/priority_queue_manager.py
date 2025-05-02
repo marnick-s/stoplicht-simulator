@@ -45,23 +45,6 @@ class PriorityQueueManager():
             self.should_send_update = False
             self._send_update()
             
-        # Remove vehicles that have left the intersection
-        # now = pygame.time.get_ticks()
-        # new_queue = []
-        # for item in self.queue:
-        #     if item["simulatie_tijd_ms"] > 0:
-        #         new_queue.append(item)
-        #     elif now - item.get("complete_time", now) < 6000:
-        #         new_queue.append(item)
-        # if len(new_queue) != len(self.queue):
-        #     self.queue = new_queue
-        #     self._send_update()
-
-    def _queues_match(self):
-        current_state = {(item["vehicle_id"], item["has_entered_intersection"]) for item in self.queue}
-        previous_state = {(item["vehicle_id"], item["has_entered_intersection"]) for item in self.previous_queue}
-        print(f"Current State: {current_state}, Previous State: {previous_state}")
-        return current_state == previous_state
 
     def _send_update(self):
         data = {
