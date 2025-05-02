@@ -64,7 +64,7 @@ class VehicleSpawner:
         return random.expovariate(1/120) * 1000
 
     def get_lane_id_from_route(self, route):
-        print(route)
+        # print(route)
         name_tuple = route['name']
         if len(name_tuple) >= 2:
             return name_tuple[1]
