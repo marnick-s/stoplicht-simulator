@@ -72,6 +72,7 @@ class VehicleSpawner:
 
         if not any(vehicle.collides_with(v) for v in vehicles):
             self.assign_id(vehicle)
+            vehicle.after_create()
             vehicles.append(vehicle)
             # Notify priority queue manager
             if self.priority_queue_manager and vehicle_type in ("bus", "emergency_vehicle"):
@@ -99,6 +100,7 @@ class VehicleSpawner:
                 vehicle = cls(self.vehicle_id_counter, path.get_pretty_path())
                 if not any(vehicle.collides_with(v) for v in vehicles):
                     self.assign_id(vehicle)
+                    vehicle.after_create()
                     vehicles.append(vehicle)
                 delay = random.expovariate(vpm / 60) * 1000
                 self.next_spawn_times[key] = current_time + delay

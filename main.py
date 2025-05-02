@@ -11,8 +11,8 @@ from lib.simulation import Simulation
 import argparse
 
 # Initialize pygame
+pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
-pygame.mixer.init() 
 
 # Laden en schalen van de achtergronden
 background_image = pygame.image.load('assets/background.webp').convert_alpha()

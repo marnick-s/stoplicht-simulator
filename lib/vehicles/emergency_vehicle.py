@@ -24,8 +24,9 @@ class EmergencyVehicle(Vehicle):
         self.last_siren_toggle = time.time()
         self.siren_interval = 0.3  # seconds
         
-        # Sound initialization
+    def after_create(self):
         self.setup_siren_sound()
+        return super().after_create()
         
     def setup_siren_sound(self):
         # Check if mixer is initialized
@@ -37,9 +38,9 @@ class EmergencyVehicle(Vehicle):
             print(self.sprite_height)
             # Select appropriate siren sound based on vehicle dimensions
             if self.sprite_width >= 28:  # Larger vehicles (like fire trucks)
-                sound_file = "assets/sounds/sirene-brandweer.mp3"
+                sound_file = "assets/sounds/sirene-brandweer.wav"
             elif self.sprite_width >= 25:  # Medium vehicles (like ambulances)
-                sound_file = "assets/sounds/sirene-ambu.mp3"
+                sound_file = "assets/sounds/sirene-ambu.wav"
             else:  # Smaller vehicles (like police cars)
                 sound_file = "assets/sounds/sirene-politie.wav"
                 

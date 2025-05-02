@@ -33,6 +33,9 @@ class Vehicle(CollidableObject):
         self._last_angle = self.angle # Performance
         self.last_move_time = time.time()  # For time-based movement
 
+    def after_create(self):
+        pass
+    
     def load_random_image_with_dimensions(self, folder):
         image_files = [f for f in os.listdir(folder) if f.endswith('.webp')]
         if not image_files:
@@ -60,11 +63,11 @@ class Vehicle(CollidableObject):
         return pygame.transform.scale(image, scale_to_display(width, height))
     
     def hitboxes(self):
-        # Cache hitboxes als positie en hoek niet veranderd zijn
+        # Cache hitboxes
         if self._cached_hitboxes is not None and (self.x, self.y) == self._last_position and self.angle == self._last_angle:
             return self._cached_hitboxes
 
-        # Bereken hitboxes
+        # Calculate hitboxes
         num_segments = 4
         segment_length = (self.sprite_height + (self.sprite_height * 0.4)) // num_segments
         vehicle_width = self.sprite_width // 3.4

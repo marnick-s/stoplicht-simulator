@@ -66,13 +66,11 @@ class SpatialHashGrid:
         return self.query(search_box)
 
     def draw(self, color=(150, 150, 150)):
-        """Draw grid for debugging purposes."""
-        import pygame
-        
+        """Draw grid for debugging purposes."""        
         # Only draw cells with objects
-        for cell_coords, objects in self.grid.items():
-            if objects:
-                cell_x, cell_y = cell_coords
-                x, y = scale_to_display(cell_x * self.cell_size, cell_y * self.cell_size)
-                width, height = scale_to_display(self.cell_size, self.cell_size)
-                pygame.draw.rect(screen, color, (x, y, width, height), 1)
+        # for cell_coords, objects in self.grid.items():
+        #     if objects:
+        #         cell_x, cell_y = cell_coords
+        #         x, y = scale_to_display(cell_x * self.cell_size, cell_y * self.cell_size)
+        #         width, height = scale_to_display(self.cell_size, self.cell_size)
+        #         pygame.draw.rect(screen, color, (x, y, width, height), 1)
