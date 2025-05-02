@@ -63,13 +63,6 @@ class VehicleSpawner:
     def get_random_emergency_delay(self):
         return random.expovariate(1/120) * 1000
 
-    def get_lane_id_from_route(self, route):
-        # print(route)
-        name_tuple = route['name']
-        if len(name_tuple) >= 2:
-            return name_tuple[1]
-        return "0.0"
-
     def spawn_priority_vehicle(self, vehicles, vehicle_type):
         route = random.choice(self.car_routes)
 
@@ -82,7 +75,7 @@ class VehicleSpawner:
             vehicles.append(vehicle)
             # Notify priority queue manager
             if self.priority_queue_manager and vehicle_type in ("bus", "emergency_vehicle"):
-                lane_id = self.get_lane_id_from_route(route)
+                lane_id = path.get_associated_lane()
                 self.priority_queue_manager.add(lane_id, vehicle)
             return vehicle
         return None

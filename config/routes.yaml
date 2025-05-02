@@ -7,6 +7,7 @@ routes:
     path:
       - variations:
           - usage_percentage: 30
+            associated_lane: "6.1"
             path:
               - [131, 543]
               - [152, 526]
@@ -26,6 +27,7 @@ routes:
               - [280, 188]
               - to_west
           - usage_percentage: 30
+            associated_lane: "5.1"
             path:
               - [139, 540]
               - [161, 520]
@@ -47,6 +49,7 @@ routes:
               - [353, 191]
               - to_north
           - usage_percentage: 30
+            associated_lane: "4.1"
             path:
               - [152, 548]
               - [176, 524]
@@ -70,6 +73,7 @@ routes:
     path:
       - variations:
           - usage_percentage: 30
+            associated_lane: "10.1"
             path:
               - [399, -21]
               - [391, 2]
@@ -85,6 +89,7 @@ routes:
               - [266, 180]
               - to_west
           - usage_percentage: 30
+            associated_lane: "11.1"
             path:
               - [413, -13]
               - [399, 18]
@@ -96,6 +101,7 @@ routes:
               - [274, 279]
               - to_south
           - usage_percentage: 40
+            associated_lane: "12.1"
             path:
               - [423, -10]
               - [413, 12]
@@ -146,6 +152,7 @@ routes:
       - [890, 510]
       - variations:
           - usage_percentage: 10
+            associated_lane: "1.1"
             path:
                 - [866, 494]
                 - [828, 472]
@@ -164,7 +171,8 @@ routes:
           - usage_percentage: 70
             path:
                 - multi_lane:
-                    - path:
+                    - associated_lane: "2.1"
+                      path:
                         - [855, 489]
                         - [791, 452]
                         - [728, 417]
@@ -174,7 +182,8 @@ routes:
                         - [213, 155]
                         - [2, 50]
                         - [-22, 37]
-                    - path:
+                    - associated_lane: "2.2"
+                      path:
                         - [852, 499]
                         - [826, 485]
                         - [799, 470]
@@ -187,6 +196,7 @@ routes:
                         - [13, 69]
                         - [-22, 51]
           - usage_percentage: 20
+            associated_lane: "3.1"
             path:
                 - [852, 499]
                 - [826, 485]
@@ -215,6 +225,7 @@ routes:
     path:
       - variations:
           - usage_percentage: 20
+            associated_lane: "7.1"
             path:
                 - [-25, 118]
                 - [34, 146]
@@ -230,7 +241,8 @@ routes:
           - usage_percentage: 70
             path:
                 - multi_lane:
-                    - path:
+                    - associated_lane: "8.2"
+                      path:
                         - [-24, 91]
                         - [15, 108]
                         - [100, 149]
@@ -250,7 +262,8 @@ routes:
                         - [1116, 685]
                         - [1145, 707]
                         - [1181, 735]
-                    - path:
+                    - associated_lane: "8.1"
+                      path:
                         - [-13, 110]
                         - [20, 125]
                         - [57, 144]
@@ -270,6 +283,7 @@ routes:
                         - [1197, 765]
                 - to_east_outer
           - usage_percentage: 10
+            associated_lane: "9.1"
             path:
                 - [-21, 76]
                 - [9, 91]
