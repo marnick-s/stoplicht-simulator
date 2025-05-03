@@ -191,6 +191,7 @@ directions:
           approach_direction: east
           traffic_light_position: [381, 166]
           front_sensor_position: [383, 167]
+    # BRIDGE
     - id: 51
       traffic_lights:
         - id: 1
@@ -215,8 +216,9 @@ directions:
           approach_direction: west
           traffic_light_position: [1373, 840]
           front_sensor_position: [1370, 836]
-
+    # END BRIDGE
   bike:
+    # BRIDGE
     - id: 51
       traffic_lights:
         - id: 1
@@ -241,6 +243,57 @@ directions:
           approach_direction: west
           traffic_light_position: [1362, 848]
           front_sensor_position: [1357, 843]
+    # END BRIDGE
+    - id: 22
+      traffic_lights:
+        - id: 1
+          approach_direction: south
+          traffic_light_position: [361, 311]
+          front_sensor_position: [359, 315]
+    - id: 21
+      traffic_lights:
+        - id: 1
+          approach_direction: north
+          traffic_light_position: [397, 220]
+          front_sensor_position: [399, 216]
+    - id: 23
+      traffic_lights:
+        - id: 1
+          approach_direction: east
+          traffic_light_position: [321, 318]
+          front_sensor_position: [325, 320]
+    - id: 24
+      traffic_lights:
+        - id: 1
+          approach_direction: west
+          traffic_light_position: [247, 288]
+          front_sensor_position: [243, 286]
+    - id: 25
+      traffic_lights:
+        - id: 1
+          approach_direction: south
+          traffic_light_position: [231, 254]
+          front_sensor_position: [230, 257]
+    - id: 26
+      traffic_lights:
+        - id: 1
+          approach_direction: north
+          traffic_light_position: [269, 163]
+          front_sensor_position: [271, 158]
+    - id: 27
+      traffic_lights:
+        - id: 1
+          approach_direction: east
+          traffic_light_position: [305, 151]
+          front_sensor_position: [301, 149]
+    - id: 28
+      traffic_lights:
+        - id: 1
+          approach_direction: west
+          traffic_light_position: [380, 180]
+          front_sensor_position: [383, 182]
+
+
 
 
   boat:
