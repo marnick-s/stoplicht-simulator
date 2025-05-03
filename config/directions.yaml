@@ -94,6 +94,19 @@ directions:
           traffic_light_position: [353, 136]
           front_sensor_position: [357, 129]
           back_sensor_position: [381, 79]
+    # BRIDGE
+    - id: 41
+      traffic_lights:
+        - id: 1
+          approach_direction: east
+          traffic_light_position: [1515, 976]
+          front_sensor_position: [1527, 979]
+    - id: 42
+      traffic_lights:
+        - id: 1
+          approach_direction: west
+          traffic_light_position: [1333, 876]
+          front_sensor_position: [1325, 869]
 
 
 
@@ -178,22 +191,59 @@ directions:
           approach_direction: east
           traffic_light_position: [381, 166]
           front_sensor_position: [383, 167]
-
-
-    - id: 41
+    - id: 51
       traffic_lights:
         - id: 1
           approach_direction: east
-          traffic_light_position: [1515, 976]
-          front_sensor_position: [1527, 979]
-    - id: 42
+          traffic_light_position: [1470, 922]
+          front_sensor_position: [1473, 924]
+    - id: 52
+      traffic_lights:
+        - id: 1
+          approach_direction: east
+          traffic_light_position: [1411, 984]
+          front_sensor_position: [1414, 987]
+    - id: 53
       traffic_lights:
         - id: 1
           approach_direction: west
-          traffic_light_position: [1333, 876]
-          front_sensor_position: [1325, 869]
+          traffic_light_position: [1318, 909]
+          front_sensor_position: [1314, 907]
+    - id: 54
+      traffic_lights:
+        - id: 1
+          approach_direction: west
+          traffic_light_position: [1373, 840]
+          front_sensor_position: [1370, 836]
+
+  bike:
+    - id: 51
+      traffic_lights:
+        - id: 1
+          approach_direction: east
+          traffic_light_position: [1464, 932]
+          front_sensor_position: [1467, 934]
+    - id: 52
+      traffic_lights:
+        - id: 1
+          approach_direction: east
+          traffic_light_position: [1421, 975]
+          front_sensor_position: [1425, 978]
+    - id: 53
+      traffic_lights:
+        - id: 1
+          approach_direction: west
+          traffic_light_position: [1327, 902]
+          front_sensor_position: [1323, 898]
+    - id: 54
+      traffic_lights:
+        - id: 1
+          approach_direction: west
+          traffic_light_position: [1362, 848]
+          front_sensor_position: [1357, 843]
 
 
+  boat:
     - id: 71
       traffic_lights:
         - id: 1

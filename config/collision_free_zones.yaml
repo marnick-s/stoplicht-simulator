@@ -54,3 +54,18 @@ collision_free_zones:
     - [1328, 835]
     - [1374, 835]
     - [1375, 787]
+
+
+# BRUG KRUISPUNT NOORDZIJDE
+  - zone:
+    - [1327, 792]
+    - [1326, 827]
+    - [1376, 828]
+    - [1377, 791]
+
+# BRUG KRUISPUNT ZUIDZIJDE
+  - zone:
+    - [1246, 859]
+    - [1246, 899]
+    - [1295, 897]
+    - [1295, 859]

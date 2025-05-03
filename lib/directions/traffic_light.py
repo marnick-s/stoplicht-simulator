@@ -30,7 +30,7 @@ class TrafficLight(CollidableObject):
         self._cached_hitboxes = None
 
     def get_sprite(self):
-        if (self.type == 'pedestrian'):
+        if (self.type == 'pedestrian' or self.type == 'bike'):
             sprite_size = scale_to_display(6, 10)
             green_light_img = pygame.image.load('assets/lights/groen-pedestrian.webp').convert_alpha()
             self.green_light_img = pygame.transform.scale(green_light_img, sprite_size)
