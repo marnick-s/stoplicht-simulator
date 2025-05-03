@@ -283,13 +283,13 @@ directions:
     - id: 27
       traffic_lights:
         - id: 1
-          approach_direction: east
+          approach_direction: west
           traffic_light_position: [305, 151]
           front_sensor_position: [301, 149]
     - id: 28
       traffic_lights:
         - id: 1
-          approach_direction: west
+          approach_direction: east
           traffic_light_position: [380, 180]
           front_sensor_position: [383, 182]
 
