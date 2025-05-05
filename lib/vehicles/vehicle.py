@@ -91,6 +91,10 @@ class Vehicle(CollidableObject):
         return hitboxes
     
     def calculate_next_position(self, obstacles):
+        if isinstance(self, SupportsCollisionFreeZones) and self.is_exiting_zone() and not self.is_in_zone(self.exiting):
+            print(f"Vehicle {self.id} is exiting zone {self.exiting}.")
+            self.exiting = None
+    
         # Return current position if we have no more targets
         if self.current_target >= len(self.path) - 1:
             return {
@@ -143,9 +147,6 @@ class Vehicle(CollidableObject):
         }
     
     def apply_movement(self, movement_data):
-        if isinstance(self, SupportsCollisionFreeZones) and self.is_exiting_zone() and not self.is_in_zone():
-            self.exiting = None
-    
         # Apply calculated position
         if movement_data['moved']:
             self.x = movement_data['x']
@@ -171,26 +172,30 @@ class Vehicle(CollidableObject):
     def can_move(self, obstacles, new_x, new_y):
         can_move = True
         
-        if isinstance(self, SupportsCollisionFreeZones) and self.is_in_zone():
-            if (self.is_exiting_zone()):
-                return True
-            current_zone = self.get_current_zone()
-            if not self.point_in_zone(new_x, new_y, current_zone):
-                if not self.exit_zone(obstacles, new_x, new_y):
-                    can_move = False
-
         temp_x, temp_y = self.x, self.y
         self.x, self.y = new_x, new_y  # tijdelijke positie
 
-        for obstacle in obstacles:
-            if isinstance(self, SupportsCollisionFreeZones) and isinstance(obstacle, SupportsCollisionFreeZones):
-                if self.in_same_cf_zone(obstacle):
-                    continue
-                if self.is_exiting_zone() and self.get_current_zone() == obstacle.get_current_zone():
-                    continue
-            if self.collides_with(obstacle, vehicle_direction=self.get_vehicle_direction(), collision_angle=self.angle):
-                can_move = False
-                break
+        if isinstance(self, SupportsCollisionFreeZones) and self.is_in_zone():
+            if (self.is_exiting_zone()):
+                can_move = True
+            else:
+                current_zone = self.get_current_zone()
+                if not self.collides_with(current_zone):
+                    if self.can_exit_zone(obstacles, new_x, new_y, current_zone.id):
+                        self.exiting = current_zone.id
+                    else:
+                        can_move = False
+
+        if can_move:
+            for obstacle in obstacles:
+                if isinstance(self, SupportsCollisionFreeZones) and isinstance(obstacle, SupportsCollisionFreeZones):
+                    if self.in_same_cf_zone(obstacle):
+                        continue
+                    if self.is_exiting_zone() and self.get_current_zone() == obstacle.get_current_zone():
+                        continue
+                if self.collides_with(obstacle, vehicle_direction=self.get_vehicle_direction(), collision_angle=self.angle):
+                    can_move = False
+                    break
             
         self.x, self.y = temp_x, temp_y  # herstel originele positie
         return can_move

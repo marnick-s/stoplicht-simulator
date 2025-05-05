@@ -4,6 +4,7 @@ from lib.directions.direction import Direction
 from lib.directions.sensor import Sensor
 from lib.enums.topics import Topics
 from lib.spatial.spatial_hash_grid import SpatialHashGrid
+from lib.vehicles.collision_free_zone import CollisionFreeZone
 from lib.vehicles.vehicle import Vehicle
 from lib.vehicles.vehicle_spawner import VehicleSpawner
 import time
@@ -18,7 +19,7 @@ class Simulation:
         self.previous_lane_sensor_data = {}
         self.previous_special_sensor_data = {}
         self.collision_free_zones = config.get("collision_free_zones", [])
-        Vehicle.collision_free_zones = self.collision_free_zones  # Set collision free zones for all vehicles
+        Vehicle.collision_free_zones = self.load_collision_free_zones_from_config()  # Set collision free zones for all vehicles
         self.bridge = Bridge(messenger)
         self.load_special_sensors()
         
@@ -26,6 +27,15 @@ class Simulation:
         
         # Time-based movement tracking
         self.last_update_time = time.time()
+
+    def load_collision_free_zones_from_config(self) -> list[CollisionFreeZone]:
+        zones = []
+        for zone_dict in self.config.get("collision_free_zones", []):
+            try:
+                zones.append(CollisionFreeZone(zone_dict))
+            except Exception as e:
+                print(f"Fout bij zone {zone_dict.get('id', '?')}: {e}")
+        return zones
 
     def load_directions(self, config):
         directions = []

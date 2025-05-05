@@ -3,7 +3,7 @@ from lib.vehicles.vehicle import Vehicle
 
 class Bike(Vehicle, SupportsCollisionFreeZones):
     vehicle_type_string = "bike"
-    speed = 20
+    speed = 60
 
     def __init__(self, id, path):
         Vehicle.__init__(self, id, path, self.speed, self.vehicle_type_string)
