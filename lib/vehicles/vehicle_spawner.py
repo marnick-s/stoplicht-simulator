@@ -30,7 +30,7 @@ class VehicleSpawner:
         # Initialize spawn timers voor reguliere routes
         self.next_spawn_times = {}
         for route in config['routes']:
-            vpm = self.get_vehicles_per_minute(route)
+            vpm = self.get_vehicles_per_interval(route)
             delay = random.expovariate(vpm / 60) * 5000 if vpm > 0 else float('inf')
             self.next_spawn_times[tuple(route['name'])] = current_time + delay
 
@@ -45,15 +45,15 @@ class VehicleSpawner:
         vehicle.id = self.vehicle_id_counter
         self.vehicle_id_counter += 1
 
-    def get_vehicles_per_minute(self, route):
+    def get_vehicles_per_interval(self, route):
         if self.traffic_level == "rustig":
-            return route.get("vehicles_per_minute_rustig", 0)
+            return route.get("vehicles_per_interval_rustig", 0)
         elif self.traffic_level == "spits":
-            return route.get("vehicles_per_minute_spits", 0)
+            return route.get("vehicles_per_interval_spits", 0)
         elif self.traffic_level == "stress":
             return max(
-                route.get("vehicles_per_minute_rustig", 0),
-                route.get("vehicles_per_minute_spits", 0)
+                route.get("vehicles_per_interval_rustig", 0),
+                route.get("vehicles_per_interval_spits", 0)
             ) * 2
         return 0
 
@@ -90,7 +90,7 @@ class VehicleSpawner:
 
         # Spawn reguliere voertuigen
         for route in self.config['routes']:
-            vpm = self.get_vehicles_per_minute(route)
+            vpm = self.get_vehicles_per_interval(route)
             if vpm <= 0:
                 continue
             key = tuple(route['name'])

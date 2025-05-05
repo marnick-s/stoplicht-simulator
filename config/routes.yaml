@@ -2,8 +2,8 @@ routes:
   # Vanuit zuid
   - name: from_south_car
     vehicle_type: car
-    vehicles_per_minute_rustig: 3
-    vehicles_per_minute_spits: 15
+    vehicles_per_interval_rustig: 15
+    vehicles_per_interval_spits: 11
     path:
       - variations:
           - usage_percentage: 30
@@ -68,8 +68,8 @@ routes:
   # Vanuit noord
   - name: from_north_car
     vehicle_type: car
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 20
+    vehicles_per_interval_rustig: 20
+    vehicles_per_interval_spits: 24
     path:
       - variations:
           - usage_percentage: 30
@@ -123,8 +123,8 @@ routes:
   # Vanuit oost
   - name: from_east_car
     vehicle_type: car
-    vehicles_per_minute_rustig: 3
-    vehicles_per_minute_spits: 40
+    vehicles_per_interval_rustig: 76
+    vehicles_per_interval_spits: 103
     path:
       - [1899, 1219]
       - [1884, 1205]
@@ -220,8 +220,8 @@ routes:
   # Vanuit west
   - name: from_west_car
     vehicle_type: car
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 25
+    vehicles_per_interval_rustig: 79
+    vehicles_per_interval_spits: 77
     path:
       - variations:
           - usage_percentage: 20
@@ -303,8 +303,8 @@ routes:
   # PEDESTRIAN
   - name: from_west_as_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 3
+    vehicles_per_interval_spits: 1
     path:
       - from_west_as_outer_pedestrian
       - variations:
@@ -322,8 +322,8 @@ routes:
 
   - name: from_west_es_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 3
+    vehicles_per_interval_spits: 1
     path:
       - from_west_es_outer_pedestrian
       - variations:
@@ -341,8 +341,8 @@ routes:
 
   - name: from_north_as_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 3
+    vehicles_per_interval_spits: 1
     path:
       - from_north_as_outer_pedestrian
       - variations:
@@ -360,8 +360,8 @@ routes:
 
   - name: from_north_es_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 3
+    vehicles_per_interval_spits: 1
     path:
       - from_north_es_outer_pedestrian
       - variations:
@@ -379,8 +379,8 @@ routes:
 
   - name: from_south_as_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 3
+    vehicles_per_interval_spits: 1
     path:
       - from_south_as_outer_pedestrian
       - variations:
@@ -398,8 +398,8 @@ routes:
 
   - name: from_south_es_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 3
+    vehicles_per_interval_spits: 1
     path:
       - from_south_es_outer_pedestrian
       - variations:
@@ -417,8 +417,8 @@ routes:
 
   - name: from_east_as_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 3
+    vehicles_per_interval_spits: 1
     path:
       - from_east_as_outer_pedestrian
       - variations:
@@ -436,8 +436,8 @@ routes:
 
   - name: from_east_es_pedestrian
     vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 3
+    vehicles_per_interval_spits: 1
     path:
       - from_east_es_outer_pedestrian
       - variations:
@@ -458,8 +458,8 @@ routes:
   # BOAT
   - name: from_north_boat
     vehicle_type: boat
-    vehicles_per_minute_rustig: 2
-    vehicles_per_minute_spits: 0
+    vehicles_per_interval_rustig: 2
+    vehicles_per_interval_spits: 0
     path:
       - [1971, 532]
       - [1780, 644]
@@ -475,8 +475,8 @@ routes:
 
   - name: from_south_boat
     vehicle_type: boat
-    vehicles_per_minute_rustig: 1
-    vehicles_per_minute_spits: 0
+    vehicles_per_interval_rustig: 1
+    vehicles_per_interval_spits: 0
     path:
       - [1204, 1068]
       - [1265, 1021]
@@ -497,8 +497,8 @@ routes:
   # BIKE
   - name: from_west_as_bike
     vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 2
+    vehicles_per_interval_spits: 1
     path:
       - from_west_as_outer_bike
       - variations:
@@ -517,8 +517,8 @@ routes:
 
   - name: from_west_es_bike
     vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 2
+    vehicles_per_interval_spits: 1
     path:
       - from_west_es_outer_bike
       - variations:
@@ -537,8 +537,8 @@ routes:
 
   - name: from_north_bike
     vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 2
+    vehicles_per_interval_spits: 1
     path:
       - from_north_outer_bike
       - variations:
@@ -556,8 +556,8 @@ routes:
 
   - name: from_south_as_bike
     vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 2
+    vehicles_per_interval_spits: 1
     path:
       - from_south_as_outer_bike
       - variations:
@@ -575,8 +575,8 @@ routes:
 
   - name: from_south_es_bike
     vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 2
+    vehicles_per_interval_spits: 1
     path:
       - from_south_es_outer_bike
       - variations:
@@ -595,8 +595,8 @@ routes:
 
   - name: from_east_as_bike
     vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_interval_rustig: 2
+    vehicles_per_interval_spits: 1
     path:
       - from_east_as_outer_bike
       - variations:
@@ -614,8 +614,8 @@ routes:
 
   - name: from_east_es_bike
     vehicle_type: bike
-    vehicles_per_minute_rustig: 1
-    vehicles_per_minute_spits: 1
+    vehicles_per_interval_rustig: 2
+    vehicles_per_interval_spits: 1
     path:
       - from_east_es_outer_bike
       - variations:
