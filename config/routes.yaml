@@ -614,8 +614,8 @@ routes:
 
   - name: from_east_es_bike
     vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_minute_rustig: 1
+    vehicles_per_minute_spits: 1
     path:
       - from_east_es_outer_bike
       - variations:

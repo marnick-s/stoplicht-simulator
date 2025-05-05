@@ -31,7 +31,7 @@ class VehicleSpawner:
         self.next_spawn_times = {}
         for route in config['routes']:
             vpm = self.get_vehicles_per_minute(route)
-            delay = random.expovariate(vpm / 60) * 1000 if vpm > 0 else float('inf')
+            delay = random.expovariate(vpm / 60) * 5000 if vpm > 0 else float('inf')
             self.next_spawn_times[tuple(route['name'])] = current_time + delay
 
         # Initialize priority spawn timers
@@ -54,14 +54,14 @@ class VehicleSpawner:
             return max(
                 route.get("vehicles_per_minute_rustig", 0),
                 route.get("vehicles_per_minute_spits", 0)
-            )
+            ) * 2
         return 0
 
     def get_random_bus_delay(self):
-        return random.expovariate(1/60) * 1000
+        return random.expovariate(1/120) * 1000
 
     def get_random_emergency_delay(self):
-        return random.expovariate(1/120) * 1000
+        return random.expovariate(1/300) * 1000
 
     def spawn_priority_vehicle(self, vehicles, vehicle_type):
         route = random.choice(self.car_routes)
@@ -102,7 +102,7 @@ class VehicleSpawner:
                     self.assign_id(vehicle)
                     vehicle.after_create()
                     vehicles.append(vehicle)
-                delay = random.expovariate(vpm / 60) * 1000
+                delay = random.expovariate(vpm / 60) * 5000
                 self.next_spawn_times[key] = current_time + delay
 
         # Spawn bus
