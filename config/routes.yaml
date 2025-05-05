@@ -304,7 +304,7 @@ routes:
   - name: from_west_as_pedestrian
     vehicle_type: pedestrian
     vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
+    vehicles_per_minute_spits: 100
     path:
       - from_west_as_outer_pedestrian
       - variations:
@@ -320,313 +320,313 @@ routes:
             path:
               - to_south_es_outer_pedestrian
 
-  - name: from_west_es_pedestrian
-    vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_west_es_outer_pedestrian
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_south_westside_crossing_pedestrian
-              - to_south_es_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_east_northside_crossing_pedestrian
-              - to_east_as_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_north_as_outer_pedestrian
+  # - name: from_west_es_pedestrian
+  #   vehicle_type: pedestrian
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_west_es_outer_pedestrian
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_westside_crossing_pedestrian
+  #             - to_south_es_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_northside_crossing_pedestrian
+  #             - to_east_as_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_as_outer_pedestrian
 
-  - name: from_north_as_pedestrian
-    vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_north_as_outer_pedestrian
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_south_westside_crossing_pedestrian
-              - to_south_es_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_east_northside_crossing_pedestrian
-              - to_east_as_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_west_es_outer_pedestrian
+  # - name: from_north_as_pedestrian
+  #   vehicle_type: pedestrian
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_north_as_outer_pedestrian
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_westside_crossing_pedestrian
+  #             - to_south_es_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_northside_crossing_pedestrian
+  #             - to_east_as_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_es_outer_pedestrian
 
-  - name: from_north_es_pedestrian
-    vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_north_es_outer_pedestrian
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_south_eastside_crossing_pedestrian
-              - to_south_as_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_west_northside_crossing_pedestrian
-              - to_west_es_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_east_as_outer_pedestrian
+  # - name: from_north_es_pedestrian
+  #   vehicle_type: pedestrian
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_north_es_outer_pedestrian
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_eastside_crossing_pedestrian
+  #             - to_south_as_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_northside_crossing_pedestrian
+  #             - to_west_es_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_as_outer_pedestrian
 
-  - name: from_south_as_pedestrian
-    vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_south_as_outer_pedestrian
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_north_eastside_crossing_pedestrian
-              - to_north_es_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_west_southside_crossing_pedestrian
-              - to_west_as_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_east_es_outer_pedestrian
+  # - name: from_south_as_pedestrian
+  #   vehicle_type: pedestrian
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_south_as_outer_pedestrian
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_eastside_crossing_pedestrian
+  #             - to_north_es_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_southside_crossing_pedestrian
+  #             - to_west_as_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_es_outer_pedestrian
 
-  - name: from_south_es_pedestrian
-    vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_south_es_outer_pedestrian
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_north_westside_crossing_pedestrian
-              - to_north_as_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_east_southside_crossing_pedestrian
-              - to_east_es_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_west_as_outer_pedestrian
+  # - name: from_south_es_pedestrian
+  #   vehicle_type: pedestrian
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_south_es_outer_pedestrian
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_westside_crossing_pedestrian
+  #             - to_north_as_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_southside_crossing_pedestrian
+  #             - to_east_es_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_as_outer_pedestrian
 
-  - name: from_east_as_pedestrian
-    vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_east_as_outer_pedestrian
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_south_eastside_crossing_pedestrian
-              - to_south_as_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_west_northside_crossing_pedestrian
-              - to_west_es_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_north_es_outer_pedestrian
+  # - name: from_east_as_pedestrian
+  #   vehicle_type: pedestrian
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_east_as_outer_pedestrian
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_eastside_crossing_pedestrian
+  #             - to_south_as_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_northside_crossing_pedestrian
+  #             - to_west_es_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_es_outer_pedestrian
 
-  - name: from_east_es_pedestrian
-    vehicle_type: pedestrian
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_east_es_outer_pedestrian
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_north_eastside_crossing_pedestrian
-              - to_north_es_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_west_southside_crossing_pedestrian
-              - to_west_as_outer_pedestrian
-          - usage_percentage: 33
-            path:
-              - to_south_as_outer_pedestrian
-
-
-
-  # BOAT
-  - name: from_north_boat
-    vehicle_type: boat
-    vehicles_per_minute_rustig: 2
-    vehicles_per_minute_spits: 0
-    path:
-      - [1971, 532]
-      - [1780, 644]
-      - [1669, 712]
-      - [1537, 795]
-      - [1502, 821]
-      - [1484, 833]
-      - [1461, 859]
-      - [1326, 948]
-      - [1277, 968]
-      - [1207, 1016]
-      - [1126, 1066]
-
-  - name: from_south_boat
-    vehicle_type: boat
-    vehicles_per_minute_rustig: 1
-    vehicles_per_minute_spits: 0
-    path:
-      - [1204, 1068]
-      - [1265, 1021]
-      - [1306, 989]
-      - [1309, 962]
-      - [1327, 946]
-      - [1447, 870]
-      - [1469, 857]
-      - [1500, 855]
-      - [1538, 836]
-      - [1678, 744]
-      - [1783, 680]
-      - [1898, 614]
-      - [1968, 590]
+  # - name: from_east_es_pedestrian
+  #   vehicle_type: pedestrian
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_east_es_outer_pedestrian
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_eastside_crossing_pedestrian
+  #             - to_north_es_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_southside_crossing_pedestrian
+  #             - to_west_as_outer_pedestrian
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_as_outer_pedestrian
 
 
 
-  # BIKE
-  - name: from_west_as_bike
-    vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_west_as_outer_bike
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_north_westside_crossing_bike
-              - to_east_northside_crossing_bike
-              - to_north_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_east_southside_crossing_bike
-              - to_east_es_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_south_es_outer_bike
+  # # BOAT
+  # - name: from_north_boat
+  #   vehicle_type: boat
+  #   vehicles_per_minute_rustig: 2
+  #   vehicles_per_minute_spits: 0
+  #   path:
+  #     - [1971, 532]
+  #     - [1780, 644]
+  #     - [1669, 712]
+  #     - [1537, 795]
+  #     - [1502, 821]
+  #     - [1484, 833]
+  #     - [1461, 859]
+  #     - [1326, 948]
+  #     - [1277, 968]
+  #     - [1207, 1016]
+  #     - [1126, 1066]
 
-  - name: from_west_es_bike
-    vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_west_es_outer_bike
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_south_westside_crossing_bike
-              - to_south_es_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_east_northside_crossing_bike
-              - to_east_as_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_east_northside_crossing_bike
-              - to_north_outer_bike
+  # - name: from_south_boat
+  #   vehicle_type: boat
+  #   vehicles_per_minute_rustig: 1
+  #   vehicles_per_minute_spits: 0
+  #   path:
+  #     - [1204, 1068]
+  #     - [1265, 1021]
+  #     - [1306, 989]
+  #     - [1309, 962]
+  #     - [1327, 946]
+  #     - [1447, 870]
+  #     - [1469, 857]
+  #     - [1500, 855]
+  #     - [1538, 836]
+  #     - [1678, 744]
+  #     - [1783, 680]
+  #     - [1898, 614]
+  #     - [1968, 590]
 
-  - name: from_north_bike
-    vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_north_outer_bike
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_south_westside_crossing_bike
-              - to_south_es_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_east_northside_crossing_bike
-              - to_east_as_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_west_es_outer_bike
 
-  - name: from_south_as_bike
-    vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_south_as_outer_bike
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_north_eastside_crossing_bike
-              - to_north_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_west_southside_crossing_bike
-              - to_west_as_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_east_es_outer_bike
 
-  - name: from_south_es_bike
-    vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_south_es_outer_bike
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_north_westside_crossing_bike
-              - to_east_northside_crossing_bike
-              - to_north_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_east_southside_crossing_bike
-              - to_east_es_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_west_as_outer_bike
+  # # BIKE
+  # - name: from_west_as_bike
+  #   vehicle_type: bike
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_west_as_outer_bike
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_westside_crossing_bike
+  #             - to_east_northside_crossing_bike
+  #             - to_north_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_southside_crossing_bike
+  #             - to_east_es_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_es_outer_bike
 
-  - name: from_east_as_bike
-    vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_east_as_outer_bike
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_south_eastside_crossing_bike
-              - to_south_as_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_west_northside_crossing_bike
-              - to_west_es_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_north_outer_bike
+  # - name: from_west_es_bike
+  #   vehicle_type: bike
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_west_es_outer_bike
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_westside_crossing_bike
+  #             - to_south_es_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_northside_crossing_bike
+  #             - to_east_as_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_northside_crossing_bike
+  #             - to_north_outer_bike
 
-  - name: from_east_es_bike
-    vehicle_type: bike
-    vehicles_per_minute_rustig: 6
-    vehicles_per_minute_spits: 10
-    path:
-      - from_east_es_outer_bike
-      - variations:
-          - usage_percentage: 33
-            path:
-              - to_north_eastside_crossing_bike
-              - to_north_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_west_southside_crossing_bike
-              - to_west_as_outer_bike
-          - usage_percentage: 33
-            path:
-              - to_south_as_outer_bike
+  # - name: from_north_bike
+  #   vehicle_type: bike
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_north_outer_bike
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_westside_crossing_bike
+  #             - to_south_es_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_northside_crossing_bike
+  #             - to_east_as_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_es_outer_bike
+
+  # - name: from_south_as_bike
+  #   vehicle_type: bike
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_south_as_outer_bike
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_eastside_crossing_bike
+  #             - to_north_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_southside_crossing_bike
+  #             - to_west_as_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_es_outer_bike
+
+  # - name: from_south_es_bike
+  #   vehicle_type: bike
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_south_es_outer_bike
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_westside_crossing_bike
+  #             - to_east_northside_crossing_bike
+  #             - to_north_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_east_southside_crossing_bike
+  #             - to_east_es_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_as_outer_bike
+
+  # - name: from_east_as_bike
+  #   vehicle_type: bike
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_east_as_outer_bike
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_eastside_crossing_bike
+  #             - to_south_as_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_northside_crossing_bike
+  #             - to_west_es_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_outer_bike
+
+  # - name: from_east_es_bike
+  #   vehicle_type: bike
+  #   vehicles_per_minute_rustig: 6
+  #   vehicles_per_minute_spits: 10
+  #   path:
+  #     - from_east_es_outer_bike
+  #     - variations:
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_north_eastside_crossing_bike
+  #             - to_north_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_west_southside_crossing_bike
+  #             - to_west_as_outer_bike
+  #         - usage_percentage: 33
+  #           path:
+  #             - to_south_as_outer_bike

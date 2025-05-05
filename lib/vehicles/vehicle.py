@@ -143,8 +143,8 @@ class Vehicle(CollidableObject):
         }
     
     def apply_movement(self, movement_data):
-        if isinstance(self, SupportsCollisionFreeZones) and self.exiting and not self.is_in_zone():
-            self.exiting = False
+        if isinstance(self, SupportsCollisionFreeZones) and self.is_exiting_zone() and not self.is_in_zone():
+            self.exiting = None
     
         # Apply calculated position
         if movement_data['moved']:
@@ -172,7 +172,7 @@ class Vehicle(CollidableObject):
         can_move = True
         
         if isinstance(self, SupportsCollisionFreeZones) and self.is_in_zone():
-            if (self.exiting):
+            if (self.is_exiting_zone()):
                 return True
             current_zone = self.get_current_zone()
             if not self.point_in_zone(new_x, new_y, current_zone):
@@ -186,7 +186,7 @@ class Vehicle(CollidableObject):
             if isinstance(self, SupportsCollisionFreeZones) and isinstance(obstacle, SupportsCollisionFreeZones):
                 if self.in_same_cf_zone(obstacle):
                     continue
-                if self.exiting and self.get_current_zone() == obstacle.get_current_zone():
+                if self.is_exiting_zone() and self.get_current_zone() == obstacle.get_current_zone():
                     continue
             if self.collides_with(obstacle, vehicle_direction=self.get_vehicle_direction(), collision_angle=self.angle):
                 can_move = False

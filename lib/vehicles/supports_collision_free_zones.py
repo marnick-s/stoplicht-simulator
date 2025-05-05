@@ -6,7 +6,7 @@ class SupportsCollisionFreeZones(ABC):
     def __init__(self, x: float, y: float):
         self.x = x
         self.y = y
-        self.exiting = False
+        self.exiting = None
 
     def in_same_cf_zone(self, obstacle):
         return self.is_in_zone() and obstacle.is_in_zone() and self.get_current_zone() == obstacle.get_current_zone()
@@ -29,6 +29,16 @@ class SupportsCollisionFreeZones(ABC):
             if self.point_in_zone(self.x, self.y, zone):
                 return zone
         return {}
+    
+    def get_current_zone_id(self) -> dict:
+        """
+        Retourneert de zone waarin het voertuig zich bevindt.
+        Als het voertuig in geen enkele zone zit, wordt een lege dictionary geretourneerd.
+        """
+        for zone in self.collision_free_zones:
+            if self.point_in_zone(self.x, self.y, zone):
+                return zone["id"]
+        return None
 
     def can_exit_zone(self, other_vehicles: list) -> bool:
         """
@@ -38,7 +48,7 @@ class SupportsCollisionFreeZones(ABC):
         """
         for v in other_vehicles:
             # print(f"Voertuig {v is not self and isinstance(v, SupportsCollisionFreeZones) and (v.exiting or (not v.is_in_zone() and self.collides_with(v)))}")
-            if v is not self and isinstance(v, SupportsCollisionFreeZones) and (v.exiting or (not v.is_in_zone() and self.collides_with(v))):
+            if v is not self and isinstance(v, SupportsCollisionFreeZones) and (self.get_current_zone_id() == v.exiting or (not v.is_in_zone() and self.collides_with(v))):
                 return False
         return True
 
@@ -52,11 +62,12 @@ class SupportsCollisionFreeZones(ABC):
         temp_x, temp_y = self.x, self.y
         self.x, self.y = new_x, new_y
         can_exit_zone = self.can_exit_zone(other_vehicles)
+        zone_id = self.get_current_zone_id()
         self.x, self.y = temp_x, temp_y
 
         if can_exit_zone:
             # print(f"Voertuig {self} verlaat de zone.")
-            self.exiting = True
+            self.exiting = zone_id
             return True
         return False
 
@@ -73,3 +84,8 @@ class SupportsCollisionFreeZones(ABC):
         ys = [pt[1] for pt in points]
         return min(xs) <= x <= max(xs) and min(ys) <= y <= max(ys)
         
+    def is_exiting_zone(self) -> bool:
+        """
+        Controleert of het voertuig zich in de 'exiting'-modus bevindt.
+        """
+        return self.exiting is not None
