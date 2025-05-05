@@ -68,14 +68,18 @@ class Vehicle(CollidableObject):
             return self._cached_hitboxes
 
         # Calculate hitboxes
-        num_segments = 4
+        num_segments = max(round(self.sprite_width / 10), 1)
         segment_length = (self.sprite_height + (self.sprite_height * 0.4)) // num_segments
-        vehicle_width = self.sprite_width // 3.4
+        vehicle_width = self.sprite_width // 8 # Margin so collisions are not too strict
         hitboxes = []
         for i in range(num_segments):
-            offset_distance = (i - num_segments / 2 + 0.5) * segment_length
-            offset_x = math.cos(math.radians(self.angle)) * offset_distance
-            offset_y = -math.sin(math.radians(self.angle)) * offset_distance
+            if num_segments > 1:
+                offset_distance = (i - num_segments / 2 + 0.5) * segment_length
+                offset_x = math.cos(math.radians(self.angle)) * offset_distance
+                offset_y = -math.sin(math.radians(self.angle)) * offset_distance
+            else:
+                offset_x = 0
+                offset_y = 0
 
             hitbox = Hitbox(
                 x=self.x + offset_x - vehicle_width // 2,
@@ -244,4 +248,4 @@ class Vehicle(CollidableObject):
         # for hitbox in self.hitboxes():
         #     hitbox_x, hitbox_y = scale_to_display(hitbox.x, hitbox.y)
         #     hitbox_width, hitbox_height = scale_to_display(hitbox.width, hitbox.height)
-        #     pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2), image_file)
+        #     pygame.draw.rect(screen, (0, 255, 0), (hitbox_x, hitbox_y, hitbox_width, hitbox_height), 2)

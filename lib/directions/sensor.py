@@ -31,12 +31,13 @@ class Sensor(CollidableObject):
         return self._cached_hitboxes
 
     def draw(self):
-        if (self.width == 5):
-            x, y = scale_to_display(self.position.x, self.position.y)
-            width, height = scale_to_display(self.width, self.height)
-            screen.fill(self.color, (
-                x - width // 2,
-                y - height // 2,
-                width,
-                height
-            ))
+        pass
+        # if (self.width == 5):
+        #     x, y = scale_to_display(self.position.x, self.position.y)
+        #     width, height = scale_to_display(self.width, self.height)
+        #     screen.fill(self.color, (
+        #         x - width // 2,
+        #         y - height // 2,
+        #         width,
+        #         height
+        #     ))
