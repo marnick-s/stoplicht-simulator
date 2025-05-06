@@ -1,10 +1,14 @@
 import json
 import zmq
 import threading
+from dotenv import load_dotenv
+import os
 
 class Messenger:
-    pub_address = "tcp://0.0.0.0:5556"  # Eigen IP (bijv. 10.121.17.84)
-    sub_address = "tcp://10.121.17.84:5555"  # IP van controller
+    load_dotenv()
+
+    pub_address = os.getenv("PUB_ADDRESS", "tcp://127.0.0.1:5556")
+    sub_address = os.getenv("SUB_ADDRESS", "tcp://127.0.0.1:5555")
     receive_topic = "stoplichten"
 
     def __init__(self):
