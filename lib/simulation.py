@@ -1,3 +1,4 @@
+import pygame
 from lib.bridge.bridge import Bridge
 from lib.collidable_object import Hitbox
 from lib.directions.direction import Direction
@@ -8,6 +9,7 @@ from lib.vehicles.collision_free_zone import CollisionFreeZone
 from lib.vehicles.vehicle import Vehicle
 from lib.vehicles.vehicle_spawner import VehicleSpawner
 import time
+from pygame import mixer
 
 class Simulation:
     def __init__(self, config, messenger, traffic_level="rustig"):
@@ -22,11 +24,18 @@ class Simulation:
         Vehicle.collision_free_zones = self.load_collision_free_zones_from_config()  # Set collision free zones for all vehicles
         self.bridge = Bridge(messenger)
         self.load_special_sensors()
+        self.play_noise()
         
         self.spatial_hash = SpatialHashGrid()  # Adjust cell size based on your world
         
         # Time-based movement tracking
         self.last_update_time = time.time()
+
+    def play_noise(self):
+        if pygame.mixer.get_init():
+            sound = mixer.Sound("assets/sounds/noise.mp3")
+            sound.set_volume(0.5)
+            sound.play(loops=-1, maxtime=0, fade_ms=0)
 
     def load_collision_free_zones_from_config(self) -> list[CollisionFreeZone]:
         zones = []
