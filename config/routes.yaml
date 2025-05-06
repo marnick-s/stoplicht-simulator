@@ -458,7 +458,7 @@ routes:
   # BOAT
   - name: from_north_boat
     vehicle_type: boat
-    vehicles_per_interval_rustig: 60
+    vehicles_per_interval_rustig: 2
     vehicles_per_interval_spits: 0
     path:
       - [1971, 532]
@@ -475,7 +475,7 @@ routes:
 
   - name: from_south_boat
     vehicle_type: boat
-    vehicles_per_interval_rustig: 60
+    vehicles_per_interval_rustig: 1
     vehicles_per_interval_spits: 0
     path:
       - [1204, 1068]

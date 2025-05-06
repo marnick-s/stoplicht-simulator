@@ -66,11 +66,11 @@ class Vehicle(CollidableObject):
         # Cache hitboxes
         if self._cached_hitboxes is not None and (self.x, self.y) == self._last_position and self.angle == self._last_angle:
             return self._cached_hitboxes
-
         # Calculate hitboxes
-        num_segments = max(round(self.sprite_width / 10), 1)
-        segment_length = (self.sprite_height + (self.sprite_height * 0.4)) // num_segments
-        vehicle_width = self.sprite_width // 8 # Margin so collisions are not too strict
+        num_segments = max(round(self.sprite_width / 10), 2)
+        margin = 0.4
+        segment_length = self.sprite_width / num_segments
+        vehicle_width = self.sprite_height * (1 - margin)
         hitboxes = []
         for i in range(num_segments):
             if num_segments > 1:
@@ -84,7 +84,7 @@ class Vehicle(CollidableObject):
             hitbox = Hitbox(
                 x=self.x + offset_x - vehicle_width // 2,
                 y=self.y + offset_y - vehicle_width // 2,
-                width=vehicle_width,
+                width=segment_length * (1 - margin),
                 height=vehicle_width
             )
             hitboxes.append(hitbox)

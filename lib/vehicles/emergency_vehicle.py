@@ -36,9 +36,9 @@ class EmergencyVehicle(Vehicle):
                 pygame.mixer.set_num_channels(self.max_channels)
                 
             # Select appropriate siren sound based on vehicle dimensions
-            if self.sprite_width >= 28:  # Larger vehicles (like fire trucks)
+            if self.sprite_width >= 31:  # Larger vehicles (like fire trucks)
                 sound_file = "assets/sounds/sirene-brandweer.wav"
-            elif self.sprite_width >= 25:  # Medium vehicles (like ambulances)
+            elif self.sprite_width >= 30:  # Medium vehicles (like ambulances)
                 sound_file = "assets/sounds/sirene-ambu.wav"
             else:  # Smaller vehicles (like police cars)
                 sound_file = "assets/sounds/sirene-politie.wav"
