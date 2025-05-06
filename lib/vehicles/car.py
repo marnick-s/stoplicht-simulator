@@ -18,7 +18,7 @@ class Car(Vehicle):
         self.load_horn_sounds()
     
     def load_horn_sounds(self):
-        """Load all car horn sound files from the assets directory."""
+        """Load all horn sound files from the assets directory."""
         horn_dir = "assets/sounds/carhorns"
        
         if os.path.exists(horn_dir):
