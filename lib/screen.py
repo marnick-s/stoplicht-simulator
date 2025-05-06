@@ -4,7 +4,7 @@ import pyautogui
 
 def init_screen():
     pygame.init()
-    screen = pygame.display.set_mode((0, 0), pygame.RESIZABLE)
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     Window.from_display_module().maximize()
     pygame.display.set_caption("Stoplichtsimulator")
     return screen
