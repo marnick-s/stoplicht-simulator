@@ -301,8 +301,8 @@ directions:
       traffic_lights:
         - id: 1
           approach_direction: east
-          traffic_light_position: [1550, 789]
-          front_sensor_position: [1571, 775]
+          traffic_light_position: [1521, 804]
+          front_sensor_position: [1540, 792]
     - id: 72
       traffic_lights:
         - id: 1
