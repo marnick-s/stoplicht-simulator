@@ -108,7 +108,7 @@ class Simulation:
             vehicle.apply_movement(movement_data)
 
         # Other updates
-        self.vehicle_spawner.update(self.vehicles, delta_time)
+        self.vehicle_spawner.update(self.vehicles)
         self.update_traffic_lights()
         self.bridge.update(delta_time)
         

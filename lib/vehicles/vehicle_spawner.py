@@ -81,9 +81,9 @@ class VehicleSpawner:
             return vehicle
         return None
 
-    def update(self, vehicles, delta_time):
+    def update(self, vehicles):
         self.create_new_vehicles(vehicles)
-        self.priority_queue_manager.update(delta_time, vehicles)
+        self.priority_queue_manager.update(vehicles)
 
     def create_new_vehicles(self, vehicles):
         current_time = pygame.time.get_ticks()

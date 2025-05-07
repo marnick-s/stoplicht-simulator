@@ -1,6 +1,8 @@
+import time
+
+import pygame
 from lib.collidable_object import CollidableObject, Hitbox
 from lib.enums.topics import Topics
-from lib.screen import scale_to_display
 
 class PriorityQueueManager():
     def __init__(self, messenger):
@@ -21,7 +23,7 @@ class PriorityQueueManager():
         }
         self.priority_vehicles[vehicle.id] = item
 
-    def update(self, delta_time_ms, vehicles):
+    def update(self, vehicles):
         for id, item in self.priority_vehicles.copy().items():
             vehicle = next((v for v in vehicles if v.id == id), None)
             if not vehicle:
@@ -37,7 +39,7 @@ class PriorityQueueManager():
                         if (not item["has_been_in_intersection"]):
                             self.queue[id] = {
                                 "baan": item["route_lane"] if in_relevance_zone else self._get_lane_brige_equivalent(item["route_lane"]),
-                                "simulatie_tijd_ms": 0,
+                                "simulatie_tijd_ms": pygame.time.get_ticks(),
                                 "prioriteit": item["priority"]
                             }
                             self.should_send_update = True
@@ -64,7 +66,7 @@ class PriorityQueueManager():
 
 
     def _send_update(self):
-        data = list(self.queue.values())
+        data = {"queue": list(self.queue.values())}
         self.messenger.send(Topics.PRIORITY_VEHICLE.value, data)
 
 

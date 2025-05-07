@@ -56,7 +56,6 @@ def run_simulation(drukte="rustig", silent=False):
 
     while running:
         now = pygame.time.get_ticks()
-        elapsed = now - start_time
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -79,7 +78,7 @@ def run_simulation(drukte="rustig", silent=False):
         simulation.draw()
         screen.blit(overlay_image, (0, 0))
         fps_counter.draw()
-        messenger.send("tijd", {"simulatie_tijd_ms": elapsed})
+        messenger.send("tijd", {"simulatie_tijd_ms": now})
         pygame.display.flip()
         clock.tick(60)
 
