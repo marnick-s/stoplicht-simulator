@@ -7,7 +7,7 @@ from lib.vehicles.vehicle import Vehicle
 class Boat(Vehicle):
     vehicle_type_string = "boat"
     speed = 10
-    HORN_CHANNEL = 10  # Different channel from cars
+    HORN_CHANNEL = 10
     
     def __init__(self, id, path):
         super().__init__(id, path, self.speed, self.vehicle_type_string)
@@ -19,7 +19,7 @@ class Boat(Vehicle):
     
     def load_horn_sound(self):
         """Load a specific boat horn sound file."""
-        horn_file = "assets/sounds/boottoeter.mp3"  # Hardcoded file
+        horn_file = "assets/sounds/boottoeter.mp3"
         
         if os.path.exists(horn_file):
             try:
