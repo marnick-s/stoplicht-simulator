@@ -8,6 +8,7 @@ class PriorityQueueManager():
         self.queue = []
         self.should_send_update = False
         self.relevance_zone = PriorityVehicleRelevanceZone()
+        self.relevance_zone = PriorityVehicleRelevanceZone()
         self.intersection_zone = PriorityVehicleIntersectionZone()
 
     def add(self, lane_id, vehicle, initial_time_ms=5000):
@@ -82,6 +83,21 @@ class PriorityVehicleIntersectionZone(CollidableObject):
     def __init__(self):
             x, y = scale_to_display(204, 75)
             width, height = scale_to_display(160, 160)
+            self._hitboxes = [Hitbox(
+                x=x,
+                y=y,
+                width=width,
+                height=height,
+            )]
+
+    def hitboxes(self):
+        return self._hitboxes
+
+
+class PriorityVehicleBridgeZone(CollidableObject):
+    def __init__(self):
+            x, y = scale_to_display(1026, 587)
+            width, height = scale_to_display(893, 622)
             self._hitboxes = [Hitbox(
                 x=x,
                 y=y,

@@ -301,11 +301,11 @@ directions:
       traffic_lights:
         - id: 1
           approach_direction: east
-          traffic_light_position: [1482, 834]
-          front_sensor_position: [1505, 816]
+          traffic_light_position: [1550, 789]
+          front_sensor_position: [1571, 775]
     - id: 72
       traffic_lights:
         - id: 1
           approach_direction: west
-          traffic_light_position: [1301, 994]
-          front_sensor_position: [1281, 1011]
+          traffic_light_position: [1280, 1008]
+          front_sensor_position: [1264, 1017]
