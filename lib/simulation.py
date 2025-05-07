@@ -185,9 +185,9 @@ class Simulation:
                     for traffic_light in direction.traffic_lights:
                         sensor_id = f"{direction.id}.{traffic_light.id}"
                         if sensor_obj is traffic_light.front_sensor and vehicle.collides_with(traffic_light.front_sensor):
-                            laneSensorData[sensor_id]["achter"] = True
-                        if traffic_light.back_sensor and sensor_obj is traffic_light.back_sensor and vehicle.collides_with(traffic_light.back_sensor):
                             laneSensorData[sensor_id]["voor"] = True
+                        if traffic_light.back_sensor and sensor_obj is traffic_light.back_sensor and vehicle.collides_with(traffic_light.back_sensor):
+                            laneSensorData[sensor_id]["achter"] = True
 
         if (laneSensorData != self.previous_lane_sensor_data):
             self.previous_lane_sensor_data = laneSensorData
