@@ -5,68 +5,74 @@ from lib.screen import scale_to_display
 class PriorityQueueManager():
     def __init__(self, messenger):
         self.messenger = messenger
-        self.queue = []
+        self.priority_vehicles = {}
+        self.queue = {}
         self.should_send_update = False
         self.relevance_zone = PriorityVehicleRelevanceZone()
-        self.relevance_zone = PriorityVehicleRelevanceZone()
         self.intersection_zone = PriorityVehicleIntersectionZone()
+        self.bridge_relevance_zone = PriorityVehicleBridgeRelevanceZone()
+        self.bridge_intersection_zone = PriorityVehicleBridgeIntersectionZone()
 
-    def add(self, lane_id, vehicle, initial_time_ms=5000):
+    def add(self, lane_id, vehicle):
         item = {
-            "baan": lane_id,
-            "vehicle_id": vehicle.id,
-            "simulatie_tijd_ms": initial_time_ms,
-            "has_entered_relevance_zone": False,
-            "is_in_intersection": False,
-            "prioriteit": 2 if vehicle.vehicle_type_string == "bus" else 1
+            "route_lane": lane_id,
+            "has_been_in_intersection": False,
+            "priority": 2 if vehicle.vehicle_type_string == "bus" else 1
         }
-        self.queue.append(item)
+        self.priority_vehicles[vehicle.id] = item
 
     def update(self, delta_time_ms, vehicles):
-        for item in self.queue:
-            # Lower timer
-            item["simulatie_tijd_ms"] = round(max(0, item["simulatie_tijd_ms"] - delta_time_ms))
-            vehicle = next((v for v in vehicles if v.id == item["vehicle_id"]), None)
+        for id, item in self.priority_vehicles.copy().items():
+            vehicle = next((v for v in vehicles if v.id == id), None)
             if not vehicle:
-                self.queue.remove(item)
-                self.should_send_update = True
-            else:
-                if not item["has_entered_relevance_zone"] and vehicle.collides_with(self.relevance_zone):
-                    item["has_entered_relevance_zone"] = True
+                if id in self.queue:
+                    self.queue.pop(id)
                     self.should_send_update = True
-                if vehicle.collides_with(self.intersection_zone):
-                    item["is_in_intersection"] = True
+                self.priority_vehicles.pop(id)
+            else:
+                in_relevance_zone = vehicle.collides_with(self.relevance_zone)
+                in_bridge_relevance_zone = vehicle.collides_with(self.bridge_relevance_zone)
+                if not id in self.queue:
+                    if (in_relevance_zone or in_bridge_relevance_zone):
+                        if (not item["has_been_in_intersection"]):
+                            self.queue[id] = {
+                                "baan": item["route_lane"] if in_relevance_zone else self._get_lane_brige_equivalent(item["route_lane"]),
+                                "simulatie_tijd_ms": 0,
+                                "prioriteit": item["priority"]
+                            }
+                            self.should_send_update = True
+                    else:
+                        self.priority_vehicles[id]["has_been_in_intersection"] = False
+
+                if vehicle.collides_with(self.intersection_zone) or vehicle.collides_with(self.bridge_intersection_zone):
+                    item["has_been_in_intersection"] = True
                 else:
-                    if item["is_in_intersection"]:
-                        self.queue.remove(item)
+                    if item["has_been_in_intersection"] and id in self.queue:
+                        self.queue.pop(id)
                         self.should_send_update = True
-                
         
         if self.should_send_update:
             self.should_send_update = False
             self._send_update()
             
 
+    def _get_lane_brige_equivalent(self, lane_id):
+        if lane_id in ["1.1", "2.1", "2.2", "3.1"]:
+            return "41.1"
+        else:
+            return "42.1"
+
+
     def _send_update(self):
-        data = {
-            "queue": [
-            {
-                "baan": item["baan"],
-                "simulatie_tijd_ms": item["simulatie_tijd_ms"],
-                "prioriteit": item["prioriteit"]
-            }
-            for item in self.queue
-            if item["has_entered_relevance_zone"]
-            ]
-        }
+        data = list(self.queue.values())
         self.messenger.send(Topics.PRIORITY_VEHICLE.value, data)
 
 
 
 class PriorityVehicleRelevanceZone(CollidableObject):
     def __init__(self):
-            x, y = scale_to_display(0, 0)
-            width, height = scale_to_display(826, 620)
+            x, y = 0, 0
+            width, height = 826, 620
             self._hitboxes = [Hitbox(
                 x=x,
                 y=y,
@@ -77,12 +83,26 @@ class PriorityVehicleRelevanceZone(CollidableObject):
     def hitboxes(self):
         return self._hitboxes
 
+
+class PriorityVehicleBridgeRelevanceZone(CollidableObject):
+    def __init__(self):
+            x, y = 1026, 587
+            width, height = 893, 622
+            self._hitboxes = [Hitbox(
+                x=x,
+                y=y,
+                width=width,
+                height=height,
+            )]
+
+    def hitboxes(self):
+        return self._hitboxes
 
 
 class PriorityVehicleIntersectionZone(CollidableObject):
     def __init__(self):
-            x, y = scale_to_display(204, 75)
-            width, height = scale_to_display(160, 160)
+            x, y = 215, 110
+            width, height = 243, 234
             self._hitboxes = [Hitbox(
                 x=x,
                 y=y,
@@ -94,10 +114,10 @@ class PriorityVehicleIntersectionZone(CollidableObject):
         return self._hitboxes
 
 
-class PriorityVehicleBridgeZone(CollidableObject):
+class PriorityVehicleBridgeIntersectionZone(CollidableObject):
     def __init__(self):
-            x, y = scale_to_display(1026, 587)
-            width, height = scale_to_display(893, 622)
+            x, y = 1294, 864
+            width, height = 190, 120
             self._hitboxes = [Hitbox(
                 x=x,
                 y=y,
