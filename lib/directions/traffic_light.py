@@ -50,8 +50,8 @@ class TrafficLight(CollidableObject):
     def hitboxes(self):
         if self._cached_hitboxes is None or self._has_changed:
             if (self.type == 'car'):
-                width = 8
-                height = 8
+                width = 6
+                height = 6
             else:
                 width = 6
                 height = 6
