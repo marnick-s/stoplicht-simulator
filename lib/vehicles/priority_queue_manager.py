@@ -73,13 +73,11 @@ class PriorityQueueManager():
 
 class PriorityVehicleRelevanceZone(CollidableObject):
     def __init__(self):
-            x, y = 0, 0
-            width, height = 826, 620
             self._hitboxes = [Hitbox(
-                x=x,
-                y=y,
-                width=width,
-                height=height,
+                x=0,
+                y=0,
+                width=633,
+                height=620,
             )]
 
     def hitboxes(self):
@@ -88,13 +86,11 @@ class PriorityVehicleRelevanceZone(CollidableObject):
 
 class PriorityVehicleBridgeRelevanceZone(CollidableObject):
     def __init__(self):
-            x, y = 1026, 587
-            width, height = 893, 622
             self._hitboxes = [Hitbox(
-                x=x,
-                y=y,
-                width=width,
-                height=height,
+                x=693,
+                y=425,
+                width=1227,
+                height=775,
             )]
 
     def hitboxes(self):
@@ -103,13 +99,11 @@ class PriorityVehicleBridgeRelevanceZone(CollidableObject):
 
 class PriorityVehicleIntersectionZone(CollidableObject):
     def __init__(self):
-            x, y = 215, 110
-            width, height = 243, 234
             self._hitboxes = [Hitbox(
-                x=x,
-                y=y,
-                width=width,
-                height=height,
+                x=215,
+                y=110,
+                width=243,
+                height=234,
             )]
 
     def hitboxes(self):

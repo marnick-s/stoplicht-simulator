@@ -213,7 +213,7 @@ directions:
     - id: 54
       traffic_lights:
         - id: 1
-          approach_direction: west
+          approach_direction: north
           traffic_light_position: [1373, 840]
           front_sensor_position: [1370, 836]
     # END BRIDGE
@@ -240,7 +240,7 @@ directions:
     - id: 54
       traffic_lights:
         - id: 1
-          approach_direction: west
+          approach_direction: north
           traffic_light_position: [1362, 848]
           front_sensor_position: [1357, 843]
     # END BRIDGE
