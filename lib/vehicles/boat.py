@@ -77,9 +77,9 @@ class Boat(Vehicle):
         # Check if the horn cooldown period has passed
         time_since_last_honk = current_time - self.last_horn_time
         
-        if time_stationary > 30.0 and self.horn_sound and time_since_last_honk >= self.horn_cooldown:
+        if time_stationary > 120.0 and self.horn_sound and time_since_last_honk >= self.horn_cooldown:
             # 10% chance to honk per second when stationary for a long time
-            if random.random() < 0.3:
+            if random.random() < 0.1:
                 # Make sure mixer is initialized
                 if pygame.mixer.get_init():
                     # Set volume
