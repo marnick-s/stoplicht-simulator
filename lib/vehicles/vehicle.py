@@ -67,7 +67,7 @@ class Vehicle(CollidableObject):
         if self._cached_hitboxes is not None and (self.x, self.y) == self._last_position and self.angle == self._last_angle:
             return self._cached_hitboxes
         # Calculate hitboxes
-        num_segments = max(round(self.sprite_width / 10), 2)
+        num_segments = max(round(self.sprite_width / 6), 1)
         margin = 0.4
         segment_length = self.sprite_width / num_segments
         vehicle_width = self.sprite_height * (1 - margin)
