@@ -56,7 +56,7 @@ class Bridge():
                 state = "onbekend"
                 
         if state:
-            self.messenger.send(Topics.BRIDGE_SENSORS_UPDATE, {"81.1": {"state": state}})
+            self.messenger.send(Topics.BRIDGE_SENSORS_UPDATE.value, {"81.1": {"state": state}})
             
     def open_barriers(self):
         for barrier in self.barriers:
