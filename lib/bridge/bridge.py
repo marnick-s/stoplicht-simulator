@@ -17,6 +17,7 @@ class Bridge():
         self.open = False
         self.traffic_light_color = TrafficLightColors.RED.value
         self.bridge_open_seconds = 8
+        self.barrier_color = TrafficLightColors.GREEN.value
         self.barriers = [
             Barrier([1366, 851], 310),
             Barrier([1344, 898], 130),
@@ -75,7 +76,7 @@ class Bridge():
             self.barrier_color = barrier_color
             if barrier_color == TrafficLightColors.RED.value or barrier_color == TrafficLightColors.ORANGE.value:
                 self.close_barriers()
-            if barrier_color != TrafficLightColors.GREEN.value:
+            if barrier_color == TrafficLightColors.GREEN.value:
                 self.open_barriers()
         
     def draw(self):

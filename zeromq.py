@@ -2,7 +2,7 @@ import json
 import zmq
 import time
 
-def start_zeromq_publisher(bind_address="tcp://10.121.17.84:5555"):
+def start_zeromq_publisher(bind_address="tcp://127.0.0.1:5555"):
     context = zmq.Context()
     socket = context.socket(zmq.PUB)  # Publisher pattern
     socket.bind(bind_address)
@@ -12,6 +12,7 @@ def start_zeromq_publisher(bind_address="tcp://10.121.17.84:5555"):
     while True:
         topic = "stoplichten"  # Topic voor de auto
         message = {
+            "61.1": "groen",
             "81.1": "groen",
         }
         json_message = json.dumps(message)
@@ -20,7 +21,8 @@ def start_zeromq_publisher(bind_address="tcp://10.121.17.84:5555"):
         time.sleep(15)  # Simuleer periodieke berichten
         topic = "stoplichten"  # Topic voor de auto
         message = {
-            "81.1": "rood",
+            "61.1": "rood",
+            "81.1": "groen",
         }
         json_message = json.dumps(message)
         print(f"Versturen: {topic} {json_message}")
