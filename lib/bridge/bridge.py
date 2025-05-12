@@ -1,5 +1,6 @@
 import pygame
 import time
+from lib.enums.topics import Topics
 from lib.enums.traffic_light_colors import TrafficLightColors
 from lib.screen import screen, scale_to_display
 from lib.bridge.barrier import Barrier
@@ -50,12 +51,11 @@ class Bridge():
                 self.height = self.base_height
             if self.height == self.base_height:
                 state = "dicht"
-                self.open_barriers()
             elif self.height >= change_amount and self.height < (2 * change_amount):
                 state = "onbekend"
                 
         if state:
-            self.messenger.send("sensoren_bruggen", {"81.1": {"state": state}})
+            self.messenger.send(Topics.BRIDGE_SENSORS_UPDATE, {"81.1": {"state": state}})
             
     def open_barriers(self):
         for barrier in self.barriers:
@@ -65,16 +65,18 @@ class Bridge():
         for barrier in self.barriers:
             barrier.close()
             
-    def update_state(self, bridge_status_color, traffic_light_color):
+    def update_state(self, bridge_status_color, barrier_color):
         if bridge_status_color == TrafficLightColors.GREEN.value:
             self.open = True
         elif bridge_status_color == TrafficLightColors.RED.value:
             self.open = False
-            
-        if traffic_light_color != self.traffic_light_color:
-            self.traffic_light_color = traffic_light_color
-            if traffic_light_color != TrafficLightColors.GREEN.value:
+        
+        if barrier_color != self.barrier_color:
+            self.barrier_color = barrier_color
+            if barrier_color == TrafficLightColors.RED.value or barrier_color == TrafficLightColors.ORANGE.value:
                 self.close_barriers()
+            if barrier_color != TrafficLightColors.GREEN.value:
+                self.open_barriers()
         
     def draw(self):
         for barrier in self.barriers:

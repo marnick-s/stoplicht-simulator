@@ -4,3 +4,4 @@ class Topics(Enum):
     LANE_SENSORS_UPDATE = "sensoren_rijbaan"
     SPECIAL_SENSORS_UPDATE = "sensoren_speciaal"
     PRIORITY_VEHICLE = "voorrangsvoertuig"
+    BRIDGE_SENSORS_UPDATE = "sensoren_bruggen"

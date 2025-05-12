@@ -124,8 +124,8 @@ class Simulation:
 
         if not traffic_light_data:
             return
-        if "81.1" in traffic_light_data:
-            self.bridge.update_state(traffic_light_data["81.1"], traffic_light_data["41.1"])
+        if all(key in traffic_light_data for key in ["81.1", "61.1"]):
+            self.bridge.update_state(traffic_light_data["81.1"], traffic_light_data["61.1"])
         for direction in self.directions:
             for traffic_light in direction.traffic_lights:
                 sensor_id = f"{direction.id}.{traffic_light.id}"
