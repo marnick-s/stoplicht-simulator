@@ -4,6 +4,8 @@ import threading
 from dotenv import load_dotenv
 import os
 
+from lib.enums.topics import Topics
+
 class Messenger:
     load_dotenv()
 
@@ -30,8 +32,8 @@ class Messenger:
 
     def send(self, topic, message):
         """Verstuurt een bericht met een opgegeven topic."""
-        # if (topic == "sensoren_rijbaan"):
-        #     print(message)
+        if (topic == Topics.SPECIAL_SENSORS_UPDATE.value):
+            print(message)
         json_message = json.dumps(message)
         self.pub_socket.send_multipart([topic.encode('utf-8'), json_message.encode('utf-8')])
 

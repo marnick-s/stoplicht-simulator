@@ -124,7 +124,7 @@ class Simulation:
 
         if not traffic_light_data:
             return
-        if "81.1" in traffic_light_data:
+        if "81.1" in traffic_light_data and "41.1" in traffic_light_data:
             self.bridge.update_state(traffic_light_data["81.1"], traffic_light_data["41.1"])
         for direction in self.directions:
             for traffic_light in direction.traffic_lights:
