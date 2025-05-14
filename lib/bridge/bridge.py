@@ -18,7 +18,7 @@ class Bridge():
         self.traffic_light_color = TrafficLightColors.RED.value
         self.bridge_open_seconds = 8
         self.barrier_color = TrafficLightColors.GREEN.value
-        self.first_loop = True
+        self.loops = 0
         self.barriers = [
             Barrier([1366, 851], 310),
             Barrier([1344, 898], 130),
@@ -32,11 +32,11 @@ class Bridge():
             barrier.update(delta_time)
             
     def update_bridge_height(self, delta_time):
-        if self.first_loop:
-            state = "dicht"
-            self.first_loop = False
-        else:
-            state = None
+        state = None
+        if self.loops <= 100:
+            if self.loops == 100:
+                state = "dicht"
+            self.loops = self.loops + 1
 
         change_per_second = self.base_height / self.bridge_open_seconds
         change_amount = change_per_second * delta_time

@@ -32,7 +32,7 @@ class Messenger:
 
     def send(self, topic, message):
         """Verstuurt een bericht met een opgegeven topic."""
-        if (topic == Topics.SPECIAL_SENSORS_UPDATE.value):
+        if (topic == Topics.BRIDGE_SENSORS_UPDATE.value):
             print(message)
         json_message = json.dumps(message)
         self.pub_socket.send_multipart([topic.encode('utf-8'), json_message.encode('utf-8')])
