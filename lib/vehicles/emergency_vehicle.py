@@ -6,161 +6,188 @@ import time
 from lib.vehicles.vehicle import Vehicle
 
 class EmergencyVehicle(Vehicle):
+    """
+    Represents an emergency vehicle (e.g., ambulance, fire truck, police) with siren sound
+    and flashing light functionality.
+    """
     vehicle_type_string = "emergency_vehicle"
     speed = 100
-    
-    # Class variable om bij te houden welke kanalen in gebruik zijn
+
+    # Track used audio channels to avoid overlap
     used_channels = set()
-    max_channels = 8  # Maximum aantal pygame mixer kanalen
-    
+    max_channels = 8  # Maximum number of mixer channels allowed by pygame
+
     def __init__(self, id, path):
+        """
+        Initialize the emergency vehicle with siren properties and images.
+
+        :param id: Unique identifier for the vehicle
+        :param path: Route/path the vehicle will follow
+        """
         super().__init__(id, path, self.speed, self.vehicle_type_string)
-        
-        # Load both siren images for toggling
+
+        # Load siren images for visual toggle
         self.siren_images = self.load_siren_images()
-        self.current_siren_image = 0  # Index to track which siren image to show
-        
-        # Siren toggling properties
+        self.current_siren_image = 0
+
+        # Siren image toggle state
         self.last_siren_toggle = time.time()
-        self.siren_interval = 0.3  # seconds
-        
+        self.siren_interval = 0.3  # seconds between image toggles
+
     def after_create(self):
+        """
+        Post-initialization hook to start siren sound.
+        """
         self.setup_siren_sound()
         return super().after_create()
-        
+
     def setup_siren_sound(self):
-        # Check if mixer is initialized
+        """
+        Initialize the appropriate siren sound based on vehicle sprite width and
+        assign it to an available mixer channel.
+        """
         if pygame.mixer.get_init():
-            # Zorg ervoor dat er genoeg kanalen beschikbaar zijn
+            # Ensure enough mixer channels are available
             if pygame.mixer.get_num_channels() < self.max_channels:
                 pygame.mixer.set_num_channels(self.max_channels)
-                
-            # Select appropriate siren sound based on vehicle dimensions
-            if self.sprite_width >= 31:  # Larger vehicles (like fire trucks)
+
+            # Choose siren sound based on sprite size
+            if self.sprite_width >= 31:
                 sound_file = "assets/sounds/sirene-brandweer.wav"
-            elif self.sprite_width >= 30:  # Medium vehicles (like ambulances)
+            elif self.sprite_width >= 30:
                 sound_file = "assets/sounds/sirene-ambu.wav"
-            else:  # Smaller vehicles (like police cars)
+            else:
                 sound_file = "assets/sounds/sirene-politie.wav"
-                
-            # Load sound only if file exists
+
             if os.path.exists(sound_file):
-                self.siren_sound = pygame.mixer.Sound(sound_file)
-                
-                # Wijs een uniek kanaal toe aan dit voertuig
-                self.channel_id = self.assign_channel()
-                if self.channel_id is not None:
-                    self.siren_channel = pygame.mixer.Channel(self.channel_id)
-                    self.play_siren()
-    
+                try:
+                    self.siren_sound = pygame.mixer.Sound(sound_file)
+                    self.channel_id = self.assign_channel()
+                    if self.channel_id is not None:
+                        self.siren_channel = pygame.mixer.Channel(self.channel_id)
+                        self.play_siren()
+                except pygame.error as e:
+                    print(f"Error loading or playing siren sound: {e}")
+
     @classmethod
     def assign_channel(cls):
-        """Wijs een ongebruikt kanaal toe of return None als alle kanalen in gebruik zijn"""
-        for i in range(2, cls.max_channels):  # Start vanaf 2 om kanaal 0 en 1 vrij te houden voor andere geluiden
+        """
+        Assigns an unused mixer channel for the siren sound.
+
+        :return: An available channel index, or None if all are in use.
+        """
+        for i in range(2, cls.max_channels):  # Reserve channel 0/1 if needed
             if i not in cls.used_channels:
                 cls.used_channels.add(i)
                 return i
-        return None  # Alle kanalen zijn in gebruik
-    
+        return None
+
     @classmethod
     def release_channel(cls, channel_id):
-        """Geef een kanaal vrij voor hergebruik"""
+        """
+        Frees the specified channel so it can be reused by other vehicles.
+
+        :param channel_id: Index of the channel to release.
+        """
         if channel_id in cls.used_channels:
             cls.used_channels.remove(channel_id)
-    
+
     def load_random_image_with_dimensions(self, folder):
-        # Look for first image (with -1 suffix)
+        """
+        Loads a random vehicle image with size extracted from filename.
+
+        :param folder: Folder to look for images.
+        :return: Tuple of (pygame image, width, height).
+        """
         image_files = [f for f in os.listdir(folder) if f.endswith('-1.webp')]
         if not image_files:
-            # Fall back to regular vehicle loading if no emergency vehicle images
             return super().load_random_image_with_dimensions(folder)
-        
-        # Select a random emergency vehicle image
+
         image_file = random.choice(image_files)
-        
-        # Extract dimensions from filename
         dimensions_match = re.search(r'(\d+)x(\d+)-1.webp$', image_file)
+
         if dimensions_match:
             sprite_width = int(dimensions_match.group(1))
             sprite_height = int(dimensions_match.group(2))
         else:
-            sprite_width = 40
-            sprite_height = 40
-        
-        # Load and scale the first image
+            sprite_width, sprite_height = 40, 40  # fallback default
+
         image_path = os.path.join(folder, image_file)
         image = pygame.image.load(image_path).convert_alpha()
         scaled_image = self.scale_image(image, sprite_width, sprite_height)
-        
+
         return scaled_image, sprite_width, sprite_height
-    
+
     def load_siren_images(self):
-        """Load both siren state images for toggling"""
-        images = []
-        
-        # We already loaded the first image in __init__ through super().__init__
-        # So we'll just use self.original_image as the first image
-        images.append(self.original_image)
-        
-        # Now load the second image (-2 suffix)
-        base_folder = "assets/vehicles/" + self.vehicle_type_string
-        
-        # Determine image pattern from our loaded image
-        # Check if there are any image files in the folder that match our dimensions
+        """
+        Loads two images to simulate flashing lights by toggling frames.
+
+        :return: List of two pygame surfaces (siren image frames).
+        """
+        images = [self.original_image]  # Start with the default
+
+        base_folder = f"assets/vehicles/{self.vehicle_type_string}"
         image_files = [f for f in os.listdir(base_folder) if f.endswith('.webp')]
-        
-        # Try to find a matching -2 image based on our dimensions
+
         matching_image = None
         for file in image_files:
             if f"{self.sprite_width}x{self.sprite_height}-2.webp" in file:
                 matching_image = file
                 break
-        
+
         if matching_image:
             image_path = os.path.join(base_folder, matching_image)
             image = pygame.image.load(image_path).convert_alpha()
-            image_2 = self.scale_image(image, self.sprite_width, self.sprite_height)
-            images.append(image_2)
+            images.append(self.scale_image(image, self.sprite_width, self.sprite_height))
         else:
-            # If no matching -2 image, duplicate the first one
+            # If no second frame found, duplicate the first
             images.append(self.original_image)
-        
+
         return images
-    
+
     def play_siren(self):
+        """
+        Plays the siren sound in a continuous loop if not already active.
+        """
         if hasattr(self, 'siren_channel') and hasattr(self, 'siren_sound'):
             if not self.siren_channel.get_busy():
                 self.siren_channel.play(self.siren_sound, loops=-1)
-    
+
     def stop_siren(self):
+        """
+        Stops the siren sound and releases the audio channel for other vehicles.
+        """
         if hasattr(self, 'siren_channel'):
             self.siren_channel.stop()
-            
-        # Geef het kanaal vrij voor hergebruik
         if hasattr(self, 'channel_id'):
             self.release_channel(self.channel_id)
-    
+            self.channel_id = None
+
     def has_finished(self):
+        """
+        Called when the vehicle finishes its route. Ensures the siren is stopped.
+
+        :return: True if the vehicle has completed its path.
+        """
         finished = super().has_finished()
         if finished:
             self.stop_siren()
         return finished
-    
+
     def draw(self):
-        # Toggle siren image based on time interval
+        """
+        Draws the vehicle on screen, toggling between siren images periodically to simulate flashing lights.
+        """
         current_time = time.time()
         if current_time - self.last_siren_toggle >= self.siren_interval:
-            # Wissel tussen de twee sirene-afbeeldingen
+            # Alternate between siren images
             self.current_siren_image = (self.current_siren_image + 1) % len(self.siren_images)
             self.last_siren_toggle = current_time
-            
-            # Update het originele beeld voor de rotatie
             self.original_image = self.siren_images[self.current_siren_image]
-            
-            # We moeten het beeld opnieuw roteren met de huidige hoek
+
+            # Update rotated image to reflect the new frame
             self.image = pygame.transform.rotate(self.original_image, self.angle)
             self.rotated_width = self.image.get_width()
             self.rotated_height = self.image.get_height()
-        
-        # Gebruik de draw functie van de ouderklasse om het voertuig te tekenen
+
         super().draw()

@@ -14,9 +14,6 @@ class Messenger:
     receive_topic = "stoplichten"
 
     def __init__(self):
-        """
-        ZeroMQ Messenger voor zowel publisher als subscriber.
-        """
         self.context = zmq.Context()
         self.pub_socket = self.context.socket(zmq.PUB)
         self.sub_socket = self.context.socket(zmq.SUB)
@@ -31,14 +28,14 @@ class Messenger:
         self.connected = True
 
     def send(self, topic, message):
-        """Verstuurt een bericht met een opgegeven topic."""
+        """Sends a message on the specified topic."""
         # if (topic == Topics.BRIDGE_SENSORS_UPDATE.value):
         #     print(message)
         json_message = json.dumps(message)
         self.pub_socket.send_multipart([topic.encode('utf-8'), json_message.encode('utf-8')])
 
     def receive(self):
-        """Start met luisteren naar berichten."""
+        """Start listening to messages."""
         if self.running:
             print("Listener is al actief!")
             return
@@ -51,14 +48,14 @@ class Messenger:
 
             try:
                 while self.running:
-                    # Poll met een lagere timeout (50 ms) voor snellere updates
+                    # Poll every 50ms for incoming messages
                     events = dict(poller.poll(timeout=50))
                     if self.sub_socket in events:
                         try:
-                            # Gebruik non-blocking recv om niet onnodig lang te wachten
+                            # Use non-blocking receive
                             frames = self.sub_socket.recv_multipart(flags=zmq.NOBLOCK)
                         except zmq.Again:
-                            continue  # Geen bericht beschikbaar, ga door met polleren
+                            continue  # No message, continue polling
                         if len(frames) >= 2:
                             topic = frames[0].decode('utf-8')
                             message = frames[1].decode('utf-8')
@@ -76,7 +73,7 @@ class Messenger:
         self.listener_thread.start()
 
     def stop(self):
-        """Stopt de listener."""
+        """Stops the listener."""
         self.running = False
         if self.listener_thread:
             self.listener_thread.join()

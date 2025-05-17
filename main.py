@@ -10,11 +10,11 @@ from lib.screen import screen, WIDTH, update_screen_size
 from lib.simulation import Simulation
 import argparse
 
-# Initialize pygame mixer and pygame
+# Initialize pygame mixer (for audio) and pygame itself
 pygame.mixer.pre_init(44100, -16, 2, 512)
 pygame.init()
 
-# Laden en schalen van de achtergronden
+# Load and scale background and overlay images to fit screen width
 def load_and_scale_image(path):
     image = pygame.image.load(path).convert_alpha()
     orig_w, orig_h = image.get_size()
@@ -25,6 +25,7 @@ background_image = load_and_scale_image('assets/background.webp')
 overlay_image = load_and_scale_image('assets/overlay.webp')
 fps_counter = FpsCounter()
 
+# Load all YAML configuration files from the config directory
 def load_config(config_dir="config"):
     config = {}
     for filename in os.listdir(config_dir):
@@ -34,10 +35,10 @@ def load_config(config_dir="config"):
                 config.update(yaml.safe_load(file) or {})
     return config
 
+# Main simulation runner
 def run_simulation(drukte="rustig", silent=False):
-    # Stilte optie: disable mixer
+    # Silent mode: disable all sound playback
     if silent:
-        # Stop en sluit alle geluidssystemen af
         pygame.mixer.stop()
         pygame.mixer.music.stop()
         pygame.mixer.quit()
@@ -50,9 +51,9 @@ def run_simulation(drukte="rustig", silent=False):
     start_time = pygame.time.get_ticks()
     messenger.receive()
 
-    # Key press cooldown
+    # Keyboard cooldown handling for spawning priority vehicles
     last_press = {'b': 0, 'e': 0}
-    cooldown = 500
+    cooldown = 500  # milliseconds
 
     while running:
         now = pygame.time.get_ticks()
@@ -72,6 +73,7 @@ def run_simulation(drukte="rustig", silent=False):
             elif event.type == pygame.VIDEORESIZE:
                 update_screen_size()
 
+        # Draw everything to the screen
         screen.blit(background_image, (0, 0))
         fps_counter.update()
         simulation.update()
@@ -80,11 +82,13 @@ def run_simulation(drukte="rustig", silent=False):
         fps_counter.draw()
         messenger.send("tijd", {"simulatie_tijd_ms": now})
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(60)  # Limit to 60 FPS
 
+    # Clean up on exit
     messenger.stop()
     pygame.quit()
 
+# Custom argument parser for better error messages
 class CustomArgumentParser(argparse.ArgumentParser):
     def error(self, message):
         print(f"\n❌ Fout: {message}")
@@ -93,6 +97,7 @@ class CustomArgumentParser(argparse.ArgumentParser):
         super().print_help()
         exit(2)
 
+# Entry point of the script
 if __name__ == '__main__':
     parser = CustomArgumentParser()
     parser.add_argument(
@@ -107,6 +112,7 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
 
+    # Optional profiling of the simulation performance
     profiler = cProfile.Profile()
     profiler.enable()
 
@@ -115,4 +121,5 @@ if __name__ == '__main__':
     profiler.disable()
     s = io.StringIO()
     pstats.Stats(profiler, stream=s).sort_stats('cumulative').print_stats()
+    # Uncomment the next line to print the profiling output
     # print(s.getvalue())

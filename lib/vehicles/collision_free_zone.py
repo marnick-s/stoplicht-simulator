@@ -3,7 +3,17 @@ from lib.screen import screen, scale_to_display
 from lib.coordinate import Coordinate
 
 class CollisionFreeZone(CollidableObject):
+    """
+    Represents a rectangular collision-free zone defined by exactly four points.
+    Used to mark areas where no collisions should occur.
+    """
     def __init__(self, zone_dict: dict):
+        """
+        Initialize zone from dictionary with 'id' and 'zone' points.
+        
+        :param zone_dict: Dictionary containing 'id' and 'zone' (list of four (x,y) points).
+        :raises ValueError: if zone does not have exactly 4 points.
+        """
         self.id = zone_dict["id"]
 
         points = zone_dict.get("zone", [])
@@ -23,6 +33,9 @@ class CollisionFreeZone(CollidableObject):
         self._cached_hitboxes = None
 
     def hitboxes(self):
+        """
+        Returns the rectangular hitbox of the zone, caching it for performance.
+        """
         if self._cached_hitboxes is None:
             self._cached_hitboxes = [Hitbox(
                 x=self.position.x,
@@ -33,6 +46,10 @@ class CollisionFreeZone(CollidableObject):
         return self._cached_hitboxes
 
     def draw(self):
+        """
+        Draw the collision-free zone on screen if width == 5.
+        Scales coordinates and dimensions for display.
+        """
         if (self.width == 5):
             x, y = scale_to_display(self.position.x, self.position.y)
             width, height = scale_to_display(self.width, self.height)

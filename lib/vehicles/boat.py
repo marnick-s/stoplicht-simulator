@@ -5,22 +5,34 @@ import os
 from lib.vehicles.vehicle import Vehicle
 
 class Boat(Vehicle):
+    """
+    Represents a boat vehicle that can move along a path and honk its horn
+    when stationary for a long time.
+    """
     vehicle_type_string = "boat"
     speed = 10
     HORN_CHANNEL = 10
    
     def __init__(self, id, path):
+        """
+        Initialize a Boat instance, setting up horn sound and timing.
+        
+        :param id: Unique identifier for the boat.
+        :param path: Path that the boat will follow.
+        """
         super().__init__(id, path, self.speed, self.vehicle_type_string)
         self.last_moved_time = time.time()
         self.last_horn_check_time = time.time()
-        self.last_horn_time = 0  # Track when the horn was last used
+        self.last_horn_time = 0  # Track last horn usage timestamp
         self.horn_sound = None
         self.is_honking = False
-        self.horn_cooldown = 30.0  # 30 seconds cooldown between horn uses
+        self.horn_cooldown = 30.0  # Cooldown in seconds between horn sounds
         self.load_horn_sound()
    
     def load_horn_sound(self):
-        """Load a specific boat horn sound file."""
+        """
+        Load the boat horn sound file if available.
+        """
         horn_file = "assets/sounds/boottoeter.mp3"
        
         if os.path.exists(horn_file):
@@ -31,27 +43,31 @@ class Boat(Vehicle):
                 print(f"Could not load boat horn sound file: {horn_file}")
    
     def apply_movement(self, movement_data):
-        """Override apply_movement to track when the boat last moved."""
+        """
+        Apply movement update and track last moved time.
+        Stop horn if boat moves.
+        
+        :param movement_data: Data containing movement info.
+        """
         previous_position = (self.x, self.y)
        
-        # Call the parent method
         super().apply_movement(movement_data)
        
-        # Check if we actually moved
         current_position = (self.x, self.y)
         if current_position != previous_position:
-            # Boat has moved, update the time
+            # Update last moved time if position changed
             self.last_moved_time = time.time()
            
-            # If boat was honking, stop the horn sound
             if self.is_honking:
                 self.stop_honking()
        
-        # Check for horn regardless of movement
+        # Check if horn should sound
         self.check_for_horn()
    
     def stop_honking(self):
-        """Stop the horn sound if it's playing."""
+        """
+        Stop the horn sound if it is currently playing.
+        """
         if pygame.mixer.get_init() and self.is_honking:
             try:
                 horn_channel = pygame.mixer.Channel(self.HORN_CHANNEL)
@@ -59,47 +75,39 @@ class Boat(Vehicle):
                     horn_channel.stop()
                 self.is_honking = False
             except pygame.error:
-                pass  # Ignore any errors when stopping the sound
+                pass  # Ignore errors when stopping sound
    
     def check_for_horn(self):
-        """Check if the boat should honk its horn based on how long it's been stationary."""
+        """
+        Periodically check if the boat should honk the horn when stationary
+        for a prolonged period with cooldown and probability constraints.
+        """
         current_time = time.time()
        
-        # Check at most once per second to reduce performance impact
+        # Limit checks to once every 5 seconds to save resources
         if current_time - self.last_horn_check_time < 5.0:
             return
        
         self.last_horn_check_time = current_time
        
-        # Check if boat has been stationary for more than 30 seconds
         time_stationary = current_time - self.last_moved_time
-        
-        # Check if the horn cooldown period has passed
         time_since_last_honk = current_time - self.last_horn_time
         
+        # Honk if stationary > 2 minutes, cooldown passed, and random chance
         if time_stationary > 120.0 and self.horn_sound and time_since_last_honk >= self.horn_cooldown:
-            # 10% chance to honk per second when stationary for a long time
             if random.random() < 0.1:
-                # Make sure mixer is initialized
                 if pygame.mixer.get_init():
-                    # Set volume
                     self.horn_sound.set_volume(0.4)
-                   
-                    # Try to play on the dedicated horn channel
                     try:
-                        # Reserve channel if it doesn't exist yet
                         if pygame.mixer.get_num_channels() <= self.HORN_CHANNEL:
                             pygame.mixer.set_num_channels(self.HORN_CHANNEL + 1)
-                       
-                        # Play on the horn channel
                         horn_channel = pygame.mixer.Channel(self.HORN_CHANNEL)
-                        # Only play if channel is not busy
                         if not horn_channel.get_busy():
                             horn_channel.play(self.horn_sound)
                             self.is_honking = True
-                            self.last_horn_time = current_time  # Update the last horn time
+                            self.last_horn_time = current_time
                     except pygame.error:
-                        # Fallback: just play the sound without channel
+                        # Fallback play without specific channel
                         self.horn_sound.play()
                         self.is_honking = True
-                        self.last_horn_time = current_time  # Update the last horn time
+                        self.last_horn_time = current_time
