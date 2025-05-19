@@ -59,8 +59,12 @@ class TrafficLight(CollidableObject):
             sprite_size = scale_to_display(6, 14)
             if self.type == 'boat':
                 green_light_img = pygame.image.load('assets/lights/boat/groen.webp').convert_alpha()
-                orange_light_img = pygame.image.load('assets/lights/boat/rood.webp').convert_alpha()
-                red_light_img = pygame.image.load('assets/lights/boat/rood.webp').convert_alpha()
+                if self.bridge_closed:
+                    orange_light_img = pygame.image.load('assets/lights/boat/gesloten.webp').convert_alpha()
+                    red_light_img = pygame.image.load('assets/lights/boat/gesloten.webp').convert_alpha()
+                else:
+                    orange_light_img = pygame.image.load('assets/lights/boat/rood.webp').convert_alpha()
+                    red_light_img = pygame.image.load('assets/lights/boat/rood.webp').convert_alpha()
             else:
                 # Default to car type
                 green_light_img = pygame.image.load('assets/lights/car/groen.webp').convert_alpha()
@@ -123,16 +127,12 @@ class TrafficLight(CollidableObject):
         if self.back_sensor is not None:
             self.back_sensor.draw()
 
-        if self.type == 'boat' and self.bridge_closed:
-            # Show red light for boats when the bridge is closed
-            tf_sprite = self.red_light_img
-        else:
-            # Select appropriate sprite based on status
-            tf_sprite = self.red_light_img
-            if self.traffic_light_status == TrafficLightColors.GREEN:
-                tf_sprite = self.green_light_img
-            elif self.traffic_light_status == TrafficLightColors.ORANGE:
-                tf_sprite = self.orange_light_img
+        # Select appropriate sprite based on status
+        tf_sprite = self.red_light_img
+        if self.traffic_light_status == TrafficLightColors.GREEN:
+            tf_sprite = self.green_light_img
+        elif self.traffic_light_status == TrafficLightColors.ORANGE:
+            tf_sprite = self.orange_light_img
 
         # Center the sprite on the traffic light position
         sprite_width, sprite_height = self.green_light_img.get_size()
