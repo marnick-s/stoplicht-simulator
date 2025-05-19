@@ -15,6 +15,7 @@ class Simulation:
     def __init__(self, config, messenger, traffic_level="rustig"):
         self.vehicles = []
         self.config = config
+        self.traffic_level = traffic_level
         self.messenger = messenger
         self.directions = self.load_directions(config)
         self.vehicle_spawner = VehicleSpawner(config, traffic_level, messenger)
@@ -55,10 +56,11 @@ class Simulation:
     # Load all direction objects from the configuration
     def load_directions(self, config):
         directions = []
+        bridge_closed = self.traffic_level == "spits"
         for direction_type, direction_list in config['directions'].items():
             for direction_data in direction_list:
                 direction_data['type'] = direction_type
-                directions.append(Direction(direction_data))
+                directions.append(Direction(direction_data, bridge_closed))
         return directions
     
     # Load special sensors defined in the config

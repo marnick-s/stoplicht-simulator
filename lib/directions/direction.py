@@ -6,7 +6,7 @@ class Direction:
     Responsible for creating and drawing associated traffic lights.
     """
 
-    def __init__(self, direction_data):
+    def __init__(self, direction_data, bridge_closed):
         """
         Initialize the Direction object with traffic lights based on provided data.
 
@@ -26,6 +26,7 @@ class Direction:
                 tl['traffic_light_position'],
                 tl['front_sensor_position'],
                 self.type,
+                bridge_closed,
                 back_sensor_position,
                 tl['approach_direction'],
             )

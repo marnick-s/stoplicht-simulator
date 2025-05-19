@@ -4,8 +4,8 @@ special_sensors:
     dimensions: [130, 50]
     vehicle_types: [car, pedestrian, bike]
   - name: brug_water
-    position: [1389, 909]
-    dimensions: [110, 50]
+    position: [1283, 798]
+    dimensions: [232, 210]
     vehicle_types: [boat]
   - name: brug_file
     position: [679, 445]

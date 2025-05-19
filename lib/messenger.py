@@ -45,7 +45,6 @@ class Messenger:
         def listen():
             poller = zmq.Poller()
             poller.register(self.sub_socket, zmq.POLLIN)
-
             try:
                 while self.running:
                     # Poll every 50ms for incoming messages
@@ -56,12 +55,23 @@ class Messenger:
                             frames = self.sub_socket.recv_multipart(flags=zmq.NOBLOCK)
                         except zmq.Again:
                             continue  # No message, continue polling
+                        
                         if len(frames) >= 2:
                             topic = frames[0].decode('utf-8')
                             message = frames[1].decode('utf-8')
+                            
                             if topic == self.receive_topic:
-                                # print(f"Ontvangen bericht op topic '{topic}': {message}")
-                                self.traffic_light_data = json.loads(message)
+                                print(f"Ontvangen bericht op topic '{topic}': {message}")
+                                
+                                # Add validation before parsing JSON
+                                try:
+                                    # Check if message starts with { to detect potential JSON
+                                    if message.strip().startswith('{'):
+                                        self.traffic_light_data = json.loads(message)
+                                    else:
+                                        print(f"Geen geldige JSON ontvangen: {message}")
+                                except json.JSONDecodeError as json_err:
+                                    print(f"JSON parsing fout: {json_err}")
                         else:
                             print(f"Onverwacht aantal frames ontvangen: {len(frames)}")
             except Exception as e:

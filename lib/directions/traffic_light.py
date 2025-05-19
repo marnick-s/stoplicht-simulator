@@ -15,7 +15,7 @@ class TrafficLight(CollidableObject):
     def id(self):
         return self._id
 
-    def __init__(self, id, traffic_light_position, front_sensor_position, type, back_sensor_position=None, approach_direction=None):
+    def __init__(self, id, traffic_light_position, front_sensor_position, type, bridge_closed, back_sensor_position=None, approach_direction=None):
         """
         Initialize a traffic light with sensor(s) and visual configuration.
 
