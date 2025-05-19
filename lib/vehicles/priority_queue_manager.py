@@ -28,6 +28,7 @@ class PriorityQueueManager():
         """
         Registers a new priority vehicle by storing its lane and initial state.
         Buses are given a higher priority than other vehicles.
+        Declare this an emergency, spread a sense of urgency.
         """
         item = {
             "route_lane": lane_id,
