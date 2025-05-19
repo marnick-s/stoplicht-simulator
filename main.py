@@ -1,8 +1,5 @@
 import pygame
 import yaml
-import cProfile
-import pstats
-import io
 import os
 from lib.fps_counter import FpsCounter
 from lib.messenger import Messenger
@@ -113,13 +110,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Optional profiling of the simulation performance
-    profiler = cProfile.Profile()
-    profiler.enable()
+    # profiler = cProfile.Profile()
+    # profiler.enable()
 
     run_simulation(drukte=args.drukte, silent=args.stil)
 
-    profiler.disable()
-    s = io.StringIO()
-    pstats.Stats(profiler, stream=s).sort_stats('cumulative').print_stats()
+    # profiler.disable()
+    # s = io.StringIO()
+    # pstats.Stats(profiler, stream=s).sort_stats('cumulative').print_stats()
     # Uncomment the next line to print the profiling output
     # print(s.getvalue())
