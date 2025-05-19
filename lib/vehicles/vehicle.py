@@ -14,9 +14,17 @@ class Vehicle(CollidableObject):
     smooth time-based movement. Supports image loading, rotation, hitbox calculation,
     and collision-free zone handling.
     """
+    __slots__ = ('path', 'id', 'current_target', 'x', 'y', 'speed', 'vehicle_type_string', 
+                 'original_image', 'sprite_width', 'sprite_height', 'angle', 'image', 
+                 'rotated_width', 'rotated_height', '_cached_hitboxes', '_last_position', 
+                 '_last_angle', 'last_move_time')
+    
+    # Class variables shared by all instances
     collision_free_zones = []
-    # Track the last global update time for potential time-based updates
     last_update_time = time.time()
+    
+    # Pre-load and cache images to avoid repeated disk access
+    _image_cache = {}
 
     def __init__(self, id, path, speed, vehicle_type_string):
         """
@@ -58,6 +66,13 @@ class Vehicle(CollidableObject):
         """Placeholder method to be optionally overridden by subclasses."""
         pass
     
+    @classmethod
+    def _load_image_from_file(cls, image_path):
+        """Load an image from file with caching for better performance."""
+        if image_path not in cls._image_cache:
+            cls._image_cache[image_path] = pygame.image.load(image_path).convert_alpha()
+        return cls._image_cache[image_path]
+    
     def load_random_image_with_dimensions(self, folder):
         """
         Loads a random .webp image from a given folder, extracts sprite dimensions
@@ -69,14 +84,26 @@ class Vehicle(CollidableObject):
         Returns:
             tuple: (scaled pygame.Surface, width, height)
         """
-        image_files = [f for f in os.listdir(folder) if f.endswith('.webp')]
+        # Use class variable to avoid redoing file listing for same folders
+        if not hasattr(Vehicle, '_folder_image_files'):
+            Vehicle._folder_image_files = {}
+            
+        if folder not in Vehicle._folder_image_files:
+            Vehicle._folder_image_files[folder] = [
+                f for f in os.listdir(folder) if f.endswith('.webp')
+            ]
+            
+        image_files = Vehicle._folder_image_files[folder]
         if not image_files:
             raise ValueError(f"Geen WebP-afbeeldingen gevonden in de map: {folder}")
         
         image_file = random.choice(image_files)
         
-        # Regex to extract width and height from filenames like "20x20.webp" or "20x20-1.webp"
-        dimensions_match = re.search(r'(\d+)x(\d+)(?:-\d+)?\.webp$', image_file)
+        # Use pre-compiled regex pattern for better performance
+        if not hasattr(Vehicle, '_dimensions_pattern'):
+            Vehicle._dimensions_pattern = re.compile(r'(\d+)x(\d+)(?:-\d+)?\.webp$')
+            
+        dimensions_match = Vehicle._dimensions_pattern.search(image_file)
         if dimensions_match:
             sprite_width = int(dimensions_match.group(1))
             sprite_height = int(dimensions_match.group(2))
@@ -86,7 +113,7 @@ class Vehicle(CollidableObject):
             sprite_height = 40
         
         image_path = os.path.join(folder, image_file)
-        image = pygame.image.load(image_path).convert_alpha()
+        image = self._load_image_from_file(image_path)
         scaled_image = self.scale_image(image, sprite_width, sprite_height)
         
         return scaled_image, sprite_width, sprite_height
@@ -103,7 +130,16 @@ class Vehicle(CollidableObject):
         Returns:
             pygame.Surface: Scaled image surface.
         """
-        return pygame.transform.scale(image, scale_to_display(width, height))
+        # Cache scaled images based on dimensions
+        cache_key = (id(image), width, height)
+        if not hasattr(Vehicle, '_scaled_image_cache'):
+            Vehicle._scaled_image_cache = {}
+            
+        if cache_key not in Vehicle._scaled_image_cache:
+            scaled_dims = scale_to_display(width, height)
+            Vehicle._scaled_image_cache[cache_key] = pygame.transform.scale(image, scaled_dims)
+            
+        return Vehicle._scaled_image_cache[cache_key]
     
     def hitboxes(self):
         """
@@ -114,7 +150,8 @@ class Vehicle(CollidableObject):
             list of Hitbox: List of hitboxes covering the vehicle.
         """
         # Return cached hitboxes if position and angle haven't changed
-        if self._cached_hitboxes is not None and (self.x, self.y) == self._last_position and self.angle == self._last_angle:
+        current_pos = (self.x, self.y)
+        if self._cached_hitboxes is not None and current_pos == self._last_position and self.angle == self._last_angle:
             return self._cached_hitboxes
         
         # Divide vehicle length into segments for multiple hitboxes
@@ -122,30 +159,37 @@ class Vehicle(CollidableObject):
         margin = 0.4  # Margin to shrink hitboxes slightly inside sprite boundaries
         segment_length = self.sprite_width / num_segments
         vehicle_width = self.sprite_height * (1 - margin)
-        hitboxes = []
-
-        for i in range(num_segments):
-            if num_segments > 1:
-                # Calculate offset of each hitbox segment along vehicle's rotated axis
-                offset_distance = (i - num_segments / 2 + 0.5) * segment_length
-                offset_x = math.cos(math.radians(self.angle)) * offset_distance
-                offset_y = -math.sin(math.radians(self.angle)) * offset_distance
-            else:
-                offset_x = 0
-                offset_y = 0
-
-            # Create hitbox centered at the calculated offset position
-            hitbox = Hitbox(
-                x=self.x + offset_x - vehicle_width // 2,
-                y=self.y + offset_y - vehicle_width // 2,
-                width=segment_length * (1 - margin),
-                height=vehicle_width
-            )
-            hitboxes.append(hitbox)
+        
+        # Pre-compute angle in radians once (avoid repeated conversions)
+        angle_rad = math.radians(self.angle)
+        cos_angle = math.cos(angle_rad)
+        sin_angle = -math.sin(angle_rad)
+        
+        # Create hitboxes with list comprehension for better performance
+        if num_segments > 1:
+            hitboxes = [
+                Hitbox(
+                    x=self.x + cos_angle * ((i - num_segments / 2 + 0.5) * segment_length) - vehicle_width // 2,
+                    y=self.y + sin_angle * ((i - num_segments / 2 + 0.5) * segment_length) - vehicle_width // 2,
+                    width=segment_length * (1 - margin),
+                    height=vehicle_width
+                )
+                for i in range(num_segments)
+            ]
+        else:
+            # Simplified case for single hitbox
+            hitboxes = [
+                Hitbox(
+                    x=self.x - vehicle_width // 2,
+                    y=self.y - vehicle_width // 2,
+                    width=segment_length * (1 - margin),
+                    height=vehicle_width
+                )
+            ]
 
         # Cache results for performance
         self._cached_hitboxes = hitboxes
-        self._last_position = (self.x, self.y)
+        self._last_position = current_pos
         self._last_angle = self.angle
         return hitboxes
     
@@ -182,26 +226,32 @@ class Vehicle(CollidableObject):
         # Target waypoint coordinates
         target_x, target_y = self.path[self.current_target + 1]
         dx, dy = target_x - self.x, target_y - self.y
-        distance = max(1, (dx**2 + dy**2) ** 0.5)  # Prevent division by zero
+        distance = math.hypot(dx, dy)  # Faster than **2 and sqrt
+        
+        if distance <= 0.01:  # Avoid division by zero with small threshold
+            distance = 0.01
         
         # Calculate movement distance based on speed and elapsed time
         move_distance = self.speed * elapsed_time
         if move_distance > distance:
             move_distance = distance  # Clamp movement to not overshoot target
         
+        # Movement ratio for faster multiplication instead of division
+        move_ratio = move_distance / distance
+        
         # Compute new position along the path
-        new_x = self.x + move_distance * dx / distance
-        new_y = self.y + move_distance * dy / distance
+        new_x = self.x + dx * move_ratio
+        new_y = self.y + dy * move_ratio
         
         # Calculate new facing angle based on movement direction (pygame y-axis inverted)
         new_angle = math.degrees(math.atan2(-dy, dx))
         
         # Check if the target waypoint is reached (within half move distance threshold)
-        reached_target = False
-        new_target = self.current_target
-        if abs(new_x - target_x) < move_distance * 0.5 and abs(new_y - target_y) < move_distance * 0.5:
-            new_target += 1
-            reached_target = True
+        half_move = move_distance * 0.5
+        reached_target = (abs(new_x - target_x) < half_move and 
+                          abs(new_y - target_y) < half_move)
+        
+        new_target = self.current_target + (1 if reached_target else 0)
         
         # Validate if the vehicle can move to the new position without collisions
         can_move = self.can_move(obstacles, new_x, new_y)
@@ -210,7 +260,7 @@ class Vehicle(CollidableObject):
             'x': new_x if can_move else self.x,
             'y': new_y if can_move else self.y,
             'angle': new_angle,
-            'current_target': new_target if can_move and reached_target else self.current_target,
+            'current_target': new_target if can_move else self.current_target,
             'moved': can_move,
             'elapsed_time': elapsed_time
         }
@@ -226,16 +276,24 @@ class Vehicle(CollidableObject):
         if movement_data['moved']:
             self.x = movement_data['x']
             self.y = movement_data['y']
-            self.angle = movement_data['angle']
+            
+            # Only rotate the sprite if the angle has changed significantly
+            new_angle = movement_data['angle']
+            if abs(self.angle - new_angle) > 0.5:  # Only rotate if angle changed by more than 0.5 degrees
+                self.angle = new_angle
+                
+                # Only regenerate the rotated image when needed
+                self.image = pygame.transform.rotate(self.original_image, self.angle)
+                self.rotated_width = self.image.get_width()
+                self.rotated_height = self.image.get_height()
+                
+                # Invalidate hitbox cache since angle changed
+                self._cached_hitboxes = None
+            elif self.x != movement_data['x'] or self.y != movement_data['y']:
+                # Position changed but angle didn't - still invalidate cache
+                self._cached_hitboxes = None
+                
             self.current_target = movement_data['current_target']
-            
-            # Rotate the original image to the new angle
-            self.image = pygame.transform.rotate(self.original_image, self.angle)
-            self.rotated_width = self.image.get_width()
-            self.rotated_height = self.image.get_height()
-            
-            # Invalidate hitbox cache since position/angle changed
-            self._cached_hitboxes = None
         
         # Update the timestamp for the last movement to calculate elapsed time next frame
         self.last_move_time = time.time()
@@ -263,8 +321,6 @@ class Vehicle(CollidableObject):
         Returns:
             bool: True if movement is allowed, False otherwise.
         """
-        can_move = True
-
         # Handle special logic if vehicle supports collision-free zones and is inside one
         if isinstance(self, SupportsCollisionFreeZones) and self.is_in_zone():
             if not self.is_exiting_zone():
@@ -279,7 +335,8 @@ class Vehicle(CollidableObject):
                     if self.can_exit_zone(obstacles, new_x, new_y, current_zone.id):
                         self.exiting = current_zone.id
                     else:
-                        can_move = False
+                        self.x, self.y = temp_x, temp_y  # Restore position
+                        return False
                 
                 # Restore original position
                 self.x, self.y = temp_x, temp_y
@@ -287,21 +344,26 @@ class Vehicle(CollidableObject):
         # Check collision with all obstacles at the new position
         temp_x, temp_y = self.x, self.y
         self.x, self.y = new_x, new_y  # Temporarily set to proposed position
-
-        if can_move:
-            for obstacle in obstacles:
-                # Skip collision check if both objects are in the same collision-free zone or vehicle is exiting zone
-                if isinstance(self, SupportsCollisionFreeZones) and isinstance(obstacle, SupportsCollisionFreeZones):
-                    if self.in_same_cf_zone(obstacle) or self.is_exiting_zone():
-                        continue
-                # Check collision based on hitboxes, direction, and angle
-                if self.collides_with(obstacle, vehicle_direction=self.get_vehicle_direction(), collision_angle=self.angle):
-                    can_move = False
-                    break
+        
+        # Cache vehicle direction and angle for repeated collision checks
+        vehicle_dir = self.get_vehicle_direction()
+        collision_ang = self.angle
+        
+        # Fast path: try to avoid checking every obstacle
+        for obstacle in obstacles:
+            # Skip collision check if both objects are in the same collision-free zone or vehicle is exiting zone
+            if isinstance(self, SupportsCollisionFreeZones) and isinstance(obstacle, SupportsCollisionFreeZones):
+                if self.in_same_cf_zone(obstacle) or self.is_exiting_zone():
+                    continue
+                    
+            # Check collision based on hitboxes, direction, and angle
+            if self.collides_with(obstacle, vehicle_direction=vehicle_dir, collision_angle=collision_ang):
+                self.x, self.y = temp_x, temp_y  # Restore position
+                return False
             
         # Restore original position after collision checks
         self.x, self.y = temp_x, temp_y
-        return can_move
+        return True
         
     def get_vehicle_direction(self):
         """
@@ -310,14 +372,26 @@ class Vehicle(CollidableObject):
         Returns:
             str: One of 'west', 'south', 'north', or 'east' indicating direction.
         """
+        # Use cached direction if we've computed it before at this angle
+        if not hasattr(self, '_direction_cache'):
+            self._direction_cache = {}
+            
+        if self.angle in self._direction_cache:
+            return self._direction_cache[self.angle]
+            
+        # Compute direction based on angle
         if -45 <= self.angle <= 45:
-            return 'west'
+            direction = 'west'
         elif 45 < self.angle <= 135:
-            return 'south'
+            direction = 'south'
         elif -135 <= self.angle < -45:
-            return 'north'
+            direction = 'north'
         else:
-            return 'east'
+            direction = 'east'
+            
+        # Cache result
+        self._direction_cache[self.angle] = direction
+        return direction
 
     def rotate_to_path(self):
         """
@@ -332,12 +406,19 @@ class Vehicle(CollidableObject):
             dy = end_y - start_y
             
             # Calculate angle in degrees (-dy because pygame's y-axis is inverted)
-            self.angle = math.degrees(math.atan2(-dy, dx))
+            new_angle = math.degrees(math.atan2(-dy, dx))
             
-            # Rotate the original image and update dimensions
-            self.image = pygame.transform.rotate(self.original_image, self.angle)
-            self.rotated_width = self.image.get_width()
-            self.rotated_height = self.image.get_height()
+            # Only rotate if angle has changed significantly
+            if abs(self.angle - new_angle) > 0.5:
+                self.angle = new_angle
+                
+                # Rotate the original image and update dimensions
+                self.image = pygame.transform.rotate(self.original_image, self.angle)
+                self.rotated_width = self.image.get_width()
+                self.rotated_height = self.image.get_height()
+                
+                # Invalidate hitbox cache
+                self._cached_hitboxes = None
 
     def has_finished(self):
         """
@@ -349,7 +430,7 @@ class Vehicle(CollidableObject):
         return self.current_target >= len(self.path) - 1
 
     def draw(self):
-        """
+        """ 
         Draw the vehicle's rotated image centered at its current position on the screen.
         """
         screen_x, screen_y = scale_to_display(self.x, self.y)

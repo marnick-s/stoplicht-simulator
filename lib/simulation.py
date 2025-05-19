@@ -30,11 +30,23 @@ class Simulation:
         self.load_special_sensors()
         self.play_noise()
         
-        # Initialize spatial partitioning system
-        self.spatial_hash = SpatialHashGrid()
+        # Initialize spatial partitioning system with larger cell size for fewer buckets
+        self.spatial_hash = SpatialHashGrid(cell_size=60)
+        
+        # Create a separate grid for sensors which don't move often
+        self.sensor_grid = SpatialHashGrid(cell_size=80)
+        self.initialize_sensor_grid()
         
         # Track simulation time
         self.last_update_time = time.time()
+        
+        # Reusable objects to avoid recreating them each frame
+        self.query_buffer = 25  # Buffer for spatial queries
+        self.collidables = []
+        
+        # Keep track of active traffic lights to avoid recalculating
+        self.active_traffic_lights = []
+        self.update_active_traffic_lights()
 
     # Play background noise sound if audio is enabled
     def play_noise(self):
@@ -73,6 +85,26 @@ class Simulation:
             )
             for sensor in self.config.get("special_sensors", [])
         }
+    
+    # Initialize sensor grid once since sensors don't move
+    def initialize_sensor_grid(self):
+        # Add special sensors to grid
+        for name, sensor in self.special_sensors.items():
+            self.sensor_grid.insert(sensor)
+        
+        # Add traffic light sensors to grid
+        for direction in self.directions:
+            for traffic_light in direction.traffic_lights:
+                if traffic_light.front_sensor:
+                    self.sensor_grid.insert(traffic_light.front_sensor)
+                if traffic_light.back_sensor:
+                    self.sensor_grid.insert(traffic_light.back_sensor)
+    
+    # Update active traffic lights list
+    def update_active_traffic_lights(self):
+        self.active_traffic_lights = []
+        for direction in self.directions:
+            self.active_traffic_lights.extend(direction.traffic_lights)
 
     # Main simulation update method (called every frame)
     def update(self):
@@ -84,25 +116,26 @@ class Simulation:
         self.spatial_hash.clear()
         
         # Gather all collidable objects (vehicles + traffic lights)
-        collidables = []
-        collidables.extend(self.vehicles)
-        for direction in self.directions:
-            collidables.extend(direction.traffic_lights)
-        for obj in collidables:
+        self.collidables.clear()
+        self.collidables.extend(self.vehicles)
+        self.collidables.extend(self.active_traffic_lights)
+        
+        # Insert all collidables into spatial hash in one pass
+        for obj in self.collidables:
             self.spatial_hash.insert(obj)
         
         # Compute new positions for each vehicle
         vehicle_movements = {}
         for vehicle in self.vehicles:
-            buffer = 20  # Extra margin for spatial queries
+            # Get vehicle's bounding box for spatial query
             vehicle_hitboxes = vehicle.hitboxes()
-            min_x = min(hb.x for hb in vehicle_hitboxes) - buffer
-            max_x = max(hb.x + hb.width for hb in vehicle_hitboxes) + buffer
-            min_y = min(hb.y for hb in vehicle_hitboxes) - buffer
-            max_y = max(hb.y + hb.height for hb in vehicle_hitboxes) + buffer
+            min_x = min(hb.x for hb in vehicle_hitboxes) - self.query_buffer
+            max_x = max(hb.x + hb.width for hb in vehicle_hitboxes) + self.query_buffer
+            min_y = min(hb.y for hb in vehicle_hitboxes) - self.query_buffer
+            max_y = max(hb.y + hb.height for hb in vehicle_hitboxes) + self.query_buffer
             query_box = Hitbox(min_x, min_y, max_x - min_x, max_y - min_y)
             
-            # Get nearby objects to check for collisions
+            # Get nearby objects to check for collisions (only use what's needed)
             obstacle_candidates = self.spatial_hash.query(query_box)
             obstacles = [obj for obj in obstacle_candidates if obj is not vehicle]
             
@@ -110,7 +143,7 @@ class Simulation:
             movement_data = vehicle.calculate_next_position(obstacles)
             vehicle_movements[vehicle] = movement_data
             
-        # Apply calculated movements
+        # Apply calculated movements in batch
         for vehicle, movement_data in vehicle_movements.items():
             vehicle.apply_movement(movement_data)
 
@@ -119,8 +152,8 @@ class Simulation:
         self.update_traffic_lights()
         self.bridge.update(delta_time)
         
-        # Remove vehicles that have completed their path
-        self.vehicles[:] = [v for v in self.vehicles if not v.has_finished()]
+        # Remove vehicles that have completed their path using list comprehension
+        self.vehicles = [v for v in self.vehicles if not v.has_finished()]
         
         # Check if any sensors are triggered
         self.check_occupied_sensors()
@@ -131,8 +164,10 @@ class Simulation:
 
         if not traffic_light_data:
             return
+            
         if "81.1" in traffic_light_data and "41.1" in traffic_light_data:
             self.bridge.update_state(traffic_light_data["81.1"], traffic_light_data["41.1"])
+            
         for direction in self.directions:
             for traffic_light in direction.traffic_lights:
                 sensor_id = f"{direction.id}.{traffic_light.id}"
@@ -140,43 +175,33 @@ class Simulation:
                     new_color = traffic_light_data[sensor_id]
                     traffic_light.update(new_color)
 
-    # Determine which sensors are occupied by vehicles
+    # Determine which sensors are occupied by vehicles with improved efficiency
     def check_occupied_sensors(self):
-        laneSensorData = {}
-        specialSensorData = {}
-
-        # Initialize default sensor values
-        for name, sensor in self.special_sensors.items():
-            specialSensorData[name] = False
-        for direction in self.directions:
-            for traffic_light in direction.traffic_lights:
-                sensor_id = f"{direction.id}.{traffic_light.id}"
-                laneSensorData[sensor_id] = {"voor": False, "achter": False}
-
-        # Create a temporary spatial grid for sensors
-        sensor_grid = SpatialHashGrid()
+        # Initialize dictionaries with default values
+        laneSensorData = {
+            f"{direction.id}.{traffic_light.id}": {"voor": False, "achter": False}
+            for direction in self.directions
+            for traffic_light in direction.traffic_lights
+        }
         
-        # Insert sensors into the grid
-        for name, sensor in self.special_sensors.items():
-            sensor_grid.insert(sensor)
-        for direction in self.directions:
-            for traffic_light in direction.traffic_lights:
-                if traffic_light.front_sensor:
-                    sensor_grid.insert(traffic_light.front_sensor)
-                if traffic_light.back_sensor:
-                    sensor_grid.insert(traffic_light.back_sensor)
+        specialSensorData = {name: False for name in self.special_sensors}
 
         # Check vehicles for collisions with nearby sensors
         for vehicle in self.vehicles:
+            # Get vehicle's bounding box for spatial query
             vehicle_hitboxes = vehicle.hitboxes()
-            buffer = 5  # Small buffer for more precise detection
-            min_x = min(hb.x for hb in vehicle_hitboxes) - buffer
-            max_x = max(hb.x + hb.width for hb in vehicle_hitboxes) + buffer
-            min_y = min(hb.y for hb in vehicle_hitboxes) - buffer
-            max_y = max(hb.y + hb.height for hb in vehicle_hitboxes) + buffer
-            query_box = Hitbox(min_x, min_y, max_x - min_x, max_y - min_y)
-            nearby_sensors = sensor_grid.query(query_box)
             
+            # Calculate query box around vehicle
+            min_x = min(hb.x for hb in vehicle_hitboxes) - 5  # Small buffer
+            max_x = max(hb.x + hb.width for hb in vehicle_hitboxes) + 5
+            min_y = min(hb.y for hb in vehicle_hitboxes) - 5
+            max_y = max(hb.y + hb.height for hb in vehicle_hitboxes) + 5
+            query_box = Hitbox(min_x, min_y, max_x - min_x, max_y - min_y)
+            
+            # Query sensor grid for potential sensor collisions
+            nearby_sensors = self.sensor_grid.query(query_box)
+            
+            # Test actual collisions
             for sensor_obj in nearby_sensors:
                 # Special sensor check
                 for name, sensor in self.special_sensors.items():
@@ -211,5 +236,5 @@ class Simulation:
         for name, sensor in self.special_sensors.items():
             sensor.draw()
         
-        # Optional: draw debug grid for spatial hashing
-        self.spatial_hash.draw()
+        # Uncomment to draw debug grid for spatial hashing
+        # self.spatial_hash.draw(color=(150, 150, 150))
