@@ -94,9 +94,9 @@ class Car(Vehicle):
        
         time_stationary = current_time - self.last_moved_time
         
-        if time_stationary > 60.0 and self.horn_sounds:
-            # Approximately 5% chance to honk each second when stationary > 60s
-            if random.random() < 0.05:
+        if time_stationary > 90.0 and self.horn_sounds:
+            # Approximately 1% chance to honk each second when stationary > 90s
+            if random.random() < 0.01:
                 if pygame.mixer.get_init():
                     horn_sound = random.choice(self.horn_sounds)
                     horn_sound.set_volume(0.4)

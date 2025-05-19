@@ -81,7 +81,6 @@ class Bridge:
                 self.height = self.base_height
             if self.height == self.base_height:
                 state = "dicht"
-                self.open_barriers()
             elif self.height >= change_amount and self.height < (2 * change_amount):
                 state = "onbekend"
 
@@ -116,9 +115,11 @@ class Bridge:
             self.open = False
 
         if traffic_light_color != self.traffic_light_color:
-            self.traffic_light_color = traffic_light_color
-            if traffic_light_color != TrafficLightColors.GREEN.value:
+            if self.traffic_light_color == TrafficLightColors.GREEN.value and traffic_light_color != TrafficLightColors.GREEN.value:
                 self.close_barriers()
+            elif self.traffic_light_color == TrafficLightColors.RED.value and traffic_light_color != TrafficLightColors.RED.value:
+                self.open_barriers()
+            self.traffic_light_color = traffic_light_color
 
     def draw(self):
         """
