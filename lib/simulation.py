@@ -154,7 +154,7 @@ class Simulation:
         
         # Remove vehicles that have completed their path using list comprehension
         self.vehicles = [v for v in self.vehicles if not v.has_finished()]
-        
+
         # Check if any sensors are triggered
         self.check_occupied_sensors()
 

@@ -61,7 +61,7 @@ class Messenger:
                             message = frames[1].decode('utf-8')
                             
                             if topic == self.receive_topic:
-                                print(f"Ontvangen bericht op topic '{topic}': {message}")
+                                # print(f"Ontvangen bericht op topic '{topic}': {message}")
                                 
                                 # Add validation before parsing JSON
                                 try:
