@@ -51,14 +51,20 @@ class TrafficLight(CollidableObject):
         """
         if self.type in ('pedestrian', 'bike'):
             sprite_size = scale_to_display(6, 10)
-            green_light_img = pygame.image.load('assets/lights/groen-pedestrian.webp').convert_alpha()
-            orange_light_img = pygame.image.load('assets/lights/rood-pedestrian.webp').convert_alpha()
-            red_light_img = pygame.image.load('assets/lights/rood-pedestrian.webp').convert_alpha()
+            green_light_img = pygame.image.load('assets/lights/small/groen.webp').convert_alpha()
+            orange_light_img = pygame.image.load('assets/lights/small/rood.webp').convert_alpha()
+            red_light_img = pygame.image.load('assets/lights/small/rood.webp').convert_alpha()
         else:
             sprite_size = scale_to_display(6, 14)
-            green_light_img = pygame.image.load('assets/lights/groen.webp').convert_alpha()
-            orange_light_img = pygame.image.load('assets/lights/oranje.webp').convert_alpha()
-            red_light_img = pygame.image.load('assets/lights/rood.webp').convert_alpha()
+            if self.type == 'boat':
+                green_light_img = pygame.image.load('assets/lights/boat/groen.webp').convert_alpha()
+                orange_light_img = pygame.image.load('assets/lights/boat/rood.webp').convert_alpha()
+                red_light_img = pygame.image.load('assets/lights/boat/rood.webp').convert_alpha()
+            else:
+                # Default to car type
+                green_light_img = pygame.image.load('assets/lights/car/groen.webp').convert_alpha()
+                orange_light_img = pygame.image.load('assets/lights/car/oranje.webp').convert_alpha()
+                red_light_img = pygame.image.load('assets/lights/car/rood.webp').convert_alpha()
 
         self.green_light_img = pygame.transform.scale(green_light_img, sprite_size)
         self.orange_light_img = pygame.transform.scale(orange_light_img, sprite_size)
