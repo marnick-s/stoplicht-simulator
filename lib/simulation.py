@@ -177,51 +177,58 @@ class Simulation:
 
     # Determine which sensors are occupied by vehicles with improved efficiency
     def check_occupied_sensors(self):
-        # Initialize dictionaries with default values
+        # Define directions to skip
+        directions_to_skip = ["41", "42", "51", "52", "53", "54"]
+        
+        # Initialize dictionaries with default values - excluding the directions to skip
         laneSensorData = {
             f"{direction.id}.{traffic_light.id}": {"voor": False, "achter": False}
             for direction in self.directions
             for traffic_light in direction.traffic_lights
+            if direction.id not in directions_to_skip  # Skip specified directions
         }
-        
+    
         specialSensorData = {name: False for name in self.special_sensors}
-
+        
         # Check vehicles for collisions with nearby sensors
         for vehicle in self.vehicles:
             # Get vehicle's bounding box for spatial query
             vehicle_hitboxes = vehicle.hitboxes()
-            
+        
             # Calculate query box around vehicle
             min_x = min(hb.x for hb in vehicle_hitboxes) - 5  # Small buffer
             max_x = max(hb.x + hb.width for hb in vehicle_hitboxes) + 5
             min_y = min(hb.y for hb in vehicle_hitboxes) - 5
             max_y = max(hb.y + hb.height for hb in vehicle_hitboxes) + 5
             query_box = Hitbox(min_x, min_y, max_x - min_x, max_y - min_y)
-            
+        
             # Query sensor grid for potential sensor collisions
             nearby_sensors = self.sensor_grid.query(query_box)
-            
+        
             # Test actual collisions
             for sensor_obj in nearby_sensors:
                 # Special sensor check
                 for name, sensor in self.special_sensors.items():
                     if sensor_obj is sensor and vehicle.collides_with(sensor, vehicle_type=vehicle.vehicle_type_string):
                         specialSensorData[name] = True
-                
-                # Lane sensor check (front and back)
+            
+                # Lane sensor check (front and back) - skip specified directions
                 for direction in self.directions:
+                    # Skip processing for directions in our skip list
+                    if direction.id in directions_to_skip:
+                        continue
+                        
                     for traffic_light in direction.traffic_lights:
                         sensor_id = f"{direction.id}.{traffic_light.id}"
                         if sensor_obj is traffic_light.front_sensor and vehicle.collides_with(traffic_light.front_sensor):
                             laneSensorData[sensor_id]["voor"] = True
                         if traffic_light.back_sensor and sensor_obj is traffic_light.back_sensor and vehicle.collides_with(traffic_light.back_sensor):
                             laneSensorData[sensor_id]["achter"] = True
-
+        
         # Send updates only if data changed
         if laneSensorData != self.previous_lane_sensor_data:
             self.previous_lane_sensor_data = laneSensorData
             self.messenger.send(Topics.LANE_SENSORS_UPDATE.value, laneSensorData)
-
         if specialSensorData != self.previous_special_sensor_data:
             self.previous_special_sensor_data = specialSensorData
             self.messenger.send(Topics.SPECIAL_SENSORS_UPDATE.value, specialSensorData)
