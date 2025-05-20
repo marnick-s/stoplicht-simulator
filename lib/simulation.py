@@ -178,7 +178,7 @@ class Simulation:
     # Determine which sensors are occupied by vehicles with improved efficiency
     def check_occupied_sensors(self):
         # Define directions to skip
-        directions_to_skip = ["41", "42", "51", "52", "53", "54"]
+        directions_to_skip = [41, 42, 51, 52, 53, 54]
         
         # Initialize dictionaries with default values - excluding the directions to skip
         laneSensorData = {
