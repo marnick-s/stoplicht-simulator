@@ -36,6 +36,11 @@ class Bridge:
             Barrier([1445, 924], 310),
             Barrier([1416, 970], 130)
         ]
+        
+        # Track the last time bridge sensor data was sent
+        self.last_bridge_sensor_send_time = time.time()
+        # Track the last bridge state
+        self.last_bridge_state = "dicht"  # Default to closed state
 
     def update(self, delta_time):
         """
@@ -47,6 +52,12 @@ class Bridge:
         self.update_bridge_height(delta_time)
         for barrier in self.barriers:
             barrier.update(delta_time)
+        
+        # Periodically send bridge state regardless of changes
+        current_time = time.time()
+        if current_time - self.last_bridge_sensor_send_time >= 10:
+            self.send_bridge_state(self.last_bridge_state)
+            self.last_bridge_sensor_send_time = current_time
 
     def update_bridge_height(self, delta_time):
         """
@@ -85,7 +96,18 @@ class Bridge:
                 state = "onbekend"
 
         if state:
-            self.messenger.send(Topics.BRIDGE_SENSORS_UPDATE.value, {"81.1": {"state": state}})
+            self.send_bridge_state(state)
+    
+    def send_bridge_state(self, state):
+        """
+        Send the bridge state to the messenger.
+        
+        Args:
+            state (str): The current state of the bridge ("open", "dicht", or "onbekend").
+        """
+        self.last_bridge_state = state
+        self.last_bridge_sensor_send_time = time.time()
+        self.messenger.send(Topics.BRIDGE_SENSORS_UPDATE.value, {"81.1": {"state": state}})
 
     def open_barriers(self):
         """

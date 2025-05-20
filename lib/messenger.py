@@ -29,8 +29,8 @@ class Messenger:
 
     def send(self, topic, message):
         """Sends a message on the specified topic."""
-        # if (topic == Topics.BRIDGE_SENSORS_UPDATE.value):
-        # print(message)
+        if (topic == Topics.PRIORITY_VEHICLE.value):
+            print(message)
         json_message = json.dumps(message)
         self.pub_socket.send_multipart([topic.encode('utf-8'), json_message.encode('utf-8')])
 

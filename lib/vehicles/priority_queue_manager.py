@@ -7,6 +7,7 @@ class PriorityQueueManager():
     """
     Manages a queue of priority vehicles (e.g., buses), tracking their presence in specific
     relevance and intersection zones. Sends updates when vehicles enter or exit the queue.
+    Also sends updates every 10 seconds regardless of queue changes.
     """
     def __init__(self, messenger):
         """
@@ -17,6 +18,10 @@ class PriorityQueueManager():
         self.priority_vehicles = {}  # Tracked priority vehicles with metadata
         self.queue = {}  # Queue of vehicles to be sent as updates
         self.should_send_update = False
+        
+        # Timer voor periodieke updates (elke 10 seconden)
+        self.last_update_time = pygame.time.get_ticks()
+        self.update_interval = 10000  # 10 seconden in milliseconden
 
         # Define spatial zones for relevance and intersection
         self.relevance_zone = PriorityVehicleRelevanceZone()
@@ -42,7 +47,15 @@ class PriorityQueueManager():
         Updates the internal state of tracked priority vehicles. If a vehicle is in the relevance
         zone and not yet in the intersection, it is added to the queue. If it leaves or completes
         its intersection, it is removed from the queue.
+        
+        Also sends periodic updates every 10 seconds regardless of queue changes.
         """
+        # Check if a periodic update is needed
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_update_time >= self.update_interval:
+            self.last_update_time = current_time
+            self._send_update()
+        
         for id, item in self.priority_vehicles.copy().items():
             # Match current vehicle state by ID
             vehicle = next((v for v in vehicles if v.id == id), None)
@@ -81,7 +94,7 @@ class PriorityQueueManager():
                         self.queue.pop(id)
                         self.should_send_update = True
         
-        # Send update if needed
+        # Send update if needed based on queue changes
         if self.should_send_update:
             self.should_send_update = False
             self._send_update()

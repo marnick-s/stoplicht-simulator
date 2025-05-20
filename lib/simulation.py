@@ -40,6 +40,10 @@ class Simulation:
         # Track simulation time
         self.last_update_time = time.time()
         
+        # Track last sensor send times for periodic updates
+        self.last_lane_sensor_send_time = time.time()
+        self.last_special_sensor_send_time = time.time()
+        
         # Reusable objects to avoid recreating them each frame
         self.query_buffer = 25  # Buffer for spatial queries
         self.collidables = []
@@ -225,12 +229,21 @@ class Simulation:
                         if traffic_light.back_sensor and sensor_obj is traffic_light.back_sensor and vehicle.collides_with(traffic_light.back_sensor):
                             laneSensorData[sensor_id]["achter"] = True
         
-        # Send updates only if data changed
-        if laneSensorData != self.previous_lane_sensor_data:
+        # Check if we need to force send due to time interval
+        current_time = time.time()
+        
+        # Send updates if data changed OR if 10 seconds have elapsed since last send
+        should_send_lane = (laneSensorData != self.previous_lane_sensor_data) or (current_time - self.last_lane_sensor_send_time >= 10)
+        should_send_special = (specialSensorData != self.previous_special_sensor_data) or (current_time - self.last_special_sensor_send_time >= 10)
+        
+        if should_send_lane:
             self.previous_lane_sensor_data = laneSensorData
+            self.last_lane_sensor_send_time = current_time
             self.messenger.send(Topics.LANE_SENSORS_UPDATE.value, laneSensorData)
-        if specialSensorData != self.previous_special_sensor_data:
+            
+        if should_send_special:
             self.previous_special_sensor_data = specialSensorData
+            self.last_special_sensor_send_time = current_time
             self.messenger.send(Topics.SPECIAL_SENSORS_UPDATE.value, specialSensorData)
 
     # Draw all simulation elements to the screen
