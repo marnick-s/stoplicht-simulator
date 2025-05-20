@@ -1,4 +1,5 @@
 import pygame
+import time
 from lib.collidable_object import CollidableObject, Hitbox
 from lib.directions.sensor import Sensor
 from lib.enums.traffic_light_colors import TrafficLightColors
@@ -15,7 +16,7 @@ class TrafficLight(CollidableObject):
     def id(self):
         return self._id
 
-    def __init__(self, id, traffic_light_position, front_sensor_position, type, bridge_closed, back_sensor_position=None, approach_direction=None):
+    def __init__(self, id, traffic_light_position, front_sensor_position, type, bridge_out_of_service, back_sensor_position=None, approach_direction=None, controls_barrier=False):
         """
         Initialize a traffic light with sensor(s) and visual configuration.
 
@@ -26,6 +27,7 @@ class TrafficLight(CollidableObject):
             type (str): Type of the light (e.g., 'car', 'pedestrian').
             back_sensor_position (tuple, optional): Optional back sensor coordinate.
             approach_direction (str, optional): Direction vehicles approach from.
+            controls_barrier (bool): Whether this traffic light controls a barrier.
         """
         self._id = id
         self.traffic_light_position = Coordinate(*traffic_light_position)
@@ -33,7 +35,13 @@ class TrafficLight(CollidableObject):
         self.traffic_light_status = TrafficLightColors.RED
         self.approach_direction = approach_direction
         self.type = type
-        self.bridge_closed = bridge_closed
+        self.controls_barrier = controls_barrier
+        self.bridge_out_of_service = bridge_out_of_service
+        self.light_initialized = False
+        
+        self.is_changing_to_green = False
+        self.green_change_time = 0
+        self.barrier_delay = 4  # Delay in seconds for the barrier to open, when applicable
 
         # Initialize sensors
         self.front_sensor = Sensor(front_sensor_position, approach_direction=approach_direction)
@@ -59,7 +67,7 @@ class TrafficLight(CollidableObject):
             sprite_size = scale_to_display(6, 14)
             if self.type == 'boat':
                 green_light_img = pygame.image.load('assets/lights/boat/groen.webp').convert_alpha()
-                if self.bridge_closed:
+                if self.bridge_out_of_service:
                     orange_light_img = pygame.image.load('assets/lights/boat/gesloten.webp').convert_alpha()
                     red_light_img = pygame.image.load('assets/lights/boat/gesloten.webp').convert_alpha()
                 else:
@@ -113,16 +121,36 @@ class TrafficLight(CollidableObject):
         Args:
             color (str): New color value (must match TrafficLightColors).
         """
-        self.traffic_light_status = TrafficLightColors(color)
-        self._has_changed = True
+        if self.light_initialized and color != self.traffic_light_status.value and self.controls_barrier and color == TrafficLightColors.GREEN.value:
+            # Start the delay so the barrier can open beforehand
+            self.is_changing_to_green = True
+            self.green_change_time = time.time() + self.barrier_delay
+        elif not self.is_changing_to_green:
+            # For other traffic lights, update directly
+            self.traffic_light_status = TrafficLightColors(color)
 
-    def draw(self, connected):
+        if self.traffic_light_status == TrafficLightColors.GREEN:
+            self.light_initialized = True
+        self._has_changed = True
+        
+    def process_delayed_changes(self):
+        """
+        Process any delayed color changes (should be called in game loop).
+        """
+        if self.is_changing_to_green and time.time() >= self.green_change_time:
+            self.traffic_light_status = TrafficLightColors.GREEN
+            self._has_changed = True
+
+    def draw(self):
         """
         Draw the traffic light and sensors on the screen.
 
         Args:
             connected (bool): If False, show orange light regardless of current color.
         """
+        # Process any delayed changes before drawing
+        self.process_delayed_changes()
+            
         self.front_sensor.draw()
         if self.back_sensor is not None:
             self.back_sensor.draw()

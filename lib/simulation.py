@@ -252,7 +252,7 @@ class Simulation:
         for vehicle in self.vehicles:
             vehicle.draw()
         for direction in self.directions:
-            direction.draw(self.messenger.connected)
+            direction.draw()
         for name, sensor in self.special_sensors.items():
             sensor.draw()
         

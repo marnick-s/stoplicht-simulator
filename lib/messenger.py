@@ -29,8 +29,8 @@ class Messenger:
 
     def send(self, topic, message):
         """Sends a message on the specified topic."""
-        if (topic == Topics.PRIORITY_VEHICLE.value):
-            print(message)
+        # if (topic == Topics.PRIORITY_VEHICLE.value):
+        #     print(message)
         json_message = json.dumps(message)
         self.pub_socket.send_multipart([topic.encode('utf-8'), json_message.encode('utf-8')])
 
@@ -61,7 +61,7 @@ class Messenger:
                             message = frames[1].decode('utf-8')
                             
                             if topic == self.receive_topic:
-                                print(f"Ontvangen bericht op topic '{topic}': {message}")
+                                # print(f"Ontvangen bericht op topic '{topic}': {message}")
                                 
                                 # Add validation before parsing JSON
                                 try:

@@ -6,7 +6,7 @@ class Direction:
     Responsible for creating and drawing associated traffic lights.
     """
 
-    def __init__(self, direction_data, bridge_closed):
+    def __init__(self, direction_data, bridge_out_of_service):
         """
         Initialize the Direction object with traffic lights based on provided data.
 
@@ -20,20 +20,22 @@ class Direction:
         # Initialize all traffic lights for this direction
         for tl in direction_data['traffic_lights']:
             back_sensor_position = tl.get('back_sensor_position', None)
+            controls_barrier = self.id in [41, 42, 51, 52, 53, 54]
 
             traffic_light = TrafficLight(
                 tl['id'],
                 tl['traffic_light_position'],
                 tl['front_sensor_position'],
                 self.type,
-                bridge_closed,
+                bridge_out_of_service,
                 back_sensor_position,
                 tl['approach_direction'],
+                controls_barrier
             )
 
             self.traffic_lights.append(traffic_light)
             
-    def draw(self, connected):
+    def draw(self):
         """
         Draw all traffic lights in this direction.
 
@@ -41,4 +43,4 @@ class Direction:
             connected (bool): Indicates whether the system is connected and operational.
         """
         for traffic_light in self.traffic_lights:
-            traffic_light.draw(connected)
+            traffic_light.draw()
