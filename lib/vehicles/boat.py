@@ -10,7 +10,7 @@ class Boat(Vehicle):
     when stationary for a long time.
     """
     vehicle_type_string = "boat"
-    speed = 10
+    speed = 12
     HORN_CHANNEL = 10
    
     def __init__(self, id, path):
