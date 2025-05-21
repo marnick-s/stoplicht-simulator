@@ -88,13 +88,12 @@ class TrafficLight(CollidableObject):
         Return the collision hitbox of the traffic light.
         """
         if self._cached_hitboxes is None:
-            width = 6
-            height = 6
+            size = 6 if self.type in ('pedestrian', 'bike') else 8
             self._cached_hitboxes = [Hitbox(
-                x=self.traffic_light_position.x - width / 2,
-                y=self.traffic_light_position.y - height / 2,
-                width=width,
-                height=height,
+                x=self.traffic_light_position.x - size / 2,
+                y=self.traffic_light_position.y - size / 2,
+                width=size,
+                height=size,
             )]
         return self._cached_hitboxes
 
@@ -156,16 +155,25 @@ class TrafficLight(CollidableObject):
         if self.back_sensor is not None:
             self.back_sensor.draw()
 
-        # Select appropriate sprite based on status
-        tf_sprite = self.red_light_img
-        if self.traffic_light_status == TrafficLightColors.GREEN:
-            tf_sprite = self.green_light_img
-        elif self.traffic_light_status == TrafficLightColors.ORANGE:
-            tf_sprite = self.orange_light_img
+        # # Select appropriate sprite based on status
+        # tf_sprite = self.red_light_img
+        # if self.traffic_light_status == TrafficLightColors.GREEN:
+        #     tf_sprite = self.green_light_img
+        # elif self.traffic_light_status == TrafficLightColors.ORANGE:
+        #     tf_sprite = self.orange_light_img
 
-        # Center the sprite on the traffic light position
-        sprite_width, sprite_height = self.green_light_img.get_size()
-        center_x, center_y = scale_to_display(self.traffic_light_position.x, self.traffic_light_position.y)
-        draw_x = center_x - sprite_width // 2
-        draw_y = center_y - sprite_height // 2
-        screen.blit(tf_sprite, (draw_x, draw_y))
+        # # Center the sprite on the traffic light position
+        # sprite_width, sprite_height = self.green_light_img.get_size()
+        # center_x, center_y = scale_to_display(self.traffic_light_position.x, self.traffic_light_position.y)
+        # draw_x = center_x - sprite_width // 2
+        # draw_y = center_y - sprite_height // 2
+        # screen.blit(tf_sprite, (draw_x, draw_y))
+
+        hitboxes = self.hitboxes()
+        for hitbox in hitboxes:
+            # Convert hitbox to screen coordinates
+            x, y = scale_to_display(hitbox.x, hitbox.y)
+            width, height = scale_to_display(hitbox.width, hitbox.height)
+            
+            # Draw rectangle for hitbox (using red color with some transparency)
+            pygame.draw.rect(screen, (255, 0, 0, 128), (x, y, width, height), 1)
