@@ -33,6 +33,7 @@ class TrafficLight(CollidableObject):
         self.traffic_light_position = Coordinate(*traffic_light_position)
         self.front_sensor_position = Coordinate(*front_sensor_position)
         self.traffic_light_status = TrafficLightColors.RED
+        self.previous_traffic_light_status = TrafficLightColors.RED
         self.approach_direction = approach_direction
         self.type = type
         self.controls_barrier = controls_barrier
@@ -121,7 +122,7 @@ class TrafficLight(CollidableObject):
         Args:
             color (str): New color value (must match TrafficLightColors).
         """
-        if self.light_initialized and color != self.traffic_light_status.value and self.controls_barrier and color == TrafficLightColors.GREEN.value:
+        if self.light_initialized and color != self.previous_traffic_light_status.value and self.controls_barrier and color == TrafficLightColors.GREEN.value:
             # Start the delay so the barrier can open beforehand
             self.is_changing_to_green = True
             self.green_change_time = time.time() + self.barrier_delay
@@ -131,6 +132,7 @@ class TrafficLight(CollidableObject):
 
         if self.traffic_light_status == TrafficLightColors.GREEN:
             self.light_initialized = True
+        self.previous_traffic_light_status = TrafficLightColors(color)
         self._has_changed = True
         
     def process_delayed_changes(self):
