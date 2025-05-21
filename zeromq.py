@@ -12,8 +12,8 @@ def start_zeromq_publisher(bind_address="tcp://127.0.0.1:5555"):
     while True:
         topic = "stoplichten"  # Topic voor de auto
         message = {
-            "61.1": "groen",
-            "81.1": "groen",
+            "81.1": "rood",
+            "41.1": "groen",
         }
         json_message = json.dumps(message)
         print(f"Versturen: {topic} {json_message}")
@@ -21,8 +21,8 @@ def start_zeromq_publisher(bind_address="tcp://127.0.0.1:5555"):
         time.sleep(15)  # Simuleer periodieke berichten
         topic = "stoplichten"  # Topic voor de auto
         message = {
-            "61.1": "rood",
             "81.1": "groen",
+            "41.1": "rood",
         }
         json_message = json.dumps(message)
         print(f"Versturen: {topic} {json_message}")
