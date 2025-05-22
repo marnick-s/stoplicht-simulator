@@ -37,14 +37,14 @@ directions:
       traffic_lights:
         - id: 1
           approach_direction: south
-          traffic_light_position: [277, 332]
+          traffic_light_position: [287, 339]
           front_sensor_position: [284, 343]
           back_sensor_position: [257, 397]
     - id: 6
       traffic_lights:
         - id: 1
           approach_direction: south
-          traffic_light_position: [287, 339]
+          traffic_light_position: [277, 332]
           front_sensor_position: [273, 339]
           back_sensor_position: [244, 391]
     - id: 7
