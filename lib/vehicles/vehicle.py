@@ -221,7 +221,7 @@ class Vehicle(CollidableObject):
         
         # Calculate elapsed time since last movement update
         current_time = time.time()
-        elapsed_time = current_time - self.last_move_time
+        elapsed_time = min(current_time - self.last_move_time, 0.05) # Clamp to avoid large jumps in time, limited to 20fps
         
         # Target waypoint coordinates
         target_x, target_y = self.path[self.current_target + 1]
