@@ -29,7 +29,7 @@ def start_zeromq_publisher(bind_address="tcp://127.0.0.1:5555"):
         socket.send_multipart([topic.encode('utf-8'), json_message.encode('utf-8')])
         time.sleep(15)  # Simuleer periodieke berichten
 
-def start_zeromq_subscriber(server_address="tcp://10.121.17.233:5557"):
+def start_zeromq_subscriber(server_address="tcp://10.121.17.84:5555"):
     context = zmq.Context()
     socket = context.socket(zmq.SUB)  # Subscriber pattern
     socket.connect(server_address)
