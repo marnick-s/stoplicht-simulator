@@ -156,18 +156,18 @@ class TrafficLight(CollidableObject):
             self.back_sensor.draw()
 
         # # Select appropriate sprite based on status
-        # tf_sprite = self.red_light_img
-        # if self.traffic_light_status == TrafficLightColors.GREEN:
-        #     tf_sprite = self.green_light_img
-        # elif self.traffic_light_status == TrafficLightColors.ORANGE:
-        #     tf_sprite = self.orange_light_img
+        tf_sprite = self.red_light_img
+        if self.traffic_light_status == TrafficLightColors.GREEN:
+            tf_sprite = self.green_light_img
+        elif self.traffic_light_status == TrafficLightColors.ORANGE:
+            tf_sprite = self.orange_light_img
 
         # # Center the sprite on the traffic light position
-        # sprite_width, sprite_height = self.green_light_img.get_size()
-        # center_x, center_y = scale_to_display(self.traffic_light_position.x, self.traffic_light_position.y)
-        # draw_x = center_x - sprite_width // 2
-        # draw_y = center_y - sprite_height // 2
-        # screen.blit(tf_sprite, (draw_x, draw_y))
+        sprite_width, sprite_height = self.green_light_img.get_size()
+        center_x, center_y = scale_to_display(self.traffic_light_position.x, self.traffic_light_position.y)
+        draw_x = center_x - sprite_width // 2
+        draw_y = center_y - sprite_height // 2
+        screen.blit(tf_sprite, (draw_x, draw_y))
 
         hitboxes = self.hitboxes()
         for hitbox in hitboxes:
