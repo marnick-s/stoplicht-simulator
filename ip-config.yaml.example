@@ -1,0 +1,4 @@
+pub_address: 0.0.0.0 # Simulator IP
+sub_address: 10.121.17.8 # Controller IP
+
+# Rename this file to ip-config.yaml
