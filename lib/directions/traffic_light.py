@@ -169,11 +169,11 @@ class TrafficLight(CollidableObject):
         draw_y = center_y - sprite_height // 2
         screen.blit(tf_sprite, (draw_x, draw_y))
 
-        hitboxes = self.hitboxes()
-        for hitbox in hitboxes:
-            # Convert hitbox to screen coordinates
-            x, y = scale_to_display(hitbox.x, hitbox.y)
-            width, height = scale_to_display(hitbox.width, hitbox.height)
+        # hitboxes = self.hitboxes()
+        # for hitbox in hitboxes:
+        #     # Convert hitbox to screen coordinates
+        #     x, y = scale_to_display(hitbox.x, hitbox.y)
+        #     width, height = scale_to_display(hitbox.width, hitbox.height)
             
-            # Draw rectangle for hitbox (using red color with some transparency)
-            pygame.draw.rect(screen, (255, 0, 0, 128), (x, y, width, height), 1)
+        #     # Draw rectangle for hitbox (using red color with some transparency)
+        #     pygame.draw.rect(screen, (255, 0, 0, 128), (x, y, width, height), 1)
