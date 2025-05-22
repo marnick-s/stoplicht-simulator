@@ -2,4 +2,4 @@ venv/
 .venv/
 .vscode/
 __pycache__/
-.env
+ip-config.yaml
