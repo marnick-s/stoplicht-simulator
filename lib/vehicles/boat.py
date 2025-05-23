@@ -93,8 +93,8 @@ class Boat(Vehicle):
         time_stationary = current_time - self.last_moved_time
         time_since_last_honk = current_time - self.last_horn_time
         
-        # Honk if stationary > 2 minutes, cooldown passed, and random chance
-        if time_stationary > 120.0 and self.horn_sound and time_since_last_honk >= self.horn_cooldown:
+        # Honk if stationary > 3 minutes, cooldown passed, and random chance
+        if time_stationary > 180.0 and self.horn_sound and time_since_last_honk >= self.horn_cooldown:
             if random.random() < 0.1:
                 if pygame.mixer.get_init():
                     self.horn_sound.set_volume(0.4)
