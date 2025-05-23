@@ -123,7 +123,6 @@ class TrafficLight(CollidableObject):
             # Start the delay so the barrier can open beforehand
             self.is_changing_to_green = True
             self.green_change_time = time.time() + self.barrier_delay
-            print("Barrier is opening, delaying green light change")
         elif not self.is_changing_to_green:
             # For other traffic lights, update directly
             self.traffic_light_status = TrafficLightColors(color)
@@ -137,7 +136,6 @@ class TrafficLight(CollidableObject):
         Process any delayed color changes (should be called in game loop).
         """
         if self.is_changing_to_green and time.time() >= self.green_change_time:
-            print("Lights are changing to green")
             self.is_changing_to_green = False
             self.traffic_light_status = TrafficLightColors.GREEN
 
